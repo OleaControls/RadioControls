@@ -1,201 +1,164 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, Send, MessageCircle, Clock, Globe, ShieldCheck } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, MessageCircle, Clock, Globe, ShieldCheck, Sparkles } from 'lucide-react';
+import WaveCursor from '../components/WaveCursor';
 
 const Contact = () => {
   return (
-    <div className="pt-32 pb-20 px-4 min-h-screen bg-royal-blue-dark relative overflow-hidden">
-      {/* Decorative Background Elements */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-20">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-neon-cyan/20 rounded-full blur-[120px]" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-neon-purple/20 rounded-full blur-[120px]" />
+    <div className="pt-40 pb-24 px-4 min-h-screen bg-slate-950 text-white relative overflow-hidden">
+      <WaveCursor />
+      
+      {/* Decorative Glows */}
+      <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-neon-cyan/10 rounded-full blur-[120px]" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-[120px]" />
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
-        {/* Header Section */}
-        <div className="text-center mb-16">
-          <motion.span 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-neon-cyan font-black tracking-[0.3em] uppercase text-xs mb-3 block"
+        {/* Header */}
+        <div className="text-center mb-24">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-neon-cyan/10 border border-neon-cyan/20 text-neon-cyan text-xs font-black uppercase tracking-[0.3em] mb-8"
           >
-            Contacto Directo
-          </motion.span>
+            <Sparkles className="w-4 h-4" /> Ingeniería de Contacto
+          </motion.div>
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-4xl md:text-6xl font-black mb-6 tracking-tighter uppercase"
+            className="text-4xl md:text-6xl font-black mb-8 tracking-tight uppercase leading-tight"
           >
-            Hagamos sonar <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan to-neon-purple">tu éxito</span>
+            Hablemos de <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan to-blue-500 italic pr-4">tu Éxito</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed"
+            transition={{ delay: 0.1 }}
+            className="text-lg md:text-2xl text-slate-400 max-w-2xl mx-auto font-medium leading-relaxed"
           >
-            Nuestro equipo de ingenieros de audio está listo para transformar tu espacio comercial. Respuesta garantizada en menos de 2 horas.
+            Nuestros ingenieros están listos para transformar tu espacio. Respuesta garantizada en tiempo récord.
           </motion.p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
           
-          {/* Info Cards Column */}
-          <div className="lg:col-span-5 space-y-6">
+          {/* Info Cards */}
+          <div className="lg:col-span-5 space-y-8">
             {[
               { 
-                icon: <Mail className="w-6 h-6" />, 
-                label: "Correo Electrónico", 
-                value: "hola@radioleacontrols.com",
-                desc: "Consultas generales y soporte técnico.",
+                icon: <Mail className="w-7 h-7" />, 
+                label: "Email Corporativo", 
+                value: "hola@radiocontrols.mx",
                 color: "text-neon-cyan"
               },
               { 
-                icon: <Phone className="w-6 h-6" />, 
-                label: "Teléfono / WhatsApp", 
+                icon: <Phone className="w-7 h-7" />, 
+                label: "Línea Directa / WhatsApp", 
                 value: "+52 (55) 1234-5678",
-                desc: "Lunes a Viernes, 9:00 AM - 18:00 PM",
                 color: "text-neon-green"
               },
               { 
-                icon: <MapPin className="w-6 h-6" />, 
-                label: "Oficinas Centrales", 
-                value: "Av. Homero 1425, Polanco",
-                desc: "Miguel Hidalgo, 11540 CDMX, México",
+                icon: <MapPin className="w-7 h-7" />, 
+                label: "Sede Central", 
+                value: "Polanco, CDMX, México",
                 color: "text-neon-purple"
               }
             ].map((item, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, x: -30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: i * 0.1 + 0.3 }}
-                whileHover={{ x: 10 }}
-                className="bg-white/5 border border-white/10 rounded-3xl p-6 flex items-center gap-6 group transition-all hover:bg-white/10 hover:border-white/20"
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="bg-slate-900/50 border border-white/5 rounded-[32px] p-8 flex items-center gap-8 group transition-all hover:border-neon-cyan/30 hover:bg-slate-900/80 backdrop-blur-xl"
               >
-                <div className={`p-4 rounded-2xl bg-black/40 ${item.color} shadow-lg group-hover:scale-110 transition-transform`}>
+                <div className={`p-5 rounded-2xl bg-slate-950 ${item.color} shadow-lg group-hover:scale-110 transition-transform duration-500`}>
                   {item.icon}
                 </div>
                 <div>
-                  <p className="text-[10px] font-black uppercase text-gray-500 tracking-widest mb-1">{item.label}</p>
-                  <p className="text-lg font-bold text-white mb-1">{item.value}</p>
-                  <p className="text-xs text-gray-400">{item.desc}</p>
+                  <p className="text-xs font-black uppercase text-slate-500 tracking-widest mb-2">{item.label}</p>
+                  <p className="text-xl font-black text-white">{item.value}</p>
                 </div>
               </motion.div>
             ))}
 
-            {/* Support Info Card */}
+            {/* Support Card */}
             <motion.div 
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.6 }}
-              className="bg-gradient-to-br from-neon-cyan/10 to-neon-purple/10 border border-neon-cyan/20 rounded-3xl p-8 mt-12"
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              className="bg-gradient-to-br from-neon-cyan/20 to-blue-600/20 border border-neon-cyan/30 rounded-[40px] p-10 mt-12 backdrop-blur-2xl"
             >
-              <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2 uppercase tracking-tighter">
-                <Clock className="w-5 h-5 text-neon-cyan" /> Soporte Premium 24/7
+              <h3 className="text-2xl font-black text-white mb-6 flex items-center gap-3 uppercase tracking-tighter">
+                <Clock className="w-6 h-6 text-neon-cyan" /> Soporte Elite 24/7
               </h3>
-              <p className="text-sm text-gray-400 leading-relaxed mb-6">
-                Nuestros clientes activos cuentan con una línea de soporte prioritaria para emergencias técnicas y ajustes de programación en tiempo real.
+              <p className="text-lg text-slate-300 leading-relaxed mb-8 font-medium">
+                Nuestros clientes activos cuentan con una línea prioritaria de ingeniería para ajustes en tiempo real.
               </p>
               <div className="flex items-center gap-4">
-                <div className="flex -space-x-3">
-                  {[1,2,3].map(i => (
-                    <div key={i} className="w-8 h-8 rounded-full border-2 border-royal-blue-dark bg-gray-700" />
+                <div className="flex -space-x-4">
+                  {[1,2,3,4].map(i => (
+                    <div key={i} className="w-10 h-10 rounded-full border-4 border-slate-950 bg-slate-800" />
                   ))}
                 </div>
-                <p className="text-xs font-bold text-neon-cyan uppercase tracking-widest">Ingenieros en línea</p>
+                <p className="text-xs font-black text-neon-cyan uppercase tracking-widest">Ingenieros Activos</p>
               </div>
             </motion.div>
           </div>
 
-          {/* Contact Form Column */}
+          {/* Form */}
           <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.4 }}
-            className="lg:col-span-7 bg-white/5 border border-white/10 rounded-[48px] p-8 md:p-12 backdrop-blur-xl shadow-2xl relative"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="lg:col-span-7 bg-slate-900/40 border border-white/5 rounded-[50px] p-10 md:p-16 backdrop-blur-2xl shadow-2xl relative"
           >
-            <div className="absolute -top-10 -right-10 w-40 h-40 bg-neon-cyan/5 rounded-full blur-3xl pointer-events-none" />
-            
-            <form className="space-y-8 relative z-10">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="space-y-2">
-                  <label className="text-xs font-black uppercase text-gray-500 ml-4 tracking-widest">Nombre Completo</label>
+            <form className="space-y-10">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div className="space-y-3">
+                  <label className="text-xs font-black uppercase text-slate-500 ml-4 tracking-widest">Nombre Completo</label>
                   <input 
                     type="text" 
-                    placeholder="Ej. Juan Pérez" 
-                    className="w-full bg-black/40 border border-white/10 rounded-2xl py-5 px-8 focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan/50 transition-all text-white text-base placeholder:text-gray-700" 
+                    placeholder="Juan Pérez" 
+                    className="w-full bg-slate-950 border border-white/10 rounded-2xl py-6 px-8 focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan/50 transition-all text-white font-medium placeholder:text-slate-700" 
                   />
                 </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-black uppercase text-gray-500 ml-4 tracking-widest">Empresa / Marca</label>
+                <div className="space-y-3">
+                  <label className="text-xs font-black uppercase text-slate-500 ml-4 tracking-widest">Empresa</label>
                   <input 
                     type="text" 
-                    placeholder="Ej. Retail Group" 
-                    className="w-full bg-black/40 border border-white/10 rounded-2xl py-5 px-8 focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan/50 transition-all text-white text-base placeholder:text-gray-700" 
+                    placeholder="Marca / Negocio" 
+                    className="w-full bg-slate-950 border border-white/10 rounded-2xl py-6 px-8 focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan/50 transition-all text-white font-medium placeholder:text-slate-700" 
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="space-y-2">
-                  <label className="text-xs font-black uppercase text-gray-500 ml-4 tracking-widest">Correo Corporativo</label>
-                  <input 
-                    type="email" 
-                    placeholder="juan@empresa.com" 
-                    className="w-full bg-black/40 border border-white/10 rounded-2xl py-5 px-8 focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan/50 transition-all text-white text-base placeholder:text-gray-700" 
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-black uppercase text-gray-500 ml-4 tracking-widest">Número de Sucursales</label>
-                  <select className="w-full bg-black/40 border border-white/10 rounded-2xl py-5 px-8 focus:outline-none focus:border-neon-cyan transition-all text-white text-base appearance-none cursor-pointer">
-                    <option value="" className="bg-royal-blue-dark">Seleccionar rango...</option>
-                    <option value="1-5" className="bg-royal-blue-dark">1 - 5 sucursales</option>
-                    <option value="6-20" className="bg-royal-blue-dark">6 - 20 sucursales</option>
-                    <option value="21-100" className="bg-royal-blue-dark">21 - 100 sucursales</option>
-                    <option value="100+" className="bg-royal-blue-dark">Más de 100</option>
-                  </select>
-                </div>
+              <div className="space-y-3">
+                <label className="text-xs font-black uppercase text-slate-500 ml-4 tracking-widest">Correo Corporativo</label>
+                <input 
+                  type="email" 
+                  placeholder="juan@empresa.mx" 
+                  className="w-full bg-slate-950 border border-white/10 rounded-2xl py-6 px-8 focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan/50 transition-all text-white font-medium placeholder:text-slate-700" 
+                />
               </div>
 
-              <div className="space-y-2">
-                <label className="text-xs font-black uppercase text-gray-500 ml-4 tracking-widest">¿En qué podemos ayudarte?</label>
+              <div className="space-y-3">
+                <label className="text-xs font-black uppercase text-slate-500 ml-4 tracking-widest">Proyecto / Mensaje</label>
                 <textarea 
-                  placeholder="Cuéntanos sobre tu proyecto sonora..." 
+                  placeholder="Cuéntanos sobre tu visión sonora..." 
                   rows="4" 
-                  className="w-full bg-black/40 border border-white/10 rounded-2xl py-5 px-8 focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan/50 transition-all text-white text-base placeholder:text-gray-700 resize-none"
+                  className="w-full bg-slate-950 border border-white/10 rounded-2xl py-6 px-8 focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan/50 transition-all text-white font-medium placeholder:text-slate-700 resize-none"
                 ></textarea>
               </div>
 
-              <div className="pt-4">
-                <button className="w-full py-6 bg-neon-cyan text-royal-blue-dark rounded-[24px] font-black text-xl hover:shadow-[0_0_50px_rgba(0,243,255,0.4)] transition-all flex items-center justify-center gap-3 active:scale-[0.98] uppercase tracking-tighter group">
-                  ENVIAR SOLICITUD DE INGENIERÍA 
-                  <Send className="w-6 h-6 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
-                </button>
-                <p className="text-center text-[10px] text-gray-600 mt-6 uppercase tracking-widest font-bold">
-                  Al enviar aceptas nuestras políticas de tratamiento de datos personales.
-                </p>
-              </div>
+              <button className="w-full py-6 bg-neon-cyan text-slate-950 rounded-2xl font-black text-xl hover:shadow-[0_0_50px_rgba(0,243,255,0.4)] transition-all flex items-center justify-center gap-4 active:scale-95 uppercase tracking-tighter group">
+                Enviar Solicitud
+                <Send className="w-6 h-6 transition-transform group-hover:translate-x-2 group-hover:-translate-y-2" />
+              </button>
             </form>
           </motion.div>
 
-        </div>
-
-        {/* Floating Action Links */}
-        <div className="mt-20 flex flex-wrap justify-center gap-12 border-t border-white/5 pt-12">
-          <div className="flex items-center gap-3 text-gray-500 group cursor-pointer hover:text-white transition-all">
-            <MessageCircle className="w-5 h-5 text-neon-green" />
-            <span className="text-xs font-black uppercase tracking-widest">Chat en Vivo</span>
-          </div>
-          <div className="flex items-center gap-3 text-gray-500 group cursor-pointer hover:text-white transition-all">
-            <Globe className="w-5 h-5 text-neon-cyan" />
-            <span className="text-xs font-black uppercase tracking-widest">Cobertura Nacional</span>
-          </div>
-          <div className="flex items-center gap-3 text-gray-500 group cursor-pointer hover:text-white transition-all">
-            <ShieldCheck className="w-5 h-5 text-neon-purple" />
-            <span className="text-xs font-black uppercase tracking-widest">Privacidad Garantizada</span>
-          </div>
         </div>
       </div>
     </div>

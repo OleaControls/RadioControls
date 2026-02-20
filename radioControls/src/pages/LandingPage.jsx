@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Zap, Activity } from 'lucide-react';
+import { ArrowRight, Zap, Activity, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import WaveCursor from '../components/WaveCursor';
 import UniversalPlayer from '../components/UniversalPlayer';
@@ -58,21 +58,21 @@ const LandingPage = () => {
 
           <UniversalPlayer streamUrl="/audios/Tutiendahabla.mp3" stationName="Demo: Tu tienda habla" />
           
-          <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 opacity-40 grayscale group-hover:grayscale-0 transition-all duration-500">
+          <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 transition-all duration-500">
             <div className="flex flex-col items-center gap-2">
-              <div className="text-[10px] font-black uppercase tracking-widest text-gray-500">Mastering</div>
+              <div className="text-[10px] font-black uppercase tracking-widest text-white">Mastering</div>
               <div className="text-sm font-bold text-white">Digital Pro</div>
             </div>
             <div className="flex flex-col items-center gap-2">
-              <div className="text-[10px] font-black uppercase tracking-widest text-gray-500">Sync</div>
+              <div className="text-[10px] font-black uppercase tracking-widest text-white">Sync</div>
               <div className="text-sm font-bold text-white">Cloud Low Latency</div>
             </div>
             <div className="flex flex-col items-center gap-2">
-              <div className="text-[10px] font-black uppercase tracking-widest text-gray-500">Audio</div>
+              <div className="text-[10px] font-black uppercase tracking-widest text-white">Audio</div>
               <div className="text-sm font-bold text-white">High Fidelity</div>
             </div>
             <div className="flex flex-col items-center gap-2">
-              <div className="text-[10px] font-black uppercase tracking-widest text-gray-500">Network</div>
+              <div className="text-[10px] font-black uppercase tracking-widest text-white">Network</div>
               <div className="text-sm font-bold text-white">Buffer Pro</div>
             </div>
           </div>
@@ -80,19 +80,56 @@ const LandingPage = () => {
       </section>
 
       {/* Quick Access to other pages */}
-      <section className="py-20 px-4 max-w-7xl mx-auto relative z-10 grid grid-cols-1 md:grid-cols-3 gap-8">
-        <Link to="/servicios" className="group bg-royal-blue border border-white/5 p-12 rounded-[40px] hover:border-neon-cyan/30 transition-all">
-          <h3 className="text-2xl font-black mb-4 uppercase group-hover:text-neon-cyan transition-colors">Nuestros Servicios</h3>
-          <p className="text-gray-400">Ingeniería, licencias y publicidad para tu negocio.</p>
-        </Link>
-        <Link to="/galeria" className="group bg-royal-blue border border-white/5 p-12 rounded-[40px] hover:border-neon-cyan/30 transition-all">
-          <h3 className="text-2xl font-black mb-4 uppercase group-hover:text-neon-cyan transition-colors">Galería</h3>
-          <p className="text-gray-400">Mira cómo lucen los espacios RadiOlea.</p>
-        </Link>
-        <Link to="/faq" className="group bg-royal-blue border border-white/5 p-12 rounded-[40px] hover:border-neon-cyan/30 transition-all">
-          <h3 className="text-2xl font-black mb-4 uppercase group-hover:text-neon-cyan transition-colors">Ayuda / FAQ</h3>
-          <p className="text-gray-400">Resolvemos todas tus dudas legales y técnicas.</p>
-        </Link>
+      <section className="py-32 px-4 max-w-7xl mx-auto relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+          {[
+            {
+              title: "Nuestros Servicios",
+              desc: "Ingeniería, licencias y publicidad estratégica.",
+              path: "/servicios",
+              icon: <Zap className="w-8 h-8" />,
+              accent: "group-hover:text-neon-cyan"
+            },
+            {
+              title: "Galería de Éxito",
+              desc: "Mira cómo lucen los espacios RadiOleaControls.",
+              path: "/galeria",
+              icon: <Activity className="w-8 h-8" />,
+              accent: "group-hover:text-neon-cyan"
+            },
+            {
+              title: "Ayuda / FAQ",
+              desc: "Resolvemos todas tus dudas legales y técnicas.",
+              path: "/faq",
+              icon: <ArrowRight className="w-8 h-8" />,
+              accent: "group-hover:text-neon-cyan"
+            }
+          ].map((item, i) => (
+            <Link 
+              key={i}
+              to={item.path} 
+              className="group relative bg-slate-900/40 backdrop-blur-xl border border-white/5 p-12 rounded-[50px] transition-all duration-500 hover:border-neon-cyan/30 hover:shadow-[0_0_50px_-12px_rgba(0,243,255,0.2)] overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 w-32 h-32 bg-neon-cyan/5 blur-3xl rounded-full -mr-16 -mt-16 transition-all group-hover:bg-neon-cyan/10" />
+              
+              <div className={`mb-8 p-4 bg-slate-950 rounded-2xl border border-white/5 w-fit transition-all duration-500 group-hover:border-neon-cyan/30 group-hover:shadow-[0_0_20px_rgba(0,243,255,0.2)] text-neon-cyan ${item.accent}`}>
+                {item.icon}
+              </div>
+              
+              <h3 className="text-3xl font-black mb-4 uppercase tracking-tighter transition-all duration-500 group-hover:text-white">
+                {item.title}
+              </h3>
+              
+              <p className="text-slate-400 font-medium leading-relaxed mb-8 group-hover:text-slate-300 transition-colors">
+                {item.desc}
+              </p>
+
+              <div className="flex items-center gap-2 text-neon-cyan font-black text-[10px] uppercase tracking-[0.3em] opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500">
+                Explorar <ChevronRight size={14} />
+              </div>
+            </Link>
+          ))}
+        </div>
       </section>
     </div>
   );

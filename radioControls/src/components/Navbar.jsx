@@ -10,7 +10,9 @@ const Navbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const { isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth();
+
+  const firstName = user?.name ? user.name.split(' ')[0] : 'Cliente';
 
   const links = [
     { name: 'Inicio', path: '/' },
@@ -93,7 +95,7 @@ const Navbar = () => {
                   className="flex items-center gap-2 bg-light-accent dark:bg-dark-accent text-white dark:text-dark-background px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest hover:shadow-[0_0_20px_rgba(0,35,102,0.4)] dark:hover:shadow-[0_0_20px_rgba(0,243,255,0.4)] hover:scale-105 transition-all"
                 >
                   <User className="w-4 h-4" />
-                  Dashboard
+                  {firstName}
                 </button>
               </>
             ) : (
@@ -169,7 +171,7 @@ const Navbar = () => {
                       onClick={() => handleNavigateAndClose('/dashboard')}
                       className="w-full bg-light-accent dark:bg-dark-accent text-white dark:text-dark-background py-5 rounded-2xl font-black uppercase tracking-[0.2em] text-sm shadow-xl"
                     >
-                      Dashboard
+                      HOLA, {firstName}
                     </button>
                     <button 
                       onClick={handleLogout}

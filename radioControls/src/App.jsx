@@ -7,6 +7,7 @@ import Pricing from './pages/Pricing';
 import Gallery from './pages/Gallery';
 import FAQ from './pages/FAQ';
 import Contact from './pages/Contact';
+import Checkout from './pages/Checkout';
 import ClientPortal from './pages/ClientPortal';
 import Admin from './pages/Admin';
 import BranchPlayer from './pages/BranchPlayer';
@@ -33,6 +34,7 @@ const MainLayout = () => {
           <Route path="/galeria" element={<Gallery />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/contacto" element={<Contact />} />
+          <Route path="/checkout/:planId" element={<Checkout />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<ClientPortal />} />
