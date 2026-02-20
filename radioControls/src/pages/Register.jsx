@@ -1,13 +1,8 @@
 import React, { useState } from 'react';
-<<<<<<< HEAD
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { Mail, Lock, ArrowRight, User as UserIcon, Radio, ArrowLeft } from 'lucide-react';
 import AuthSplitLayout from '../components/AuthSplitLayout';
-=======
-import { motion } from 'framer-motion';
-import { Radio, ArrowRight, User, Lock, Mail } from 'lucide-react';
-import { useNavigate, Link } from 'react-router-dom';
->>>>>>> upstream/main
+import { useAuth } from '../components/AuthContext';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -25,7 +20,6 @@ const Register = () => {
     setIsLoading(true);
     setError('');
 
-<<<<<<< HEAD
     // Registro Local
     const result = authRegister({ name, email, password });
     
@@ -79,69 +73,12 @@ const Register = () => {
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Juan Pérez"
                 className="w-full rounded-2xl bg-white/5 border-white/10 py-4 pl-12 pr-4 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:border-neon-cyan/50 transition-all duration-300"
-=======
-    if (password.length < 8) {
-      setError('La contraseña debe tener al menos 8 caracteres.');
-      setIsLoading(false);
-      return;
-    }
-
-    try {
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password }),
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || 'Error al registrar la cuenta');
-      }
-
-      // On successful registration, redirect to login
-      navigate('/login');
-
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  return (
-    <div className="min-h-screen bg-light-background dark:bg-royal-blue-dark flex items-center justify-center p-4">
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-md bg-white dark:bg-black/40 backdrop-blur-2xl border border-black/10 dark:border-white/10 p-12 rounded-[48px] shadow-2xl"
-      >
-        <div className="flex flex-col items-center mb-12">
-          <div className="p-4 bg-light-accent dark:bg-neon-cyan rounded-2xl mb-6">
-            <Radio className="w-10 h-10 text-white dark:text-royal-blue-dark" />
-          </div>
-          <h1 className="text-3xl font-black text-light-text dark:text-white uppercase tracking-tighter">Crear Cuenta</h1>
-          <p className="text-gray-500 dark:text-gray-500 font-bold text-sm mt-2">ÚNETE A LA PLATAFORMA</p>
-        </div>
-
-        <form className="space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-2">
-            <label className="text-xs font-black uppercase text-gray-500 dark:text-gray-400 ml-4">Nombre Completo</label>
-            <div className="relative">
-              <User className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5" />
-              <input 
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Ej. Juan Pérez"
-                className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-2xl py-5 pl-14 pr-6 focus:outline-none focus:border-light-accent dark:focus:border-neon-cyan transition-all text-light-text dark:text-white font-medium"
->>>>>>> upstream/main
                 required
               />
             </div>
           </div>
           
           <div className="space-y-2">
-<<<<<<< HEAD
             <label htmlFor="email" className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Correo Electrónico</label>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 flex items-center pl-4 transition-colors group-focus-within:text-neon-cyan">
@@ -154,24 +91,12 @@ const Register = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="tu@email.com"
                 className="w-full rounded-2xl bg-white/5 border-white/10 py-4 pl-12 pr-4 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:border-neon-cyan/50 transition-all duration-300"
-=======
-            <label className="text-xs font-black uppercase text-gray-500 dark:text-gray-400 ml-4">Correo Electrónico</label>
-            <div className="relative">
-              <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5" />
-              <input 
-                type="email" 
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="ejemplo@empresa.com"
-                className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-2xl py-5 pl-14 pr-6 focus:outline-none focus:border-light-accent dark:focus:border-neon-cyan transition-all text-light-text dark:text-white font-medium"
->>>>>>> upstream/main
                 required
               />
             </div>
           </div>
 
           <div className="space-y-2">
-<<<<<<< HEAD
             <label htmlFor="password" className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Contraseña</label>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 flex items-center pl-4 transition-colors group-focus-within:text-neon-cyan">
@@ -184,23 +109,11 @@ const Register = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Mínimo 8 caracteres"
                 className="w-full rounded-2xl bg-white/5 border-white/10 py-4 pl-12 pr-4 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:border-neon-cyan/50 transition-all duration-300"
-=======
-            <label className="text-xs font-black uppercase text-gray-500 dark:text-gray-400 ml-4">Contraseña (mín. 8 caracteres)</label>
-            <div className="relative">
-              <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5" />
-              <input 
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)} 
-                placeholder="••••••••"
-                className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-2xl py-5 pl-14 pr-6 focus:outline-none focus:border-light-accent dark:focus:border-neon-cyan transition-all text-light-text dark:text-white font-medium"
->>>>>>> upstream/main
                 required
               />
             </div>
           </div>
 
-<<<<<<< HEAD
           {error && (
             <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-3">
               <p className="text-xs font-bold text-red-400 text-center">{error}</p>
@@ -221,18 +134,6 @@ const Register = () => {
               {!isLoading && <ArrowRight className="h-5 w-5 relative" />}
             </button>
           </div>
-=======
-          {error && <p className="text-red-500 text-sm font-bold text-center">{error}</p>}
-
-          <button 
-            type="submit"
-            disabled={isLoading}
-            className="w-full py-6 bg-light-accent dark:bg-neon-cyan text-white dark:text-royal-blue-dark rounded-2xl font-black text-xl hover:shadow-[0_0_30px_rgba(0,35,102,0.4)] dark:hover:shadow-[0_0_30px_rgba(0,243,255,0.4)] transition-all flex items-center justify-center gap-3 disabled:opacity-50"
-          >
-            {isLoading ? 'CREANDO CUENTA...' : 'CREAR CUENTA'}
-            {!isLoading && <ArrowRight className="w-6 h-6" />}
-          </button>
->>>>>>> upstream/main
         </form>
 
         <div className="mt-12 text-center">
@@ -243,8 +144,8 @@ const Register = () => {
             </Link>
           </p>
         </div>
-      </motion.div>
-    </div>
+      </div>
+    </AuthSplitLayout>
   );
 };
 
