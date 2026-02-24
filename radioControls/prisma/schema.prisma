@@ -33,6 +33,13 @@ model User {
   name          String?
   companyName   String?
   role          Role           @default(CLIENT)
+  
+  // Verificación y Seguridad
+  isVerified           Boolean   @default(false)
+  verificationCode     String?
+  resetPasswordToken   String?
+  resetPasswordExpires DateTime?
+
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
 
@@ -58,6 +65,12 @@ model Branch {
   name        String
   slug        String   @unique // Para el link personalizado: dominio.com/player/slug
   status      String   @default("Offline")
+
+  plan                 PlanType?
+  subscriptionStatus   SubscriptionStatus?
+  stripeSubscriptionId String?  @unique
+  stripePriceId        String?
+  currentPeriodEnd     DateTime?
   
   // Relaciones
   ownerId     String

@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import LandingPage from './pages/LandingPage';
 import Services from './pages/Services';
@@ -10,17 +10,46 @@ import Contact from './pages/Contact';
 import Checkout from './pages/Checkout';
 import ClientPortal from './pages/ClientPortal';
 import Admin from './pages/Admin';
+import AudioInstallation from './pages/AudioInstallation';
 import BranchPlayer from './pages/BranchPlayer';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
+import AccessDenied from './pages/AccessDenied';
+import CheckoutSuccess from './pages/CheckoutSuccess';
 import { AppProviders } from './components/AppProviders';
 import Footer from './components/Footer';
+import { useAuth } from './components/AuthContext';
+
+const RequireAuth = ({ children }) => {
+  const { isAuthenticated } = useAuth();
+  const location = useLocation();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" state={{ redirectTo: location.pathname }} replace />;
+  }
+  return children;
+};
+
+const RequireRole = ({ roles, children }) => {
+  const { isAuthenticated, user } = useAuth();
+  const location = useLocation();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" state={{ redirectTo: location.pathname }} replace />;
+  }
+  if (roles && !roles.includes(user?.role)) {
+    return <Navigate to="/access-denied" state={{ from: location.pathname }} replace />;
+  }
+  return children;
+};
 
 const MainLayout = () => {
   const location = useLocation();
   const isPlayer = location.pathname.startsWith('/player/');
-  const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
-  const isDashboard = location.pathname === '/dashboard';
+  const isAuthPage = location.pathname === '/login' || location.pathname === '/register' || location.pathname === '/forgot-password' || location.pathname.startsWith('/reset-password');
+  const isDashboard = location.pathname === '/dashboard' || location.pathname === '/admin';
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -34,12 +63,17 @@ const MainLayout = () => {
           <Route path="/galeria" element={<Gallery />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/contacto" element={<Contact />} />
-          <Route path="/checkout/:planId" element={<Checkout />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/dashboard" element={<ClientPortal />} />
-          <Route path="/admin" element={<Admin />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
+          <Route path="/access-denied" element={<AccessDenied />} />
+          <Route path="/checkout/success" element={<RequireAuth><CheckoutSuccess /></RequireAuth>} />
+          <Route path="/dashboard" element={<RequireRole roles={['ADMIN', 'CLIENT', 'STAFF']}><ClientPortal /></RequireRole>} />
+          <Route path="/admin" element={<RequireRole roles={['ADMIN']}><Admin /></RequireRole>} />
+          <Route path="/checkout/:planId" element={<RequireAuth><Checkout /></RequireAuth>} />
           <Route path="/player/:branchSlug" element={<BranchPlayer />} />
+          <Route path="/instalacion-audio" element={<AudioInstallation />} />
           <Route path="*" element={<LandingPage />} />
         </Routes>
       </main>

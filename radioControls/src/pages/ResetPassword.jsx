@@ -1,32 +1,51 @@
 import React, { useState } from 'react';
-import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { Mail, Lock, ArrowRight, Radio, ArrowLeft } from 'lucide-react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Lock, ArrowRight, Radio, ArrowLeft } from 'lucide-react';
 import AuthSplitLayout from '../components/AuthSplitLayout';
-import { useAuth } from '../components/AuthContext';
 
-const Login = () => {
+const ResetPassword = () => {
+  const { token } = useParams();
   const navigate = useNavigate();
-  const location = useLocation();
-  const { login: authLogin } = useAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [status, setStatus] = useState('idle'); // idle, loading, success, error
   const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
     setError('');
-    
-    const result = await authLogin(email, password);
-    if (result.success) {
-      const role = result.user?.role;
-      const defaultPath = role === 'ADMIN' ? '/admin' : '/dashboard';
-      const redirectTo = location.state?.redirectTo || defaultPath;
-      navigate(redirectTo);
-    } else {
-      setError(result.message || 'No se pudo iniciar sesión');
-      setIsLoading(false);
+
+    if (newPassword.length < 8) {
+      setError('La contraseña debe tener al menos 8 caracteres');
+      setStatus('error');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setError('Las contraseñas no coinciden');
+      setStatus('error');
+      return;
+    }
+
+    setStatus('loading');
+    try {
+      const response = await fetch('/api/auth/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token, newPassword }),
+      });
+      if (!response.ok) {
+        const data = await response.json().catch(() => null);
+        setError(data?.message || 'No se pudo actualizar la contraseña');
+        setStatus('error');
+        return;
+      }
+      setStatus('success');
+      setTimeout(() => {
+        navigate('/login', { state: { message: 'Contraseña actualizada. Inicia sesión.' } });
+      }, 1200);
+    } catch (err) {
+      setError('Error de conexión con el servidor');
+      setStatus('error');
     }
   };
 
@@ -44,101 +63,90 @@ const Login = () => {
             <Radio className="h-10 w-10 text-neon-cyan animate-pulse" />
           </div>
           <h2 className="text-3xl font-black tracking-tighter text-white">
-            Bienvenido de Nuevo
+            Restablecer Contraseña
           </h2>
-          {location.state?.message && (
-            <p className="mt-2 text-neon-cyan font-bold text-sm bg-neon-cyan/10 p-2 rounded-lg">
-              {location.state.message}
-            </p>
-          )}
           <p className="mt-3 text-slate-400 font-medium">
-            ¿No tienes cuenta?{' '}
-            <Link to="/register" className="text-neon-cyan hover:text-white transition-colors">
-              Regístrate ahora
-            </Link>
+            Crea una nueva contraseña para tu cuenta.
           </p>
         </div>
 
         <form className="space-y-5" onSubmit={handleSubmit}>
-          {/* Email Input */}
           <div className="space-y-2">
-            <label htmlFor="email" className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Correo Electrónico</label>
-            <div className="relative group">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-4 transition-colors group-focus-within:text-neon-cyan">
-                <Mail className="h-5 w-5 text-slate-500 transition-colors" />
-              </div>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="tu@email.com"
-                className="w-full rounded-2xl bg-white/5 border-white/10 py-4 pl-12 pr-4 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:border-neon-cyan/50 transition-all duration-300"
-                required
-              />
-            </div>
-          </div>
-
-          {/* Password Input */}
-          <div className="space-y-2">
-            <div className="flex justify-between items-center ml-1">
-              <label htmlFor="password" className="text-xs font-bold uppercase tracking-widest text-slate-500">Contraseña</label>
-              <Link to="/forgot-password" size="sm" className="text-[10px] font-bold uppercase text-neon-cyan/60 hover:text-neon-cyan transition-colors">¿Olvidaste tu contraseña?</Link>
-            </div>
+            <label htmlFor="newPassword" className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Nueva Contraseña</label>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 flex items-center pl-4 transition-colors group-focus-within:text-neon-cyan">
                 <Lock className="h-5 w-5 text-slate-500 transition-colors" />
               </div>
               <input
-                id="password"
+                id="newPassword"
                 type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="Mínimo 8 caracteres"
                 className="w-full rounded-2xl bg-white/5 border-white/10 py-4 pl-12 pr-4 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:border-neon-cyan/50 transition-all duration-300"
                 required
               />
             </div>
           </div>
 
-          {error && (
+          <div className="space-y-2">
+            <label htmlFor="confirmPassword" className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Confirmar Contraseña</label>
+            <div className="relative group">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-4 transition-colors group-focus-within:text-neon-cyan">
+                <Lock className="h-5 w-5 text-slate-500 transition-colors" />
+              </div>
+              <input
+                id="confirmPassword"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Repite tu contraseña"
+                className="w-full rounded-2xl bg-white/5 border-white/10 py-4 pl-12 pr-4 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:border-neon-cyan/50 transition-all duration-300"
+                required
+              />
+            </div>
+          </div>
+
+          {status === 'success' && (
+            <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-3">
+              <p className="text-xs font-bold text-emerald-300 text-center">
+                Contraseña actualizada. Redirigiendo...
+              </p>
+            </div>
+          )}
+
+          {status === 'error' && (
             <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-3">
               <p className="text-xs font-bold text-red-400 text-center">{error}</p>
             </div>
           )}
 
-          {/* Botón Demo para pruebas rápidas */}
-          <div className="flex justify-center">
-            <button
-              type="button"
-              onClick={() => {
-                setEmail('demo@radiocontrols.mx');
-                setPassword('password123');
-              }}
-              className="text-[10px] font-black uppercase tracking-widest text-neon-cyan/40 hover:text-neon-cyan transition-colors"
-            >
-              [ Rellenar con cuenta Demo ]
-            </button>
-          </div>
-
-          {/* Submit Button */}
           <div className="pt-4">
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={status === 'loading'}
               className="relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-neon-cyan px-4 py-4 text-sm font-black text-slate-950 shadow-[0_0_20px_rgba(0,243,255,0.4)] transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed group"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/30 to-white/0 -translate-x-full group-hover:animate-shimmer" />
               <span className="relative">
-                {isLoading ? 'Verificando...' : 'Iniciar Sesión'}
+                {status === 'loading' ? 'Actualizando...' : 'Actualizar Contraseña'}
               </span>
-              {!isLoading && <ArrowRight className="h-5 w-5 relative" />}
+              {status !== 'loading' && <ArrowRight className="h-5 w-5 relative" />}
             </button>
           </div>
         </form>
+
+        <div className="mt-10 text-center">
+          <p className="text-gray-500 text-sm font-bold">
+            ¿Ya tienes acceso?{' '}
+            <Link to="/login" className="text-neon-cyan hover:text-white transition-colors">
+              Inicia sesión
+            </Link>
+          </p>
+        </div>
       </div>
     </AuthSplitLayout>
   );
 };
 
-export default Login;
+export default ResetPassword;

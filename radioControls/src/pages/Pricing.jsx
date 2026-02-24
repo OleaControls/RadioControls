@@ -1,19 +1,23 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, Zap, Star, ShieldCheck, ArrowRight, HelpCircle, TrendingUp, Info, Sparkles, Headphones } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { CheckCircle2, Zap, ArrowRight, HelpCircle, TrendingUp, Info, Headphones } from 'lucide-react';
 import WaveCursor from '../components/WaveCursor';
 import { useAuth } from '../components/AuthContext';
 
 const Pricing = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
-  
-  const handlePlanSelection = (planId) => {
+
+  const handlePlanSelection = (planId, isContact) => {
+    if (isContact) {
+      navigate('/contacto');
+      return;
+    }
+
     if (isAuthenticated) {
       navigate(`/checkout/${planId}`);
     } else {
-      // Redirigir a registro, pero guardando la intención de compra
       navigate('/register', { state: { redirectTo: `/checkout/${planId}` } });
     }
   };
@@ -21,96 +25,94 @@ const Pricing = () => {
   const plans = [
     {
       id: 'basico',
-      name: "Básico",
-      price: "539",
-      period: "/ mes",
-      description: "Ideal para sucursales individuales que buscan profesionalizar su ambiente.",
+      name: 'Basico',
+      price: '539',
+      period: '/ mes',
+      description: 'Ideal para sucursales individuales que buscan profesionalizar su ambiente.',
       features: [
-        "Acceso vía Link Sucursal",
-        "Ingeniería de Audio Base",
-        "Licencias AMPROFON",
-        "Soporte vía Ticket",
-        "Calidad Estándar"
+        'Acceso via Link Sucursal',
+        'Ingenieria de Audio Base',
+        'Licencias AMPROFON',
+        'Soporte via Ticket',
+        'Calidad Estandar'
       ],
-      cta: "EMPEZAR AHORA",
+      cta: 'EMPEZAR AHORA',
       highlight: false,
-      color: "from-slate-800 to-slate-900"
+      color: 'from-slate-800 to-slate-900'
     },
     {
       id: 'profesional',
-      name: "Profesional Anual",
-      price: "5,390",
-      period: "/ año",
-      description: "Nuestra solución más popular. Maximiza tus ventas con ingeniería avanzada.",
+      name: 'Profesional Anual',
+      price: '5,390',
+      period: '/ ano',
+      description: 'Nuestra solucion mas popular. Maximiza tus ventas con ingenieria avanzada.',
       features: [
-        "Todo lo del plan Mensual",
-        "1 Mes Gratis Incluido",
-        "Publicidad Personalizada",
-        "Prioridad Técnica 24/7",
-        "Calidad Ultra Premium",
-        "Instalación Preferente"
+        'Todo lo del plan Mensual',
+        '1 Mes Gratis Incluido',
+        'Publicidad Personalizada',
+        'Prioridad Tecnica 24/7',
+        'Calidad Ultra Premium',
+        'Instalacion Preferente'
       ],
-      cta: "CONTRATAR ANUAL",
+      cta: 'CONTRATAR ANUAL',
       highlight: true,
-      badge: "EL MÁS ELEGIDO",
-      color: "from-royal-blue to-royal-blue-dark"
+      badge: 'EL MAS ELEGIDO',
+      color: 'from-royal-blue to-royal-blue-dark'
     },
     {
       id: 'corporativo',
-      name: "Corporativo",
-      price: "Custom",
-      period: "",
-      description: "Para cadenas con más de 10 sucursales que requieren control total.",
+      name: 'Corporativo',
+      price: 'Custom',
+      period: '',
+      description: 'Para cadenas con mas de 10 sucursales que requieren control total.',
       features: [
-        "Todo lo del plan Profesional",
-        "Panel Multi-Cuentas Pro",
-        "API para Integraciones",
-        "Gerente de Cuenta Dedicado",
-        "Reportes de Audiencia Pro",
-        "SLA Garantizado"
+        'Todo lo del plan Profesional',
+        'Panel Multi-Cuentas Pro',
+        'API para Integraciones',
+        'Gerente de Cuenta Dedicado',
+        'Reportes de Audiencia Pro',
+        'SLA Garantizado'
       ],
-      cta: "CONTACTAR VENTAS",
+      cta: 'CONTACTAR VENTAS',
       highlight: false,
-      color: "from-purple-900/50 to-black"
+      color: 'from-purple-900/50 to-black',
+      isContact: true
     }
   ];
 
   return (
     <div className="pt-40 pb-24 px-4 min-h-screen bg-slate-950 text-white relative overflow-hidden">
       <WaveCursor />
-      
-      {/* Background Decor */}
+
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-neon-cyan/5 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-600/5 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto relative z-10">
-        {/* Header */}
         <div className="text-center mb-28">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-neon-cyan/10 border border-neon-cyan/20 text-neon-cyan text-xs font-black uppercase tracking-[0.3em] mb-8"
           >
-            <Zap className="w-4 h-4" /> Inversión en Experiencia
+            <Zap className="w-4 h-4" /> Inversion en Experiencia
           </motion.div>
-          <motion.h1 
+          <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-4xl md:text-6xl font-black mb-8 tracking-tight uppercase leading-tight"
           >
             Planes de <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan to-blue-500 italic pr-4">Alto Impacto</span>
           </motion.h1>
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
             className="text-lg md:text-2xl text-slate-400 max-w-3xl mx-auto font-medium leading-relaxed"
           >
-            Ingeniería de audio de élite con soporte técnico especializado 24/7 y resultados sonoros garantizados.
+            Ingenieria de audio de elite con soporte tecnico especializado 24/7 y resultados sonoros garantizados.
           </motion.p>
         </div>
 
-        {/* Pricing Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
           {plans.map((plan, i) => (
             <motion.div
@@ -127,16 +129,15 @@ const Pricing = () => {
                 </div>
               )}
               <div className={`rounded-[30px] p-8 h-full flex flex-col bg-gradient-to-b ${plan.color} backdrop-blur-xl relative overflow-hidden`}>
-
                 <div className="mb-6 relative z-10">
                   <h3 className="text-xl font-black text-white uppercase mb-1">{plan.name}</h3>
                   <div className="flex items-baseline gap-1">
-                    {plan.price !== "Custom" && <span className="text-lg font-bold text-gray-400">$</span>}
+                    {plan.price !== 'Custom' && <span className="text-lg font-bold text-gray-400">$</span>}
                     <span className="text-4xl md:text-5xl font-black text-white">{plan.price}</span>
                     <span className="text-gray-500 font-bold ml-1 text-sm">{plan.period}</span>
                   </div>
-                  {plan.period === "/ año" && (
-                    <p className="text-neon-cyan text-[10px] font-black mt-2 uppercase tracking-widest animate-pulse">¡1 Mes Gratis Incluido!</p>
+                  {plan.period === '/ ano' && (
+                    <p className="text-neon-cyan text-[10px] font-black mt-2 uppercase tracking-widest animate-pulse">1 Mes Gratis Incluido</p>
                   )}
                 </div>
 
@@ -153,13 +154,14 @@ const Pricing = () => {
                   ))}
                 </ul>
 
-                <button 
-                  onClick={() => handlePlanSelection(plan.id)}
+                <button
+                  onClick={() => handlePlanSelection(plan.id, plan.isContact)}
                   className={`w-full py-4 rounded-xl font-black text-sm transition-all flex items-center justify-center gap-2 group relative z-10 uppercase tracking-widest ${
-                  plan.highlight 
-                  ? 'bg-neon-cyan text-slate-950 hover:shadow-[0_0_30px_rgba(0,243,255,0.5)]' 
-                  : 'bg-white/5 border border-white/10 text-white hover:bg-white hover:text-slate-950'
-                }`}>
+                    plan.highlight
+                      ? 'bg-neon-cyan text-slate-950 hover:shadow-[0_0_30px_rgba(0,243,255,0.5)]'
+                      : 'bg-white/5 border border-white/10 text-white hover:bg-white hover:text-slate-950'
+                  }`}
+                >
                   {plan.cta}
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </button>
@@ -168,8 +170,7 @@ const Pricing = () => {
           ))}
         </div>
 
-        {/* Guarantee Banner */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -177,30 +178,31 @@ const Pricing = () => {
         >
           <div className="bg-slate-900/60 backdrop-blur-3xl rounded-[59px] p-12 md:p-20 relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-96 h-96 bg-neon-cyan/5 rounded-full blur-[100px] -mr-48 -mt-48 transition-all group-hover:bg-neon-cyan/10" />
-            
+
             <div className="flex flex-col md:flex-row items-center gap-16 relative z-10">
-            <div className="w-40 h-40 bg-slate-950 rounded-[48px] flex items-center justify-center shrink-0 border border-white/5 shadow-2xl">
+              <div className="w-40 h-40 bg-slate-950 rounded-[48px] flex items-center justify-center shrink-0 border border-white/5 shadow-2xl">
                 <Headphones className="w-20 h-20 text-neon-cyan group-hover:scale-110 transition-transform duration-700" />
               </div>
               <div>
-                <h2 className="text-4xl md:text-6xl font-black text-white mb-6 uppercase tracking-tighter leading-none">Soporte <span className="text-neon-cyan italic">Elite 24/7</span></h2>
+                <h2 className="text-4xl md:text-6xl font-black text-white mb-6 uppercase tracking-tighter leading-none">
+                  Soporte <span className="text-neon-cyan italic">Elite 24/7</span>
+                </h2>
                 <p className="text-xl md:text-2xl text-slate-400 leading-relaxed font-medium">
-                  Nuestro equipo de ingenieros de audio monitorea tu señal en tiempo real para garantizar que tu marca nunca deje de sonar. Atención prioritaria inmediata.
+                  Nuestro equipo de ingenieros de audio monitorea tu senal en tiempo real para garantizar que tu marca nunca deje de sonar.
                 </p>
               </div>
             </div>
           </div>
         </motion.div>
 
-        {/* Links */}
         <div className="mt-28 flex flex-wrap justify-center gap-12 border-t border-white/5 pt-16">
           <div className="flex items-center gap-3 text-slate-500 group cursor-pointer hover:text-white transition-all">
             <TrendingUp className="w-6 h-6 text-neon-cyan" />
-            <span className="text-xs font-black uppercase tracking-[0.3em]">Casos de Éxito</span>
+            <span className="text-xs font-black uppercase tracking-[0.3em]">Casos de Exito</span>
           </div>
           <div className="flex items-center gap-3 text-slate-500 group cursor-pointer hover:text-white transition-all">
             <Info className="w-6 h-6 text-neon-cyan" />
-            <span className="text-xs font-black uppercase tracking-[0.3em]">Auditoría Sonora</span>
+            <span className="text-xs font-black uppercase tracking-[0.3em]">Auditoria Sonora</span>
           </div>
           <div className="flex items-center gap-3 text-slate-500 group cursor-pointer hover:text-white transition-all">
             <HelpCircle className="w-6 h-6 text-neon-cyan" />

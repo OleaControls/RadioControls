@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Radio, Menu, X, Search, User, ChevronRight, Headphones, LogOut } from 'lucide-react';
+import { Radio, Menu, X, ChevronRight, LogOut, User, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ThemeToggle from './ThemeToggle';
 import { useAuth } from './AuthContext';
@@ -8,20 +8,30 @@ import { useAuth } from './AuthContext';
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
   const { user, isAuthenticated, logout } = useAuth();
 
   const firstName = user?.name ? user.name.split(' ')[0] : 'Cliente';
+  const dashboardPath = user?.role === 'ADMIN' ? '/admin' : '/dashboard';
 
   const links = [
     { name: 'Inicio', path: '/' },
-    { name: 'Servicios', path: '/servicios' },
+    { 
+      name: 'Servicios', 
+      path: '/servicios',
+      sublinks: [
+        { name: 'Instalación de Audio', path: '/instalacion-audio' },
+      ] 
+    },
     { name: 'Planes', path: '/planes' },
     { name: 'Galería', path: '/galeria' },
     { name: 'FAQ', path: '/faq' },
     { name: 'Contacto', path: '/contacto' },
   ];
+
+  const [openMobileDropdown, setOpenMobileDropdown] = useState(null);
 
   useEffect(() => {
     setIsOpen(false);
@@ -35,6 +45,14 @@ const Navbar = () => {
   const handleNavigateAndClose = (path) => {
     navigate(path);
     setIsOpen(false);
+  };
+
+  const handleMobileDropdown = (linkName) => {
+    if (openMobileDropdown === linkName) {
+      setOpenMobileDropdown(null);
+    } else {
+      setOpenMobileDropdown(linkName);
+    }
   };
 
   return (
@@ -62,21 +80,48 @@ const Navbar = () => {
 
           <div className="hidden lg:flex items-center space-x-1">
             {links.map((link) => (
-              <Link
+              <div 
                 key={link.name}
-                to={link.path}
-                className={`relative px-4 py-2 text-sm font-black uppercase tracking-widest transition-all hover:text-light-accent dark:hover:text-dark-accent group ${
-                  location.pathname === link.path ? 'text-light-accent dark:text-dark-accent' : 'text-gray-500 dark:text-gray-300'
-                }`}
+                className="relative"
+                onMouseEnter={() => link.sublinks && setOpenDropdown(link.name)}
+                onMouseLeave={() => link.sublinks && setOpenDropdown(null)}
               >
-                <span className="relative z-10">{link.name}</span>
-                {location.pathname === link.path && (
-                  <motion.div 
-                    layoutId="nav-glow"
-                    className="absolute inset-0 bg-light-accent/5 dark:bg-dark-accent/5 rounded-lg border-b-2 border-light-accent/50 dark:border-dark-accent/50"
-                  />
-                )}
-              </Link>
+                <Link
+                  to={link.path}
+                  className={`relative px-4 py-2 text-sm font-black uppercase tracking-widest transition-all hover:text-light-accent dark:hover:text-dark-accent group flex items-center gap-1 ${
+                    location.pathname === link.path || openDropdown === link.name ? 'text-light-accent dark:text-dark-accent' : 'text-gray-500 dark:text-gray-300'
+                  }`}
+                >
+                  <span className="relative z-10">{link.name}</span>
+                  {link.sublinks && <ChevronDown size={16} className="transition-transform duration-200" style={{ transform: openDropdown === link.name ? 'rotate(180deg)' : 'rotate(0deg)' }} />}
+                  {location.pathname === link.path && (
+                    <motion.div 
+                      layoutId="nav-glow"
+                      className="absolute inset-0 bg-light-accent/5 dark:bg-dark-accent/5 rounded-lg border-b-2 border-light-accent/50 dark:border-dark-accent/50"
+                    />
+                  )}
+                </Link>
+                <AnimatePresence>
+                  {link.sublinks && openDropdown === link.name && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-max bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden"
+                    >
+                      {link.sublinks.map(sublink => (
+                        <Link
+                          key={sublink.name}
+                          to={sublink.path}
+                          className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                        >
+                          {sublink.name}
+                        </Link>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             ))}
           </div>
 
@@ -91,7 +136,7 @@ const Navbar = () => {
                   <LogOut className="w-5 h-5" />
                 </button>
                 <button 
-                  onClick={() => navigate('/dashboard')}
+                  onClick={() => navigate(dashboardPath)}
                   className="flex items-center gap-2 bg-light-accent dark:bg-dark-accent text-white dark:text-dark-background px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest hover:shadow-[0_0_20px_rgba(0,35,102,0.4)] dark:hover:shadow-[0_0_20px_rgba(0,243,255,0.4)] hover:scale-105 transition-all"
                 >
                   <User className="w-4 h-4" />
@@ -108,6 +153,7 @@ const Navbar = () => {
               </button>
             )}
           </div>
+
 
           {/* Mobile Menu & Action Buttons */}
           <div className="lg:hidden flex items-center gap-2 relative z-[110] shrink-0">
@@ -148,18 +194,54 @@ const Navbar = () => {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.1 }}
                   >
-                    <Link
-                      to={link.path}
-                      onClick={() => setIsOpen(false)}
-                      className={`flex items-center justify-between p-4 rounded-2xl text-xl font-black uppercase tracking-tighter transition-all ${
-                        location.pathname === link.path 
-                          ? 'bg-light-accent dark:bg-dark-accent text-white dark:text-dark-background' 
-                          : 'text-light-text dark:text-white hover:bg-black/5 dark:hover:bg-white/5'
-                      }`}
-                    >
-                      {link.name}
-                      <ChevronRight size={20} className={location.pathname === link.path ? 'opacity-100' : 'opacity-20'} />
-                    </Link>
+                    <div className="flex items-center justify-between w-full">
+                      <Link
+                        to={link.path}
+                        onClick={() => setIsOpen(false)}
+                        className={`flex-grow p-4 rounded-l-2xl text-xl font-black uppercase tracking-tighter transition-all ${
+                          location.pathname === link.path 
+                            ? 'bg-light-accent dark:bg-dark-accent text-white dark:text-dark-background' 
+                            : 'text-light-text dark:text-white hover:bg-black/5 dark:hover:bg-white/5'
+                        }`}
+                      >
+                        {link.name}
+                      </Link>
+                      {link.sublinks && (
+                        <button
+                          onClick={() => handleMobileDropdown(link.name)}
+                          className={`p-4 rounded-r-2xl transition-all ${
+                            openMobileDropdown === link.name
+                              ? 'bg-light-accent dark:bg-dark-accent text-white dark:text-dark-background'
+                              : 'bg-black/5 dark:bg-white/5 text-light-text dark:text-white'
+                          }`}
+                        >
+                          <ChevronDown size={20} className="transition-transform duration-200" style={{ transform: openMobileDropdown === link.name ? 'rotate(180deg)' : 'rotate(0deg)' }} />
+                        </button>
+                      )}
+                    </div>
+                    <AnimatePresence>
+                      {link.sublinks && openMobileDropdown === link.name && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          className="overflow-hidden"
+                        >
+                          <div className="pl-4 pt-2 space-y-2">
+                            {link.sublinks.map(sublink => (
+                              <Link
+                                key={sublink.name}
+                                to={sublink.path}
+                                onClick={() => setIsOpen(false)}
+                                className="block p-3 rounded-lg text-lg font-bold uppercase tracking-tighter text-gray-500 dark:text-gray-400 hover:bg-black/5 dark:hover:bg-white/5"
+                              >
+                                {sublink.name}
+                              </Link>
+                            ))}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </motion.div>
                 ))}
               </div>
@@ -168,7 +250,7 @@ const Navbar = () => {
                 {isAuthenticated ? (
                   <>
                     <button 
-                      onClick={() => handleNavigateAndClose('/dashboard')}
+                      onClick={() => handleNavigateAndClose(dashboardPath)}
                       className="w-full bg-light-accent dark:bg-dark-accent text-white dark:text-dark-background py-5 rounded-2xl font-black uppercase tracking-[0.2em] text-sm shadow-xl"
                     >
                       HOLA, {firstName}

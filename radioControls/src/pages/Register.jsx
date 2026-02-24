@@ -20,18 +20,25 @@ const Register = () => {
     setIsLoading(true);
     setError('');
 
-    // Registro Local
-    const result = authRegister({ name, email, password });
-    
-    setTimeout(() => {
+    try {
+      const result = await authRegister({ name, email, password });
+
       if (result.success) {
         const redirectTo = location.state?.redirectTo;
-        navigate('/login', { state: { redirectTo, message: '¡Cuenta creada localmente! Inicia sesión para continuar.' } });
+        navigate('/login', { 
+          state: { 
+            redirectTo, 
+            message: '¡Cuenta creada! Por favor, revisa tu correo para obtener tu código de verificación de 6 dígitos.' 
+          } 
+        });
       } else {
-        setError(result.message);
-        setIsLoading(false);
+        setError(result.message || 'Error al crear la cuenta');
       }
-    }, 800);
+    } catch (err) {
+      setError('Error de conexión con el servidor');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

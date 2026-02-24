@@ -4,70 +4,87 @@ const AuthContext = createContext(null);
 
 export const useAuth = () => useContext(AuthContext);
 
-// Datos iniciales de prueba (puedes editarlos aquí mismo)
-const DEFAULT_USERS = [
-  {
-    id: 'demo-1',
-    name: 'Admin Demo',
-    email: 'demo@radiocontrols.mx',
-    password: 'password123',
-    role: 'ADMIN'
+const API_BASE = '/api';
+
+const safeJson = async (response) => {
+  try {
+    return await response.json();
+  } catch {
+    return null;
   }
-];
+};
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
-  const [localUsers, setLocalUsers] = useState(() => {
-    const saved = localStorage.getItem('local_db_users');
-    return saved ? JSON.parse(saved) : DEFAULT_USERS;
-  });
-
-  // Persistir usuarios locales
-  useEffect(() => {
-    localStorage.setItem('local_db_users', JSON.stringify(localUsers));
-  }, [localUsers]);
 
   // Cargar sesión al iniciar
   useEffect(() => {
     const storedUser = localStorage.getItem('active_user');
+    const storedToken = localStorage.getItem('auth_token');
     if (storedUser) {
       const parsed = JSON.parse(storedUser);
       setUser(parsed);
-      setToken('mock-jwt-token-' + parsed.id);
+    }
+    if (storedToken) {
+      setToken(storedToken);
     }
   }, []);
 
-  // Función de Login Local
-  const login = (email, password) => {
-    const foundUser = localUsers.find(u => u.email === email && u.password === password);
-    if (foundUser) {
-      const { password: _, ...userWithoutPassword } = foundUser;
-      setUser(userWithoutPassword);
-      setToken('mock-jwt-token-' + foundUser.id);
-      localStorage.setItem('active_user', JSON.stringify(userWithoutPassword));
-      return { success: true };
-    }
-    return { success: false, message: 'Credenciales incorrectas' };
+  const persistSession = (nextUser, nextToken) => {
+    setUser(nextUser);
+    setToken(nextToken);
+    localStorage.setItem('active_user', JSON.stringify(nextUser));
+    localStorage.setItem('auth_token', nextToken);
   };
 
-  // Función de Registro Local
-  const register = (userData) => {
-    const exists = localUsers.find(u => u.email === userData.email);
-    if (exists) return { success: false, message: 'El correo ya está registrado' };
-    
-    const newUser = {
-      ...userData,
-      id: 'user-' + Math.random().toString(36).substr(2, 9),
-      role: 'CLIENT'
-    };
-    
-    setLocalUsers(prev => [...prev, newUser]);
-    return { success: true };
+  const login = async (email, password) => {
+    try {
+      const response = await fetch(`${API_BASE}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await safeJson(response);
+      if (!response.ok) {
+        return { success: false, message: data?.message || 'No se pudo iniciar sesión' };
+      }
+
+      persistSession(data.user, data.token);
+      return { success: true, user: data.user, token: data.token };
+    } catch {
+      return { success: false, message: 'No se pudo conectar con el servidor' };
+    }
+  };
+
+  const register = async (userData) => {
+    try {
+      const response = await fetch(`${API_BASE}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData),
+      });
+
+      const data = await safeJson(response);
+      if (!response.ok) {
+        return { success: false, message: data?.message || 'No se pudo crear la cuenta' };
+      }
+
+      return { success: true, user: data };
+    } catch {
+      return { success: false, message: 'No se pudo conectar con el servidor' };
+    }
+  };
+
+  const updateUser = (nextUser) => {
+    setUser(nextUser);
+    localStorage.setItem('active_user', JSON.stringify(nextUser));
   };
 
   const logout = () => {
     localStorage.removeItem('active_user');
+    localStorage.removeItem('auth_token');
     setUser(null);
     setToken(null);
   };
@@ -77,6 +94,7 @@ export const AuthProvider = ({ children }) => {
     token,
     login,
     register,
+    updateUser,
     logout,
     isAuthenticated: !!user,
   };

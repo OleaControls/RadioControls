@@ -1,118 +1,321 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { ShieldCheck, Link2, Monitor, Activity, Settings, Plus, Globe, Key } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  ShieldCheck, Activity, Server, Users, Radio, Link2, Settings,
+  AlertTriangle, CheckCircle2, Wrench, Plus, Cpu, Network,
+  BarChart3, Eye, Globe, LogOut
+} from 'lucide-react';
+import { useAuth } from '../components/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const Admin = () => {
-  const [terminals, setTerminals] = useState([
-    { id: 1, store: 'Coppel - Sucursal 045', url: 'https://stream.radiocontrols.com/coppel_045', status: 'Activo', lastPing: 'Hace 5s' },
-    { id: 2, store: 'Puma - Centro Histórico', url: 'https://stream.radiocontrols.com/puma_ch', status: 'Activo', lastPing: 'Hace 12s' },
-    { id: 3, store: 'Sears - Santa Fe', url: 'https://stream.radiocontrols.com/sears_sf', status: 'Inactivo', lastPing: 'Hace 2h' },
-  ]);
+  const [activeTab, setActiveTab] = useState('overview');
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const tabs = useMemo(() => ([
+    { id: 'overview', label: 'Resumen', icon: <BarChart3 className="w-5 h-5" /> },
+    { id: 'streams', label: 'Streams', icon: <Radio className="w-5 h-5" /> },
+    { id: 'users', label: 'Usuarios', icon: <Users className="w-5 h-5" /> },
+    { id: 'incidents', label: 'Incidentes', icon: <AlertTriangle className="w-5 h-5" /> },
+    { id: 'settings', label: 'Sistema', icon: <Settings className="w-5 h-5" /> },
+  ]), []);
+
+  const stats = [
+    { label: 'Sucursales Activas', value: '214', trend: '+8%', icon: <Radio className="text-neon-cyan" /> },
+    { label: 'Streams Saludables', value: '97%', trend: 'Estable', icon: <Activity className="text-neon-green" /> },
+    { label: 'Clientes Activos', value: '64', trend: '+4', icon: <Users className="text-neon-purple" /> },
+    { label: 'Alertas Criticas', value: '2', trend: '-1', icon: <AlertTriangle className="text-amber-400" /> },
+  ];
+
+  const streams = [
+    { id: 'STR-204', name: 'Hotel Polanco', station: 'Ambient Luxe', status: 'Ok', latency: '38ms' },
+    { id: 'STR-188', name: 'Puma Centro', station: 'Urban Pulse', status: 'Degraded', latency: '210ms' },
+    { id: 'STR-102', name: 'Coppel Norte', station: 'Retail Pop', status: 'Ok', latency: '42ms' },
+  ];
+
+  const users = [
+    { id: 'USR-11', name: 'Grupo Loma', role: 'CLIENT', plan: 'Anual', status: 'Activo' },
+    { id: 'USR-04', name: 'Olea Retail', role: 'CLIENT', plan: 'Mensual', status: 'Activo' },
+    { id: 'USR-01', name: 'Admin Demo', role: 'ADMIN', plan: '-', status: 'Activo' },
+  ];
+
+  const incidents = [
+    { id: 'INC-12', title: 'Corte de stream en Zona Norte', level: 'Alta', time: 'Hace 9m' },
+    { id: 'INC-09', title: 'Latencia elevada en CDN', level: 'Media', time: 'Hace 45m' },
+  ];
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   return (
-    <div className="pt-32 pb-20 px-4 max-w-7xl mx-auto">
-      <div className="mb-12">
-        <h1 className="text-4xl md:text-6xl font-black mb-6 uppercase tracking-tighter">
-          <ShieldCheck className="inline-block w-10 h-10 md:w-14 md:h-14 text-neon-cyan mr-4 mb-2" />
-          Terminales
-        </h1>
-        <p className="text-lg md:text-xl text-gray-400 max-w-2xl">Asigna y gestiona las URLs de streaming para cada punto de venta.</p>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Listado de Conexiones */}
-        <div className="lg:col-span-2">
-          <div className="bg-gray-900/50 border border-gray-800 rounded-3xl overflow-hidden backdrop-blur-md">
-            <div className="p-6 border-b border-gray-800 flex justify-between items-center bg-gray-800/20">
-              <h2 className="font-bold text-white flex items-center gap-2">
-                <Monitor className="w-5 h-5 text-cyan-400" /> Terminales en Línea
-              </h2>
-              <button className="text-xs bg-cyan-600 hover:bg-cyan-500 text-white px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1">
-                <Plus className="w-3 h-3" /> Nueva Terminal
-              </button>
+    <div className="min-h-screen bg-slate-950 text-white">
+      <div className="flex">
+        <aside className="w-72 bg-slate-900/50 border-r border-white/5 p-8 hidden lg:flex flex-col sticky top-0 h-screen">
+          <div className="flex items-center gap-3 mb-10">
+            <div className="w-12 h-12 bg-neon-cyan rounded-2xl flex items-center justify-center text-slate-950 shadow-[0_0_30px_rgba(0,243,255,0.3)]">
+              <ShieldCheck className="w-6 h-6" />
             </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-left">
-                <thead className="text-xs uppercase text-gray-500 bg-black/30">
-                  <tr>
-                    <th className="px-6 py-4">Punto de Venta</th>
-                    <th className="px-6 py-4">URL de Conexión</th>
-                    <th className="px-6 py-4">Estado</th>
-                    <th className="px-6 py-4 text-right">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-800">
-                  {terminals.map((t) => (
-                    <tr key={t.id} className="hover:bg-white/5 transition-colors">
-                      <td className="px-6 py-4 font-medium text-white">{t.store}</td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2 group">
-                          <code className="text-xs text-cyan-400 bg-cyan-950/30 px-2 py-1 rounded border border-cyan-900/50">{t.url}</code>
-                          <Link2 className="w-3 h-3 text-gray-600 group-hover:text-cyan-400 cursor-pointer" />
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-1.5">
-                          <div className={`w-1.5 h-1.5 rounded-full ${t.status === 'Activo' ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' : 'bg-red-500'}`} />
-                          <span className={`text-xs ${t.status === 'Activo' ? 'text-green-400' : 'text-red-400'}`}>{t.status}</span>
-                        </div>
-                        <p className="text-[10px] text-gray-600">{t.lastPing}</p>
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <button className="text-gray-500 hover:text-white transition-colors"><Settings className="w-4 h-4" /></button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div>
+              <span className="font-black text-xl tracking-tighter uppercase leading-none">Admin</span>
+              <span className="block text-[10px] font-black text-neon-cyan/60 tracking-[0.3em] uppercase mt-1">Control</span>
             </div>
           </div>
-        </div>
 
-        {/* Sidebar: Seguridad y Monitor */}
-        <div className="space-y-6">
-          <div className="bg-gray-900/50 border border-gray-800 p-8 rounded-3xl backdrop-blur-md">
-            <h3 className="text-white font-bold mb-6 flex items-center gap-2">
-                <Key className="w-5 h-5 text-yellow-500" /> Token de Acceso
-            </h3>
-            <p className="text-gray-400 text-sm mb-4">Usa este token para autorizar nuevos receptores en tienda.</p>
-            <div className="bg-black p-4 rounded-xl border border-gray-800 font-mono text-xs text-yellow-500/80 mb-4 break-all">
-              RC_PRO_8829_XQ_2026_POLANCO
+          <div className="mb-8">
+            <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] mb-2 ml-2">Sesion</p>
+            <div className="bg-slate-950/60 border border-white/5 rounded-2xl p-4">
+              <p className="text-sm font-black uppercase tracking-tighter">{user?.name || 'Administrador'}</p>
+              <p className="text-[10px] text-slate-500 uppercase tracking-widest">{user?.email || 'admin@radiocontrols.mx'}</p>
+              <span className="inline-flex mt-3 px-2 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-neon-cyan/10 text-neon-cyan">
+                {user?.role || 'ADMIN'}
+              </span>
             </div>
-            <button className="w-full py-2.5 bg-gray-800 hover:bg-gray-700 text-white rounded-xl text-xs font-bold transition-all border border-gray-700">
-              Regenerar Token
+          </div>
+
+          <nav className="flex-grow space-y-3">
+            <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] mb-4 ml-4">Panel</p>
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-300 ${activeTab === tab.id ? 'bg-neon-cyan text-slate-950 shadow-xl' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}
+              >
+                {tab.icon}
+                <span className="font-bold text-sm uppercase tracking-widest">{tab.label}</span>
+              </button>
+            ))}
+          </nav>
+
+          <div className="pt-8 border-t border-white/5">
+            <button className="w-full flex items-center gap-4 px-5 py-4 text-slate-300 hover:bg-white/5 rounded-2xl transition-all font-bold text-sm uppercase tracking-widest">
+              <Wrench className="w-5 h-5" /> Mantenimiento
+            </button>
+            <button onClick={handleLogout} className="mt-3 w-full flex items-center gap-4 px-5 py-4 text-red-400 hover:bg-red-500/10 rounded-2xl transition-all font-bold text-sm uppercase tracking-widest">
+              <LogOut className="w-5 h-5" /> Salir
             </button>
           </div>
+        </aside>
 
-          <div className="bg-gradient-to-br from-cyan-950/20 to-purple-950/20 border border-cyan-900/30 p-8 rounded-3xl">
-            <h3 className="text-white font-bold mb-4 flex items-center gap-2">
-                <Activity className="w-5 h-5 text-cyan-400" /> Tráfico de Red
-            </h3>
-            <div className="space-y-6">
-                <div className="flex justify-between items-end h-12 gap-1">
-                    {[40, 70, 45, 90, 65, 80, 40, 60, 85, 50].map((h, i) => (
-                        <motion.div 
-                            key={i}
-                            initial={{ height: 0 }}
-                            animate={{ height: `${h}%` }}
-                            transition={{ repeat: Infinity, duration: 1, delay: i * 0.1, repeatType: 'reverse' }}
-                            className="w-full bg-cyan-500/40 rounded-t-sm"
-                        />
-                    ))}
-                </div>
-                <div className="grid grid-cols-2 gap-4 text-center">
-                    <div className="p-2 bg-black/40 rounded-lg">
-                        <p className="text-[10px] text-gray-500 uppercase">Bitrate</p>
-                        <p className="text-sm font-bold text-white">320 kbps</p>
-                    </div>
-                    <div className="p-2 bg-black/40 rounded-lg">
-                        <p className="text-[10px] text-gray-500 uppercase">Latency</p>
-                        <p className="text-sm font-bold text-white">45ms</p>
-                    </div>
-                </div>
+        <main className="flex-grow p-6 lg:p-12">
+          <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-12">
+            <motion.div initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }}>
+              <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter mb-2">Panel Admin</h1>
+              <p className="text-slate-500 font-medium">Control total de streams, clientes y operacion.</p>
+            </motion.div>
+            <div className="flex gap-3">
+              <button className="bg-white/5 border border-white/10 px-5 py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-white/10">Ver Logs</button>
+              <button className="bg-neon-cyan text-slate-950 px-5 py-3 rounded-2xl text-xs font-black uppercase tracking-widest flex items-center gap-2 hover:shadow-[0_0_25px_rgba(0,243,255,0.4)]">
+                <Plus className="w-4 h-4" /> Nuevo Cliente
+              </button>
             </div>
+          </header>
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+            {stats.map((st, i) => (
+              <div key={i} className="bg-slate-900/40 border border-white/5 p-6 rounded-[28px] backdrop-blur-xl">
+                <div className="flex justify-between items-start mb-4">
+                  <div className="p-3 bg-slate-950 rounded-xl border border-white/5">{st.icon}</div>
+                  <span className="text-[10px] font-black text-neon-cyan bg-neon-cyan/10 px-2 py-1 rounded-lg uppercase tracking-widest">{st.trend}</span>
+                </div>
+                <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] mb-1">{st.label}</p>
+                <p className="text-3xl font-black text-white">{st.value}</p>
+              </div>
+            ))}
           </div>
-        </div>
+
+          <AnimatePresence mode="wait">
+            {activeTab === 'overview' && (
+              <motion.div key="overview" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+                <div className="xl:col-span-2 space-y-8">
+                  <div className="bg-slate-900/40 border border-white/5 rounded-[32px] p-8">
+                    <h3 className="text-xl font-black uppercase tracking-tighter mb-6 flex items-center gap-3">
+                      <Network className="w-6 h-6 text-neon-cyan" /> Salud de Red
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="bg-slate-950 border border-white/5 p-5 rounded-2xl">
+                        <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">CDN</p>
+                        <p className="text-2xl font-black text-white">Estable</p>
+                        <p className="text-slate-500 text-xs">Perdida 0.2%</p>
+                      </div>
+                      <div className="bg-slate-950 border border-white/5 p-5 rounded-2xl">
+                        <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Latencia</p>
+                        <p className="text-2xl font-black text-white">42ms</p>
+                        <p className="text-slate-500 text-xs">Promedio global</p>
+                      </div>
+                      <div className="bg-slate-950 border border-white/5 p-5 rounded-2xl">
+                        <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Uptime</p>
+                        <p className="text-2xl font-black text-white">99.96%</p>
+                        <p className="text-slate-500 text-xs">Ultimos 30 dias</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-slate-900/40 border border-white/5 rounded-[32px] p-8">
+                    <h3 className="text-xl font-black uppercase tracking-tighter mb-6 flex items-center gap-3">
+                      <Server className="w-6 h-6 text-neon-cyan" /> Streams Recientes
+                    </h3>
+                    <div className="space-y-4">
+                      {streams.map((s) => (
+                        <div key={s.id} className="flex items-center justify-between p-4 bg-slate-950/60 border border-white/5 rounded-2xl">
+                          <div>
+                            <p className="font-black uppercase tracking-tighter">{s.name}</p>
+                            <p className="text-xs text-slate-500 uppercase tracking-widest">{s.station}</p>
+                          </div>
+                          <div className="flex items-center gap-6">
+                            <span className="text-xs text-slate-400">{s.latency}</span>
+                            <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-full ${s.status === 'Ok' ? 'bg-emerald-500/10 text-emerald-300' : 'bg-amber-500/10 text-amber-300'}`}>
+                              {s.status}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-8">
+                  <div className="bg-slate-900/40 border border-white/5 rounded-[32px] p-8">
+                    <h3 className="text-xl font-black uppercase tracking-tighter mb-6 flex items-center gap-3">
+                      <Cpu className="w-6 h-6 text-neon-purple" /> Capacidad
+                    </h3>
+                    <div className="space-y-4">
+                      {[['CPU', '62%'], ['RAM', '71%'], ['Storage', '48%']].map((item) => (
+                        <div key={item[0]}>
+                          <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">
+                            <span>{item[0]}</span>
+                            <span className="text-neon-cyan">{item[1]}</span>
+                          </div>
+                          <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+                            <div className="h-full bg-neon-cyan" style={{ width: item[1] }} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="bg-gradient-to-br from-cyan-950/20 to-purple-950/20 border border-cyan-900/30 p-8 rounded-[32px]">
+                    <h3 className="text-xl font-black uppercase tracking-tighter mb-6 flex items-center gap-3">
+                      <Globe className="w-6 h-6 text-neon-cyan" /> Regiones
+                    </h3>
+                    <div className="space-y-3 text-sm text-slate-400">
+                      <div className="flex justify-between"><span>MX-CDMX</span><span className="text-emerald-300">OK</span></div>
+                      <div className="flex justify-between"><span>MX-NL</span><span className="text-emerald-300">OK</span></div>
+                      <div className="flex justify-between"><span>US-TX</span><span className="text-amber-300">Degraded</span></div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {activeTab === 'streams' && (
+              <motion.div key="streams" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}>
+                <div className="bg-slate-900/40 border border-white/5 rounded-[32px] p-8">
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-xl font-black uppercase tracking-tighter flex items-center gap-3">
+                      <Radio className="w-6 h-6 text-neon-cyan" /> Gestion de Streams
+                    </h3>
+                    <button className="bg-neon-cyan text-slate-950 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest">Agregar</button>
+                  </div>
+                  <div className="space-y-4">
+                    {streams.map((s) => (
+                      <div key={s.id} className="flex items-center justify-between p-4 bg-slate-950/60 border border-white/5 rounded-2xl">
+                        <div>
+                          <p className="font-black uppercase tracking-tighter">{s.name}</p>
+                          <p className="text-xs text-slate-500 uppercase tracking-widest">{s.station}</p>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <button className="bg-white/5 border border-white/10 px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
+                            <Eye className="w-3 h-3" /> Ver
+                          </button>
+                          <button className="bg-white/5 border border-white/10 px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
+                            <Link2 className="w-3 h-3" /> Copiar
+                          </button>
+                          <button className="bg-white/5 border border-white/10 px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
+                            <Settings className="w-3 h-3" /> Ajustar
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {activeTab === 'users' && (
+              <motion.div key="users" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}>
+                <div className="bg-slate-900/40 border border-white/5 rounded-[32px] p-8">
+                  <h3 className="text-xl font-black uppercase tracking-tighter mb-6 flex items-center gap-3">
+                    <Users className="w-6 h-6 text-neon-cyan" /> Clientes y Roles
+                  </h3>
+                  <div className="space-y-4">
+                    {users.map((u) => (
+                      <div key={u.id} className="flex items-center justify-between p-4 bg-slate-950/60 border border-white/5 rounded-2xl">
+                        <div>
+                          <p className="font-black uppercase tracking-tighter">{u.name}</p>
+                          <p className="text-xs text-slate-500 uppercase tracking-widest">{u.role} - {u.plan}</p>
+                        </div>
+                        <span className="text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-300">{u.status}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {activeTab === 'incidents' && (
+              <motion.div key="incidents" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}>
+                <div className="bg-slate-900/40 border border-white/5 rounded-[32px] p-8">
+                  <h3 className="text-xl font-black uppercase tracking-tighter mb-6 flex items-center gap-3">
+                    <AlertTriangle className="w-6 h-6 text-amber-400" /> Alertas Activas
+                  </h3>
+                  <div className="space-y-4">
+                    {incidents.map((inc) => (
+                      <div key={inc.id} className="flex items-center justify-between p-4 bg-slate-950/60 border border-white/5 rounded-2xl">
+                        <div>
+                          <p className="font-black uppercase tracking-tighter">{inc.title}</p>
+                          <p className="text-xs text-slate-500 uppercase tracking-widest">{inc.time}</p>
+                        </div>
+                        <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full ${inc.level === 'Alta' ? 'bg-red-500/10 text-red-300' : 'bg-amber-500/10 text-amber-300'}`}>
+                          {inc.level}
+                        </span>
+                      </div>
+                    ))}
+                    <div className="flex items-center gap-3 text-emerald-300 text-xs font-bold uppercase tracking-widest">
+                      <CheckCircle2 className="w-4 h-4" /> Sin alertas adicionales
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {activeTab === 'settings' && (
+              <motion.div key="settings" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="bg-slate-900/40 border border-white/5 rounded-[32px] p-8">
+                    <h3 className="text-xl font-black uppercase tracking-tighter mb-6 flex items-center gap-3">
+                      <Settings className="w-6 h-6 text-neon-cyan" /> Ajustes Operativos
+                    </h3>
+                    <div className="space-y-4 text-sm text-slate-400">
+                      <div className="flex justify-between"><span>Modo Mantenimiento</span><span className="text-amber-300">Desactivado</span></div>
+                      <div className="flex justify-between"><span>Rotacion de Logs</span><span className="text-emerald-300">Activa</span></div>
+                      <div className="flex justify-between"><span>Backups</span><span className="text-emerald-300">Ultimo: hoy</span></div>
+                    </div>
+                  </div>
+                  <div className="bg-gradient-to-br from-cyan-950/20 to-purple-950/20 border border-cyan-900/30 rounded-[32px] p-8">
+                    <h3 className="text-xl font-black uppercase tracking-tighter mb-6 flex items-center gap-3">
+                      <Activity className="w-6 h-6 text-neon-cyan" /> Observabilidad
+                    </h3>
+                    <p className="text-slate-400 text-sm mb-6">Monitorea eventos y desempeno por nodo en tiempo real.</p>
+                    <button className="bg-neon-cyan text-slate-950 px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest">Abrir Observabilidad</button>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </main>
       </div>
     </div>
   );
