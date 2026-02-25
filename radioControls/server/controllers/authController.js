@@ -69,6 +69,7 @@ export const register = async (req, res) => {
 
     await sendVerificationEmail(email, name, verificationCode);
 
+    const { password: _password, ...userWithoutPassword } = user;
     return res.status(201).json(userWithoutPassword);
   } catch (error) {
     console.error("Registration error:", error);

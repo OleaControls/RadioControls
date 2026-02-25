@@ -1,17 +1,26 @@
 import nodemailer from 'nodemailer';
 
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_APP_PASS, // No es tu contraseña normal, es una "App Password"
-  },
-});
+// Inicialización segura del transporte
+const transporter = (process.env.GMAIL_USER && process.env.GMAIL_APP_PASS) 
+  ? nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_APP_PASS,
+      },
+    })
+  : null;
 
 /**
  * Envía el código de verificación para el registro
  */
 export const sendVerificationEmail = async (email, name, code) => {
+  if (!transporter) {
+    console.warn("⚠️ Correo no enviado: Faltan credenciales de GMAIL en variables de entorno.");
+    console.log(`DEBUG - Código para ${email}: ${code}`);
+    return false;
+  }
+
   const mailOptions = {
     from: `"RadiOlea Controls" <${process.env.GMAIL_USER}>`,
     to: email,
@@ -44,6 +53,11 @@ export const sendVerificationEmail = async (email, name, code) => {
  * Envía el enlace de recuperación de contraseña
  */
 export const sendResetPasswordEmail = async (email, token) => {
+  if (!transporter) {
+    console.warn("⚠️ Correo no enviado: Faltan credenciales de GMAIL en variables de entorno.");
+    return false;
+  }
+
   const resetUrl = `${process.env.APP_URL || 'http://localhost:5173'}/reset-password/${token}`;
   
   const mailOptions = {
