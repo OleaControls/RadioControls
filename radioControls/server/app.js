@@ -26,15 +26,18 @@ app.use("/api/branches", branchesRoutes);
 app.use("/api/stations", stationsRoutes);
 app.use("/api/stripe", stripeRoutes);
 
-if (process.env.NODE_ENV === "production") {
+// En Vercel, el frontend es manejado por el builder estático.
+// Solo activamos esto para entornos locales de producción si es necesario.
+if (process.env.NODE_ENV === "production" && !process.env.VERCEL) {
   const clientDist = path.resolve(__dirname, "..", "dist");
   app.use(express.static(clientDist));
   app.get("*", (req, res) => {
     res.sendFile(path.join(clientDist, "index.html"));
   });
 } else {
-  app.use((req, res) => {
-    res.status(404).json({ message: "Not found" });
+  // Manejador básico para rutas de API no encontradas
+  app.use("/api/*", (req, res) => {
+    res.status(404).json({ message: "API route not found" });
   });
 }
 
