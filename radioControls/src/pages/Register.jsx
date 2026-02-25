@@ -24,11 +24,10 @@ const Register = () => {
       const result = await authRegister({ name, email, password });
 
       if (result.success) {
-        const redirectTo = location.state?.redirectTo;
-        navigate('/login', { 
+        navigate('/verify', { 
           state: { 
-            redirectTo, 
-            message: '¡Cuenta creada! Por favor, revisa tu correo para obtener tu código de verificación de 6 dígitos.' 
+            email,
+            message: '¡Cuenta creada! Por favor, ingresa el código de 6 dígitos enviado a tu correo.' 
           } 
         });
       } else {

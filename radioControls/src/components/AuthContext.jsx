@@ -17,18 +17,24 @@ const safeJson = async (response) => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
+  const [loading, setLoading] = useState(true); // Nuevo estado de carga
 
   // Cargar sesión al iniciar
   useEffect(() => {
     const storedUser = localStorage.getItem('active_user');
     const storedToken = localStorage.getItem('auth_token');
-    if (storedUser) {
-      const parsed = JSON.parse(storedUser);
-      setUser(parsed);
+    
+    if (storedUser && storedToken) {
+      try {
+        setUser(JSON.parse(storedUser));
+        setToken(storedToken);
+      } catch (e) {
+        console.error("Error recuperando sesión", e);
+        localStorage.removeItem('active_user');
+        localStorage.removeItem('auth_token');
+      }
     }
-    if (storedToken) {
-      setToken(storedToken);
-    }
+    setLoading(false); // Termina de cargar la sesión
   }, []);
 
   const persistSession = (nextUser, nextToken) => {
@@ -92,6 +98,7 @@ export const AuthProvider = ({ children }) => {
   const value = {
     user,
     token,
+    loading, // Exportamos loading
     login,
     register,
     updateUser,

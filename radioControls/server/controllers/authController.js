@@ -2,6 +2,9 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import prisma from "../lib/prisma.js";
 import crypto from "crypto";
+import { sendVerificationEmail, sendResetPasswordEmail } from "../lib/email.js";
+
+const CODE_EXPIRATION_MINUTES = 5;
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
@@ -51,6 +54,7 @@ export const register = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+    const verificationExpires = new Date(Date.now() + CODE_EXPIRATION_MINUTES * 60000);
 
     const user = await prisma.user.create({
       data: {
@@ -58,15 +62,81 @@ export const register = async (req, res) => {
         email,
         password: hashedPassword,
         verificationCode,
+        verificationExpires,
         isVerified: false,
       },
     });
 
-    const { password: _password, ...userWithoutPassword } = user;
+    await sendVerificationEmail(email, name, verificationCode);
+
     return res.status(201).json(userWithoutPassword);
   } catch (error) {
     console.error("Registration error:", error);
     return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+/**
+ * Permite a un ADMIN crear usuarios (Admin, Client, Staff) directamente
+ */
+export const adminCreateUser = async (req, res) => {
+  const { name, email, password, role } = req.body;
+
+  if (!name || !email || !password || !role) {
+    return res.status(400).json({ message: "Todos los campos son obligatorios" });
+  }
+
+  try {
+    const existingUser = await prisma.user.findUnique({ where: { email } });
+    if (existingUser) {
+      return res.status(409).json({ message: "El usuario ya existe" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = await prisma.user.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+        role: role, // ADMIN, CLIENT, STAFF
+        isVerified: true, // Se marca como verificado por defecto al ser creado por admin
+      },
+    });
+
+    const { password: _password, ...userWithoutPassword } = user;
+    return res.status(201).json({ message: "Usuario creado exitosamente", user: userWithoutPassword });
+  } catch (error) {
+    console.error("Admin create user error:", error);
+    return res.status(500).json({ message: "Error interno del servidor" });
+  }
+};
+
+export const resendVerification = async (req, res) => {
+  const { email } = req.body;
+  if (!email) return res.status(400).json({ message: "Email es requerido" });
+
+  try {
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) return res.status(404).json({ message: "Usuario no encontrado" });
+    if (user.isVerified) return res.status(400).json({ message: "La cuenta ya está verificada" });
+
+    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+    const verificationExpires = new Date(Date.now() + CODE_EXPIRATION_MINUTES * 60000);
+
+    await prisma.user.update({
+      where: { email },
+      data: { 
+        verificationCode, 
+        verificationExpires 
+      },
+    });
+
+    await sendVerificationEmail(email, user.name, verificationCode);
+    return res.status(200).json({ message: "Nuevo código enviado" });
+  } catch (error) {
+    console.error("Resend error:", error);
+    return res.status(500).json({ message: "Error al reenviar código" });
   }
 };
 
@@ -83,13 +153,23 @@ export const verify = async (req, res) => {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
 
+    if (user.isVerified) {
+      return res.status(200).json({ message: "Cuenta ya verificada" });
+    }
+
+    // Verificar si el código coincide
     if (user.verificationCode !== code) {
-      return res.status(400).json({ message: "El codigo de verificacion es incorrecto" });
+      return res.status(400).json({ message: "El código de verificación es incorrecto" });
+    }
+
+    // Verificar si ha expirado
+    if (user.verificationExpires && user.verificationExpires < new Date()) {
+      return res.status(400).json({ message: "El código ha expirado. Solicita uno nuevo." });
     }
 
     await prisma.user.update({
       where: { email },
-      data: { isVerified: true, verificationCode: null },
+      data: { isVerified: true, verificationCode: null, verificationExpires: null },
     });
 
     return res.status(200).json({ message: "Cuenta verificada exitosamente" });
@@ -114,7 +194,7 @@ export const forgotPassword = async (req, res) => {
     }
 
     const token = crypto.randomBytes(20).toString("hex");
-    const expires = new Date(Date.now() + 3600000);
+    const expires = new Date(Date.now() + CODE_EXPIRATION_MINUTES * 60000);
 
     await prisma.user.update({
       where: { email },
@@ -124,15 +204,7 @@ export const forgotPassword = async (req, res) => {
       },
     });
 
-    const resetPath = `/reset-password/${token}`;
-    console.log(`Enlace de recuperacion para ${email}: ${resetPath}`);
-
-    if (process.env.NODE_ENV !== "production") {
-      return res.status(200).json({
-        message: "Si el correo existe, se ha enviado un enlace de recuperacion",
-        resetPath,
-      });
-    }
+    await sendResetPasswordEmail(email, token);
 
     return res.status(200).json({ message: "Si el correo existe, se ha enviado un enlace de recuperacion" });
   } catch (error) {
@@ -152,12 +224,12 @@ export const resetPassword = async (req, res) => {
     const user = await prisma.user.findFirst({
       where: {
         resetPasswordToken: token,
-        resetPasswordExpires: { gt: new Date() },
+        resetPasswordExpires: { gt: new Date() }, // Ya incluye la verificación de expiración
       },
     });
 
     if (!user) {
-      return res.status(400).json({ message: "El token es invalido o ha expirado" });
+      return res.status(400).json({ message: "El token es inválido o ha expirado" });
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);

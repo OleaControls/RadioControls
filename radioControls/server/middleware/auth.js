@@ -16,3 +16,10 @@ export const requireAuth = (req, res, next) => {
     return res.status(401).json({ message: "Invalid token" });
   }
 };
+
+export const requireAdmin = (req, res, next) => {
+  if (!req.user || req.user.role !== "ADMIN") {
+    return res.status(403).json({ message: "Access denied: Admins only" });
+  }
+  next();
+};

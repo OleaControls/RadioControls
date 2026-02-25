@@ -14,6 +14,7 @@ import AudioInstallation from './pages/AudioInstallation';
 import BranchPlayer from './pages/BranchPlayer';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import VerifyAccount from './pages/VerifyAccount';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import AccessDenied from './pages/AccessDenied';
@@ -23,8 +24,12 @@ import Footer from './components/Footer';
 import { useAuth } from './components/AuthContext';
 
 const RequireAuth = ({ children }) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
   const location = useLocation();
+
+  if (loading) {
+    return <div className="min-h-screen bg-slate-950 flex items-center justify-center text-neon-cyan font-black">CARGANDO SESIÓN...</div>;
+  }
 
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ redirectTo: location.pathname }} replace />;
@@ -33,8 +38,12 @@ const RequireAuth = ({ children }) => {
 };
 
 const RequireRole = ({ roles, children }) => {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, loading } = useAuth();
   const location = useLocation();
+
+  if (loading) {
+    return <div className="min-h-screen bg-slate-950 flex items-center justify-center text-neon-cyan font-black">VERIFICANDO PERMISOS...</div>;
+  }
 
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ redirectTo: location.pathname }} replace />;
@@ -48,7 +57,12 @@ const RequireRole = ({ roles, children }) => {
 const MainLayout = () => {
   const location = useLocation();
   const isPlayer = location.pathname.startsWith('/player/');
-  const isAuthPage = location.pathname === '/login' || location.pathname === '/register' || location.pathname === '/forgot-password' || location.pathname.startsWith('/reset-password');
+  const isAuthPage = location.pathname === '/login' || 
+                     location.pathname === '/register' || 
+                     location.pathname === '/verify' || 
+                     location.pathname === '/forgot-password' || 
+                     location.pathname.startsWith('/reset-password');
+  
   const isDashboard = location.pathname === '/dashboard' || location.pathname === '/admin';
 
   return (
@@ -65,6 +79,7 @@ const MainLayout = () => {
           <Route path="/contacto" element={<Contact />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/verify" element={<VerifyAccount />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/access-denied" element={<AccessDenied />} />

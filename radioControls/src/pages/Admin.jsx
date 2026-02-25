@@ -1,20 +1,106 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ShieldCheck, Activity, Server, Users, Radio, Link2, Settings,
   AlertTriangle, CheckCircle2, Wrench, Plus, Cpu, Network,
-  BarChart3, Eye, Globe, LogOut
+  BarChart3, Eye, Globe, LogOut, Mail, Store, Sparkles
 } from 'lucide-react';
 import { useAuth } from '../components/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { apiFetch } from '../utils/apiFetch';
 
 const Admin = () => {
   const [activeTab, setActiveTab] = useState('overview');
-  const { user, logout } = useAuth();
+  const { user, token, logout } = useAuth();
   const navigate = useNavigate();
+
+  // Estados para activación manual
+  const [manualData, setManualData] = useState({
+    userEmail: '',
+    branchName: '',
+    stationId: '',
+    plan: 'MONTHLY'
+  });
+  const [stations, setStations] = useState([]);
+  const [isActivating, setIsActivating] = useState(false);
+  const [activationStatus, setActivationStatus] = useState(null);
+
+  // Estados para creación de usuarios
+  const [userData, setUserData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    role: 'CLIENT'
+  });
+  const [isCreatingUser, setIsCreatingUser] = useState(false);
+  const [userCreateStatus, setUserCreateStatus] = useState(null);
+
+  useEffect(() => {
+    const loadStations = async () => {
+      try {
+        const response = await apiFetch('/api/stations', {}, token);
+        const data = await response.json().catch(() => []);
+        if (response.ok) setStations(data);
+      } catch (err) {
+        console.error("Error cargando estaciones:", err);
+      }
+    };
+    if (activeTab === 'activations') loadStations();
+  }, [activeTab, token]);
+
+  const handleManualActivation = async (e) => {
+    e.preventDefault();
+    setIsActivating(true);
+    setActivationStatus(null);
+    try {
+      const response = await apiFetch('/api/branches/admin-create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(manualData),
+      }, token);
+      
+      const data = await response.json().catch(() => null);
+      if (response.ok) {
+        setActivationStatus({ success: true, message: "Sucursal activada correctamente" });
+        setManualData({ userEmail: '', branchName: '', stationId: '', plan: 'MONTHLY' });
+      } else {
+        setActivationStatus({ success: false, message: data?.message || "Error al activar" });
+      }
+    } catch (err) {
+      setActivationStatus({ success: false, message: "Error de conexión" });
+    } finally {
+      setIsActivating(false);
+    }
+  };
+
+  const handleAdminCreateUser = async (e) => {
+    e.preventDefault();
+    setIsCreatingUser(true);
+    setUserCreateStatus(null);
+    try {
+      const response = await apiFetch('/api/auth/admin-create-user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData),
+      }, token);
+      
+      const data = await response.json().catch(() => null);
+      if (response.ok) {
+        setUserCreateStatus({ success: true, message: "Usuario creado exitosamente" });
+        setUserData({ name: '', email: '', password: '', role: 'CLIENT' });
+      } else {
+        setUserCreateStatus({ success: false, message: data?.message || "Error al crear" });
+      }
+    } catch (err) {
+      setUserCreateStatus({ success: false, message: "Error de conexión" });
+    } finally {
+      setIsCreatingUser(false);
+    }
+  };
 
   const tabs = useMemo(() => ([
     { id: 'overview', label: 'Resumen', icon: <BarChart3 className="w-5 h-5" /> },
+    { id: 'activations', label: 'Activaciones', icon: <Sparkles className="w-5 h-5 text-neon-cyan" /> },
     { id: 'streams', label: 'Streams', icon: <Radio className="w-5 h-5" /> },
     { id: 'users', label: 'Usuarios', icon: <Users className="w-5 h-5" /> },
     { id: 'incidents', label: 'Incidentes', icon: <AlertTriangle className="w-5 h-5" /> },
@@ -210,6 +296,100 @@ const Admin = () => {
               </motion.div>
             )}
 
+            {activeTab === 'activations' && (
+              <motion.div key="activations" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}>
+                <div className="bg-slate-900/40 border border-white/5 rounded-[40px] p-10 backdrop-blur-xl">
+                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
+                    <div>
+                      <h3 className="text-3xl font-black uppercase tracking-tighter text-white mb-2 flex items-center gap-3">
+                        <Sparkles className="w-8 h-8 text-neon-cyan" /> Activación Manual
+                      </h3>
+                      <p className="text-slate-500 font-medium italic">Activa sucursales para clientes que pagaron vía transferencia.</p>
+                    </div>
+                  </div>
+
+                  <form onSubmit={handleManualActivation} className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="space-y-6">
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4">Email del Cliente</label>
+                        <div className="relative group">
+                          <Mail className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600 group-focus-within:text-neon-cyan transition-colors" />
+                          <input 
+                            type="email" 
+                            placeholder="cliente@ejemplo.com"
+                            className="w-full bg-slate-950 border border-white/5 rounded-2xl py-5 pl-16 pr-8 text-white font-bold focus:border-neon-cyan/50 focus:outline-none"
+                            value={manualData.userEmail}
+                            onChange={(e) => setManualData({...manualData, userEmail: e.target.value})}
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4">Nombre de la Sucursal</label>
+                        <div className="relative group">
+                          <Store className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600 group-focus-within:text-neon-cyan transition-colors" />
+                          <input 
+                            type="text" 
+                            placeholder="Ej: Polanco - Corporativo"
+                            className="w-full bg-slate-950 border border-white/5 rounded-2xl py-5 pl-16 pr-8 text-white font-bold focus:border-neon-cyan/50 focus:outline-none"
+                            value={manualData.branchName}
+                            onChange={(e) => setManualData({...manualData, branchName: e.target.value})}
+                            required
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-6">
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4">Estación de Radio</label>
+                        <select 
+                          className="w-full bg-slate-950 border border-white/5 rounded-2xl py-5 px-8 text-white font-bold focus:border-neon-cyan/50 focus:outline-none appearance-none"
+                          value={manualData.stationId}
+                          onChange={(e) => setManualData({...manualData, stationId: e.target.value})}
+                          required
+                        >
+                          <option value="">Seleccionar estación...</option>
+                          {stations.map(s => (
+                            <option key={s.id} value={s.id}>{s.name}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4">Paquete / Plan</label>
+                        <select 
+                          className="w-full bg-slate-950 border border-white/5 rounded-2xl py-5 px-8 text-white font-bold focus:border-neon-cyan/50 focus:outline-none appearance-none"
+                          value={manualData.plan}
+                          onChange={(e) => setManualData({...manualData, plan: e.target.value})}
+                          required
+                        >
+                          <option value="MONTHLY">Básico Mensual</option>
+                          <option value="YEARLY">Profesional Anual</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="md:col-span-2 pt-4">
+                      {activationStatus && (
+                        <div className={`mb-6 p-4 rounded-2xl text-xs font-black uppercase tracking-widest border ${activationStatus.success ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300' : 'bg-red-500/10 border-red-500/20 text-red-300'}`}>
+                          {activationStatus.message}
+                        </div>
+                      )}
+                      <button 
+                        type="submit"
+                        disabled={isActivating}
+                        className="w-full bg-neon-cyan text-slate-950 py-5 rounded-[24px] font-black uppercase tracking-[0.2em] shadow-2xl shadow-neon-cyan/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50"
+                      >
+                        {isActivating ? 'Activando...' : 'Confirmar y Activar Sucursal'}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </motion.div>
+            )}
+
             {activeTab === 'streams' && (
               <motion.div key="streams" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}>
                 <div className="bg-slate-900/40 border border-white/5 rounded-[32px] p-8">
@@ -245,7 +425,77 @@ const Admin = () => {
             )}
 
             {activeTab === 'users' && (
-              <motion.div key="users" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}>
+              <motion.div key="users" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} className="space-y-8">
+                {/* Formulario de Creación */}
+                <div className="bg-slate-900/40 border border-white/5 rounded-[40px] p-8 backdrop-blur-xl">
+                  <h3 className="text-xl font-black uppercase tracking-tighter mb-8 flex items-center gap-3">
+                    <Plus className="w-6 h-6 text-neon-cyan" /> Crear Nuevo Usuario
+                  </h3>
+                  <form onSubmit={handleAdminCreateUser} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Nombre</label>
+                      <input 
+                        type="text" 
+                        placeholder="Nombre completo"
+                        className="w-full bg-slate-950 border border-white/5 rounded-xl py-3 px-4 text-white text-sm focus:border-neon-cyan/50 focus:outline-none"
+                        value={userData.name}
+                        onChange={(e) => setUserData({...userData, name: e.target.value})}
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Email</label>
+                      <input 
+                        type="email" 
+                        placeholder="correo@ejemplo.com"
+                        className="w-full bg-slate-950 border border-white/5 rounded-xl py-3 px-4 text-white text-sm focus:border-neon-cyan/50 focus:outline-none"
+                        value={userData.email}
+                        onChange={(e) => setUserData({...userData, email: e.target.value})}
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Contraseña</label>
+                      <input 
+                        type="password" 
+                        placeholder="Contraseña"
+                        className="w-full bg-slate-950 border border-white/5 rounded-xl py-3 px-4 text-white text-sm focus:border-neon-cyan/50 focus:outline-none"
+                        value={userData.password}
+                        onChange={(e) => setUserData({...userData, password: e.target.value})}
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-2">Rol</label>
+                      <select 
+                        className="w-full bg-slate-950 border border-white/5 rounded-xl py-3 px-4 text-white text-sm focus:border-neon-cyan/50 focus:outline-none appearance-none"
+                        value={userData.role}
+                        onChange={(e) => setUserData({...userData, role: e.target.value})}
+                        required
+                      >
+                        <option value="CLIENT">Cliente</option>
+                        <option value="ADMIN">Administrador</option>
+                        <option value="STAFF">Staff / Soporte</option>
+                      </select>
+                    </div>
+                    <div className="lg:col-span-4 pt-4 flex flex-col md:flex-row items-center justify-between gap-4">
+                      {userCreateStatus && (
+                        <span className={`text-[10px] font-black uppercase tracking-widest ${userCreateStatus.success ? 'text-emerald-400' : 'text-red-400'}`}>
+                          {userCreateStatus.message}
+                        </span>
+                      )}
+                      <button 
+                        type="submit"
+                        disabled={isCreatingUser}
+                        className="w-full md:w-auto bg-neon-cyan text-slate-950 px-8 py-3 rounded-xl font-black uppercase text-xs tracking-widest hover:scale-105 transition-all disabled:opacity-50"
+                      >
+                        {isCreatingUser ? 'Creando...' : 'Crear Usuario'}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+
+                {/* Lista de Usuarios */}
                 <div className="bg-slate-900/40 border border-white/5 rounded-[32px] p-8">
                   <h3 className="text-xl font-black uppercase tracking-tighter mb-6 flex items-center gap-3">
                     <Users className="w-6 h-6 text-neon-cyan" /> Clientes y Roles

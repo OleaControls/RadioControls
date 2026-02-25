@@ -52,3 +52,52 @@ export const getStream = async (req, res) => {
   }
 };
 
+/**
+ * Permite a un ADMIN crear una sucursal manualmente para un cliente
+ */
+export const adminCreateBranch = async (req, res) => {
+  const { userEmail, branchName, stationId, plan } = req.body;
+
+  if (!userEmail || !branchName || !plan) {
+    return res.status(400).json({ message: "Faltan datos obligatorios (email, nombre sucursal, plan)" });
+  }
+
+  try {
+    // 1. Buscar al usuario por email
+    const user = await prisma.user.findUnique({ where: { email: userEmail } });
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado con ese correo" });
+    }
+
+    // 2. Generar un slug único basado en el nombre
+    let slug = branchName.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+    const existingSlug = await prisma.branch.findUnique({ where: { slug } });
+    if (existingSlug) {
+      slug = `${slug}-${Math.floor(Math.random() * 1000)}`;
+    }
+
+    // 3. Definir fecha de fin (si es anual +1 año, si es mensual +1 mes)
+    const expiration = new Date();
+    if (plan === 'YEARLY') expiration.setFullYear(expiration.getFullYear() + 1);
+    else expiration.setMonth(expiration.getMonth() + 1);
+
+    // 4. Crear la sucursal
+    const branch = await prisma.branch.create({
+      data: {
+        name: branchName,
+        slug,
+        ownerId: user.id,
+        stationId: stationId || null,
+        plan: plan,
+        subscriptionStatus: 'ACTIVE',
+        status: 'Online',
+        currentPeriodEnd: expiration
+      }
+    });
+
+    return res.status(201).json({ message: "Sucursal activada exitosamente", branch });
+  } catch (error) {
+    console.error("Error en activación manual:", error);
+    return res.status(500).json({ message: "Error al activar sucursal manualmente" });
+  }
+};

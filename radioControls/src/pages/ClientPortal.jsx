@@ -23,10 +23,13 @@ const ClientPortal = () => {
   const [planSelections, setPlanSelections] = useState({});
   const [planLoading, setPlanLoading] = useState({});
   const [cancelModal, setCancelModal] = useState({ open: false, branchId: null, branchName: '' });
+  const [newBranchModal, setNewBranchModal] = useState(false);
+  const [resendTimer, setResendTimer] = useState(0);
+  const [isResending, setIsResending] = useState(false);
 
   const firstName = user?.name ? user.name.split(' ')[0] : 'Cliente';
   const userRole = user?.role || 'CLIENT';
-  const isVerified = user?.isVerified ?? true; // Default to true if field not present for now
+  const isVerified = user?.isVerified ?? false; // Cambiado a false por defecto para forzar verificacion
 
   const availableTabs = [
     { id: 'branches', label: 'Sucursales', icon: <LayoutGrid className="w-5 h-5" />, roles: ['ADMIN', 'CLIENT', 'STAFF'] },
@@ -46,6 +49,44 @@ const ClientPortal = () => {
   const handleLogout = () => {
     logout();
     navigate('/');
+  };
+
+  useEffect(() => {
+    let interval;
+    if (resendTimer > 0) {
+      interval = setInterval(() => {
+        setResendTimer((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [resendTimer]);
+
+  const handleResendCode = async () => {
+    if (resendTimer > 0 || !user?.email || isResending) {
+      return;
+    }
+    
+    setIsResending(true);
+    setVerifyStatus(null); 
+
+    try {
+      const response = await apiFetch('/api/auth/resend-verification', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: user.email }),
+      }, token);
+      
+      if (response.ok) {
+        setResendTimer(60);
+      } else {
+        setVerifyStatus('error');
+      }
+    } catch (err) {
+      console.error("Error reenviando código:", err);
+      setVerifyStatus('error');
+    } finally {
+      setIsResending(false);
+    }
   };
 
   const handleVerify = async (e) => {
@@ -288,20 +329,30 @@ const ClientPortal = () => {
                 <h4 className="text-xl font-black uppercase tracking-tighter mb-1">Confirma tu Cuenta</h4>
                 <p className="text-amber-200/60 font-medium">Hemos enviado un código de 6 dígitos a tu correo. Ingrésalo para activar todas las funciones.</p>
               </div>
-              <form onSubmit={handleVerify} className="flex gap-2 w-full md:w-auto">
-                <input 
-                  type="text" 
-                  maxLength="6"
-                  placeholder="000000"
-                  className="bg-slate-950 border border-amber-500/30 rounded-xl px-4 py-3 text-center font-black tracking-[0.5em] w-32 focus:outline-none focus:border-amber-500"
-                  value={verificationCode}
-                  onChange={(e) => setVerificationCode(e.target.value)}
-                />
-                <button 
-                  disabled={isVerifying}
-                  className="bg-amber-500 text-slate-950 px-6 py-3 rounded-xl font-black text-xs uppercase tracking-widest hover:scale-105 transition-all disabled:opacity-50"
+              <form onSubmit={handleVerify} className="flex flex-col gap-2 w-full md:w-auto">
+                <div className="flex gap-2">
+                  <input 
+                    type="text" 
+                    maxLength="6"
+                    placeholder="000000"
+                    className="bg-slate-950 border border-amber-500/30 rounded-xl px-4 py-3 text-center font-black tracking-[0.5em] w-32 focus:outline-none focus:border-amber-500"
+                    value={verificationCode}
+                    onChange={(e) => setVerificationCode(e.target.value)}
+                  />
+                  <button 
+                    disabled={isVerifying}
+                    className="bg-amber-500 text-slate-950 px-6 py-3 rounded-xl font-black text-xs uppercase tracking-widest hover:scale-105 transition-all disabled:opacity-50"
+                  >
+                    {isVerifying ? '...' : 'VERIFICAR'}
+                  </button>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleResendCode}
+                  disabled={resendTimer > 0 || isResending}
+                  className="text-[10px] font-black uppercase tracking-widest text-amber-400 hover:text-amber-200 transition-colors disabled:opacity-50 text-center mt-2"
                 >
-                  {isVerifying ? '...' : 'VERIFICAR'}
+                  {resendTimer > 0 ? `Reenviar en ${resendTimer}s` : (isResending ? 'Enviando...' : 'SOLICITAR NUEVO CÓDIGO')}
                 </button>
               </form>
               {verifyStatus === 'success' && <CheckCircle2 className="text-green-500 w-6 h-6" />}
@@ -324,7 +375,7 @@ const ClientPortal = () => {
           
           <div className="flex gap-4 w-full md:w-auto">
             <button
-              onClick={() => navigate('/planes')}
+              onClick={() => setNewBranchModal(true)}
               className="flex-1 md:flex-none bg-neon-cyan text-slate-950 px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 hover:scale-105 transition-all shadow-2xl shadow-neon-cyan/20"
             >
               <Plus className="w-5 h-5" /> NUEVA SUCURSAL
@@ -666,6 +717,87 @@ const ClientPortal = () => {
                 >
                   {planLoading[cancelModal.branchId] === 'cancel' ? 'Cancelando...' : 'Confirmar cancelacion'}
                 </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {newBranchModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[200] flex items-center justify-center px-6 py-10 overflow-y-auto"
+          >
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/80 backdrop-blur-md"
+              onClick={() => setNewBranchModal(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.97, y: 10 }}
+              className="relative z-10 w-full max-w-4xl rounded-[40px] border border-white/10 bg-slate-900/50 backdrop-blur-3xl p-8 md:p-12 shadow-[0_0_80px_-20px_rgba(0,243,255,0.3)] my-auto"
+            >
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
+                <div>
+                  <div className="text-[10px] font-black uppercase tracking-[0.4em] text-neon-cyan mb-3">Nueva Expansion</div>
+                  <h3 className="text-3xl md:text-4xl font-black uppercase tracking-tighter text-white">Elige un plan para tu <span className="text-neon-cyan italic text-4xl">Sucursal</span></h3>
+                </div>
+                <button 
+                  onClick={() => setNewBranchModal(false)}
+                  className="p-3 bg-white/5 border border-white/10 rounded-2xl text-slate-400 hover:text-white transition-all"
+                >
+                  <Plus className="w-6 h-6 rotate-45" />
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {[
+                  { id: 'basico', name: 'Basico', price: '$539', desc: 'Ideal para sucursales individuales.', icon: <Store className="w-6 h-6" />, color: 'bg-white/5' },
+                  { id: 'profesional', name: 'Profesional', price: '$5,390', desc: 'Maximiza tus ventas con audio elite.', icon: <Sparkles className="w-6 h-6 text-neon-cyan" />, color: 'bg-neon-cyan/10 border-neon-cyan/20', highlight: true },
+                  { id: 'corporativo', name: 'Corporativo', price: 'Custom', desc: 'Para mas de 10 sucursales.', icon: <LayoutGrid className="w-6 h-6 text-neon-purple" />, color: 'bg-white/5', isContact: true }
+                ].map((plan) => (
+                  <div 
+                    key={plan.id}
+                    className={`p-8 rounded-[32px] border transition-all group ${plan.highlight ? 'border-neon-cyan/30 bg-neon-cyan/5 shadow-2xl' : 'border-white/5 bg-slate-950/50 hover:border-white/20'}`}
+                  >
+                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-6 ${plan.highlight ? 'bg-neon-cyan text-slate-950' : 'bg-white/5 text-slate-400'}`}>
+                      {plan.icon}
+                    </div>
+                    <h4 className="text-xl font-black uppercase tracking-tighter text-white mb-1">{plan.name}</h4>
+                    <div className="text-2xl font-black text-white mb-4">{plan.price} <span className="text-xs text-slate-500 font-bold uppercase tracking-widest">{plan.id === 'profesional' ? '/ ANUAL' : (plan.id === 'basico' ? '/ MES' : '')}</span></div>
+                    <p className="text-xs text-slate-400 font-medium mb-8 leading-relaxed">{plan.desc}</p>
+                    <button
+                      onClick={() => {
+                        if (plan.isContact) navigate('/contacto');
+                        else navigate(`/checkout/${plan.id}`);
+                      }}
+                      className={`w-full py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${plan.highlight ? 'bg-neon-cyan text-slate-950 hover:shadow-[0_0_20px_rgba(0,243,255,0.4)]' : 'bg-white/5 border border-white/10 text-white hover:bg-white hover:text-slate-950'}`}
+                    >
+                      {plan.isContact ? 'Contactar' : 'Contratar'}
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-12 pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div className="flex items-center gap-4 text-slate-500">
+                  <Shield className="w-5 h-5" />
+                  <span className="text-[10px] font-black uppercase tracking-widest">Pago 100% Seguro via Stripe</span>
+                </div>
+                <div className="flex items-center gap-6">
+                   <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Aceptamos:</p>
+                   <div className="flex gap-4 opacity-50 grayscale hover:grayscale-0 transition-all">
+                      <CreditCard className="w-6 h-6" />
+                      <BarChart3 className="w-6 h-6" />
+                   </div>
+                </div>
               </div>
             </motion.div>
           </motion.div>

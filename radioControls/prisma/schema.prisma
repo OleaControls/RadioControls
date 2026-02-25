@@ -37,6 +37,7 @@ model User {
   // Verificación y Seguridad
   isVerified           Boolean   @default(false)
   verificationCode     String?
+  verificationExpires  DateTime?
   resetPasswordToken   String?
   resetPasswordExpires DateTime?
 
