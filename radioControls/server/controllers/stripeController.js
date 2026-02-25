@@ -87,6 +87,7 @@ export const createCheckoutSession = async (req, res) => {
         branchSlug: branchSlug || "",
         userId,
         userEmail: email || "",
+        branchId: req.body.branchId || "",
       },
     });
 
@@ -122,6 +123,7 @@ export const confirmSession = async (req, res) => {
     const branchName = metadata.branchName;
     const branchSlugRaw = metadata.branchSlug;
     const userId = metadata.userId;
+    const branchId = metadata.branchId; // Get existing branch ID if present
 
     if (!planId || !branchName || !userId) {
       return res.status(400).json({ message: "Metadata incompleta" });
@@ -135,8 +137,6 @@ export const confirmSession = async (req, res) => {
       return res.status(200).json({ branch: existingBySub, subscriptionId: subscription.id });
     }
 
-    const baseSlug = slugify(branchSlugRaw || branchName);
-    const slug = await ensureUniqueSlug(baseSlug);
     const planType = PLAN_CONFIG[planId]?.planType || "MONTHLY";
     const subscriptionStatus = STATUS_MAP[subscription.status] || "INCOMPLETE";
     const priceId = subscription.items?.data?.[0]?.price?.id || null;
@@ -144,19 +144,38 @@ export const confirmSession = async (req, res) => {
       ? new Date(subscription.current_period_end * 1000)
       : null;
 
-    const branch = await prisma.branch.create({
-      data: {
-        name: branchName,
-        slug,
-        ownerId: userId,
-        status: "Offline",
-        plan: planType,
-        subscriptionStatus,
-        stripeSubscriptionId: subscription.id,
-        stripePriceId: priceId,
-        currentPeriodEnd,
-      },
-    });
+    let branch;
+
+    if (branchId) {
+      // RENEWAL: Update existing branch
+      branch = await prisma.branch.update({
+        where: { id: branchId },
+        data: {
+          plan: planType,
+          subscriptionStatus,
+          stripeSubscriptionId: subscription.id,
+          stripePriceId: priceId,
+          currentPeriodEnd,
+        },
+      });
+    } else {
+      // NEW: Create new branch
+      const baseSlug = slugify(branchSlugRaw || branchName);
+      const slug = await ensureUniqueSlug(baseSlug);
+      branch = await prisma.branch.create({
+        data: {
+          name: branchName,
+          slug,
+          ownerId: userId,
+          status: "Offline",
+          plan: planType,
+          subscriptionStatus,
+          stripeSubscriptionId: subscription.id,
+          stripePriceId: priceId,
+          currentPeriodEnd,
+        },
+      });
+    }
 
     return res.status(200).json({
       branch,
@@ -197,6 +216,7 @@ export const updateSubscription = async (req, res) => {
     const updated = await stripe.subscriptions.update(subscription.id, {
       items: [{ id: currentItem.id, price: priceId }],
       proration_behavior: "create_prorations",
+      payment_behavior: "always_invoice",
     });
 
     const subscriptionStatus = STATUS_MAP[updated.status] || "INCOMPLETE";
@@ -234,8 +254,10 @@ export const cancelSubscription = async (req, res) => {
       return res.status(400).json({ message: "Sucursal sin suscripcion activa" });
     }
 
-    const canceled = await stripe.subscriptions.cancel(branch.stripeSubscriptionId);
-    const subscriptionStatus = STATUS_MAP[canceled.status] || "CANCELED";
+    const canceled = await stripe.subscriptions.update(branch.stripeSubscriptionId, {
+      cancel_at_period_end: true,
+    });
+    const subscriptionStatus = "CANCELED"; // We force CANCELED status in our DB to indicate it won't renew
     const currentPeriodEnd = canceled.current_period_end
       ? new Date(canceled.current_period_end * 1000)
       : null;

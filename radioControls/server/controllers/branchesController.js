@@ -20,15 +20,15 @@ export const listBranches = async (req, res) => {
 };
 
 export const getStream = async (req, res) => {
-  const { slug } = req.query;
+  const { slug, branchId } = req.query;
 
-  if (!slug) {
-    return res.status(400).json({ error: "Slug is required" });
+  if (!slug && !branchId) {
+    return res.status(400).json({ error: "Slug or branchId is required" });
   }
 
   try {
     const branch = await prisma.branch.findUnique({
-      where: { slug },
+      where: branchId ? { id: branchId } : { slug },
       include: { station: true },
     });
 
@@ -36,15 +36,16 @@ export const getStream = async (req, res) => {
       return res.status(404).json({ error: "Sucursal no encontrada" });
     }
 
-    if (!branch.station) {
-      return res.status(404).json({ error: "Esta sucursal no tiene una estacion asignada" });
-    }
+    const isExpired = branch.currentPeriodEnd && new Date(branch.currentPeriodEnd) < new Date();
+    const effectiveStatus = isExpired ? 'CANCELED' : branch.subscriptionStatus;
 
     return res.status(200).json({
       branchName: branch.name,
-      stationName: branch.station.name,
-      streamUrl: branch.station.streamUrl,
+      stationName: branch.station?.name || 'Sin estacion',
+      streamUrl: branch.station?.streamUrl || null,
       status: branch.status,
+      slug: branch.slug,
+      subscriptionStatus: effectiveStatus,
     });
   } catch (error) {
     console.error(error);
@@ -56,7 +57,7 @@ export const getStream = async (req, res) => {
  * Permite a un ADMIN crear una sucursal manualmente para un cliente
  */
 export const adminCreateBranch = async (req, res) => {
-  const { userEmail, branchName, stationId, plan } = req.body;
+  const { userEmail, branchName, stationId, plan, streamingUrl, customAmount, customUnit } = req.body;
 
   if (!userEmail || !branchName || !plan) {
     return res.status(400).json({ message: "Faltan datos obligatorios (email, nombre sucursal, plan)" });
@@ -69,35 +70,112 @@ export const adminCreateBranch = async (req, res) => {
       return res.status(404).json({ message: "Usuario no encontrado con ese correo" });
     }
 
-    // 2. Generar un slug único basado en el nombre
-    let slug = branchName.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+    // 2. Manejar la Estación/Streaming
+    let finalStationId = stationId || null;
+
+    if (streamingUrl && streamingUrl.trim() !== '') {
+      try {
+        const newStation = await prisma.station.create({
+          data: {
+            name: `Streaming: ${branchName}`,
+            streamUrl: streamingUrl.trim(),
+            active: true
+          }
+        });
+        finalStationId = newStation.id;
+      } catch (stationError) {
+        console.error("Error creando estación:", stationError);
+        // Continuamos aunque falle la estación, o podríamos lanzar error
+      }
+    }
+
+    // 3. Generar un slug robusto
+    let baseSlug = branchName
+      .toLowerCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Quitar acentos
+      .replace(/[^a-z0-9]/g, '-') // Solo letras y números
+      .replace(/-+/g, '-') // Quitar guiones duplicados
+      .replace(/^-|-$/g, ''); // Quitar guiones al inicio/final
+
+    let slug = baseSlug || `branch-${Math.floor(Math.random() * 10000)}`;
+    
+    // Verificar unicidad del slug
     const existingSlug = await prisma.branch.findUnique({ where: { slug } });
     if (existingSlug) {
       slug = `${slug}-${Math.floor(Math.random() * 1000)}`;
     }
 
-    // 3. Definir fecha de fin (si es anual +1 año, si es mensual +1 mes)
+    // 4. Definir fecha de fin
     const expiration = new Date();
-    if (plan === 'YEARLY') expiration.setFullYear(expiration.getFullYear() + 1);
-    else expiration.setMonth(expiration.getMonth() + 1);
+    if (plan === 'YEARLY') {
+      expiration.setFullYear(expiration.getFullYear() + 1);
+    } else if (plan === 'MONTHLY') {
+      expiration.setMonth(expiration.getMonth() + 1);
+    } else if (plan === 'CUSTOM' && customAmount && customUnit) {
+      const amount = parseInt(customAmount);
+      if (customUnit === 'MINUTES') expiration.setMinutes(expiration.getMinutes() + amount);
+      else if (customUnit === 'HOURS') expiration.setHours(expiration.getHours() + amount);
+      else if (customUnit === 'DAYS') expiration.setDate(expiration.getDate() + amount);
+      else expiration.setMonth(expiration.getMonth() + 1);
+    } else {
+      expiration.setMonth(expiration.getMonth() + 1);
+    }
 
-    // 4. Crear la sucursal
+    // 5. Crear la sucursal
+    const validPlan = (plan === 'YEARLY' || plan === 'MONTHLY') ? plan : 'MONTHLY';
+
     const branch = await prisma.branch.create({
       data: {
-        name: branchName,
+        name: branchName.trim(),
         slug,
         ownerId: user.id,
-        stationId: stationId || null,
-        plan: plan,
+        stationId: finalStationId,
+        plan: validPlan, 
         subscriptionStatus: 'ACTIVE',
-        status: 'Online',
+        status: finalStationId ? 'Online' : 'Offline',
         currentPeriodEnd: expiration
       }
     });
 
-    return res.status(201).json({ message: "Sucursal activada exitosamente", branch });
+    return res.status(201).json({ 
+      message: "Sucursal activada exitosamente", 
+      branch,
+      listenUrl: `${process.env.APP_URL || 'http://localhost:5173'}/player/${slug}`
+    });
   } catch (error) {
-    console.error("Error en activación manual:", error);
-    return res.status(500).json({ message: "Error al activar sucursal manualmente" });
+    console.error("CRITICAL ADMIN CREATE ERROR:", error);
+    return res.status(500).json({ 
+      message: "Error interno al crear sucursal",
+      details: error.message 
+    });
+  }
+};
+
+/**
+ * Permite al cliente actualizar sus datos de psicodemografía y anuncios
+ */
+export const updateContentProfile = async (req, res) => {
+  const { id } = req.params;
+  const { userId } = req.user;
+  const { targetAudience, brandAtmosphere, adRequirements } = req.body;
+
+  try {
+    const branch = await prisma.branch.findUnique({ where: { id } });
+    if (!branch || branch.ownerId !== userId) {
+      return res.status(403).json({ message: "No tienes permiso para editar esta sucursal" });
+    }
+
+    const updated = await prisma.branch.update({
+      where: { id },
+      data: {
+        targetAudience,
+        brandAtmosphere,
+        adRequirements
+      }
+    });
+
+    return res.status(200).json({ message: "Perfil de contenido actualizado", branch: updated });
+  } catch (error) {
+    return res.status(500).json({ message: "Error al actualizar perfil de contenido" });
   }
 };

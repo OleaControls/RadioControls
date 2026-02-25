@@ -26,6 +26,45 @@ const ClientPortal = () => {
   const [newBranchModal, setNewBranchModal] = useState(false);
   const [resendTimer, setResendTimer] = useState(0);
   const [isResending, setIsResending] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Estados para Perfil
+  const [profileForm, setProfileForm] = useState({
+    name: user?.name || '',
+    email: user?.email || '',
+    companyName: user?.companyName || '',
+    phoneNumber: user?.phoneNumber || ''
+  });
+  const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
+  const [profileStatus, setProfileStatus] = useState(null);
+
+  // Estados para Perfil Sonoro (Contenido)
+  const [contentForm, setContentForm] = useState({
+    branchId: '',
+    targetAudience: '',
+    brandAtmosphere: '',
+    adRequirements: ''
+  });
+  const [isUpdatingContent, setIsUpdatingProfileContent] = useState(false);
+  const [contentStatus, setContentStatus] = useState(null);
+
+  // Estados para Incidentes
+  const [incidents, setIncidents] = useState([]);
+  const [incidentForm, setIncidentForm] = useState({ title: '', description: '', branchId: '' });
+  const [isReporting, setIsReporting] = useState(false);
+  const [reportStatus, setReportStatus] = useState(null);
+
+  // Sincronizar formulario cuando el usuario carga
+  useEffect(() => {
+    if (user) {
+      setProfileForm({
+        name: user.name || '',
+        email: user.email || '',
+        companyName: user.companyName || '',
+        phoneNumber: user.phoneNumber || ''
+      });
+    }
+  }, [user]);
 
   const firstName = user?.name ? user.name.split(' ')[0] : 'Cliente';
   const userRole = user?.role || 'CLIENT';
@@ -33,6 +72,7 @@ const ClientPortal = () => {
 
   const availableTabs = [
     { id: 'branches', label: 'Sucursales', icon: <LayoutGrid className="w-5 h-5" />, roles: ['ADMIN', 'CLIENT', 'STAFF'] },
+    { id: 'content', label: 'Perfil Sonoro', icon: <Sparkles className="w-5 h-5" />, roles: ['ADMIN', 'CLIENT'] },
     { id: 'billing', label: 'Planes y Pagos', icon: <CreditCard className="w-5 h-5" />, roles: ['ADMIN', 'CLIENT'] },
     { id: 'support', label: 'Soporte', icon: <LifeBuoy className="w-5 h-5" />, roles: ['ADMIN', 'CLIENT', 'STAFF'] },
     { id: 'profile', label: 'Mi Perfil', icon: <UserIcon className="w-5 h-5" />, roles: ['ADMIN', 'CLIENT'] },
@@ -49,6 +89,62 @@ const ClientPortal = () => {
   const handleLogout = () => {
     logout();
     navigate('/');
+  };
+
+  const handleProfileUpdate = async (e) => {
+    e.preventDefault();
+    setIsUpdatingProfile(true);
+    setProfileStatus(null);
+
+    try {
+      const response = await apiFetch('/api/auth/update-profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(profileForm),
+      }, token);
+
+      const data = await response.json().catch(() => null);
+
+      if (response.ok) {
+        updateUser(data.user); // Actualizar contexto global
+        setProfileStatus({ success: true, message: 'Perfil actualizado' });
+      } else {
+        setProfileStatus({ success: false, message: data?.message || 'Error al actualizar' });
+      }
+    } catch (err) {
+      setProfileStatus({ success: false, message: 'Error de conexión' });
+    } finally {
+      setIsUpdatingProfile(false);
+    }
+  };
+
+  const handleContentUpdate = async (e) => {
+    e.preventDefault();
+    if (!contentForm.branchId) {
+      alert("Selecciona una sucursal primero");
+      return;
+    }
+    setIsUpdatingProfileContent(true);
+    setContentStatus(null);
+
+    try {
+      const response = await apiFetch(`/api/branches/${contentForm.branchId}/content-profile`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(contentForm),
+      }, token);
+
+      if (response.ok) {
+        setContentStatus({ success: true, message: 'Información enviada a Ingeniería' });
+        loadBranches(); // Recargar para ver los cambios
+      } else {
+        setContentStatus({ success: false, message: 'Error al enviar datos' });
+      }
+    } catch (err) {
+      setContentStatus({ success: false, message: 'Error de conexión' });
+    } finally {
+      setIsUpdatingProfileContent(false);
+    }
   };
 
   useEffect(() => {
@@ -129,41 +225,133 @@ const ClientPortal = () => {
     { id: 'INV-002', date: '15 Feb 2025', amount: '$5,390.00', status: 'Pagado' },
   ];
 
-  useEffect(() => {
-    const loadBranches = async () => {
-      if (!user?.id) {
-        setBranches(demoBranches);
-        return;
-      }
-      try {
-        const response = await apiFetch(`/api/branches?ownerId=${encodeURIComponent(user.id)}`, {}, token);
-        const data = await response.json().catch(() => null);
-        if (!response.ok || !Array.isArray(data)) {
-          setBranchesError(data?.message || 'No se pudieron cargar sucursales');
+    const [stats, setStats] = useState({ listeners: 0, online: '0/0', upcomingInvoices: [] });
+  
+    useEffect(() => {
+      const loadBranches = async () => {
+        if (!user?.id) {
           setBranches(demoBranches);
           return;
         }
-        const mapped = data.map((branch) => ({
-          id: branch.id,
-          name: branch.name,
-          station: branch.station?.name || 'Sin estacion',
-          slug: branch.slug,
-          status: branch.status || 'Offline',
-          listeners: 0,
-          plan: branch.plan || null,
-          subscriptionStatus: branch.subscriptionStatus || null,
-          stripeSubscriptionId: branch.stripeSubscriptionId || null,
-          currentPeriodEnd: branch.currentPeriodEnd || null,
-        }));
-        setBranches(mapped);
-      } catch (err) {
-        setBranchesError('No se pudieron cargar sucursales');
-        setBranches(demoBranches);
-      }
-    };
+        try {
+          const response = await apiFetch(`/api/branches?ownerId=${encodeURIComponent(user.id)}`, {}, token);
+          const data = await response.json().catch(() => null);
+          if (!response.ok || !Array.isArray(data)) {
+            setBranchesError(data?.message || 'No se pudieron cargar sucursales');
+            setBranches(demoBranches);
+            return;
+          }
+  
+          let totalListeners = 0;
+          let onlineCount = 0;
+          const upcomingInvoices = [];
+  
+          const mapped = data.map((branch) => {
+            // Generar un número de oyentes estable basado en el ID para el demo
+            const mockListeners = Math.floor((parseInt(branch.id.slice(-4), 36) % 200) + 20);
+            totalListeners += mockListeners;
+            if (branch.status === 'Online') onlineCount++;
+  
+                      const renewalDate = branch.currentPeriodEnd ? new Date(branch.currentPeriodEnd) : null;
+                      const isExpired = renewalDate && renewalDate < new Date();
+                      const effectiveStatus = isExpired ? 'CANCELED' : (branch.subscriptionStatus || null);
+            
+                      if (renewalDate && effectiveStatus === 'ACTIVE') {
+                        upcomingInvoices.push({
+                          branchName: branch.name,
+                          date: renewalDate,
+                          amount: branch.plan === 'YEARLY' ? 5390 : 539,
+                        });
+                      }
+              
+                      return {
+                        id: branch.id,
+                        name: branch.name,
+                        station: branch.station?.name || 'Sin estacion',
+                        slug: branch.slug,
+                        status: branch.status || 'Offline',
+                        listeners: mockListeners,
+                        plan: branch.plan || null,
+                        subscriptionStatus: effectiveStatus,
+                        stripeSubscriptionId: branch.stripeSubscriptionId || null,
+                        currentPeriodEnd: branch.currentPeriodEnd || null,
+                      };          });
+  
+          // Ordenar facturas por fecha más cercana
+          upcomingInvoices.sort((a, b) => a.date - b.date);
+  
+          setBranches(mapped);
+          setStats({
+            listeners: totalListeners,
+            online: `${onlineCount}/${mapped.length}`,
+            upcomingInvoices: upcomingInvoices.map(inv => ({
+              ...inv,
+              formattedDate: inv.date.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' }),
+              formattedAmount: `$${inv.amount.toLocaleString('es-MX')}`
+            }))
+          });
+        } catch (err) {
+          setBranchesError('No se pudieron cargar sucursales');
+          setBranches(demoBranches);
+        }
+      };
+  
+      loadBranches();
+      loadIncidents();
+    }, [user?.id]);      
+        const loadIncidents = async () => {
+          if (!token) return;
+          try {
+            const response = await apiFetch('/api/incidents', {}, token);
+            if (response.ok) {
+              const data = await response.json();
+              setIncidents(data);
+            }
+          } catch (err) {
+            console.error("Error cargando incidentes:", err);
+          }
+        };
+      
+        const handleReportIncident = async (e) => {
+          e.preventDefault();
+          setIsReporting(true);
+          setReportStatus(null);
+      
+          try {
+            const response = await apiFetch('/api/incidents', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(incidentForm),
+            }, token);
+      
+            if (response.ok) {
+              setReportStatus({ success: true, message: 'Reporte enviado con éxito' });
+              setIncidentForm({ title: '', description: '', branchId: '' });
+              loadIncidents();
+            } else {
+              const data = await response.json();
+              setReportStatus({ success: false, message: data.message || 'Error al enviar' });
+            }
+          } catch (err) {
+            setReportStatus({ success: false, message: 'Error de conexión' });
+          } finally {
+            setIsReporting(false);
+          }
+        };
+      
+        const handleOpenPlayer = (slug) => {    if (!slug) return;
+    window.open(`/player/${slug}`, '_blank');
+  };
 
-    loadBranches();
-  }, [user?.id]);
+  const handleCopyLink = (slug) => {
+    if (!slug) return;
+    const url = `${window.location.origin}/player/${slug}`;
+    navigator.clipboard.writeText(url).then(() => {
+      alert('¡Enlace copiado al portapapeles!');
+    }).catch(err => {
+      console.error('Error al copiar el enlace:', err);
+    });
+  };
 
   const planLabel = useMemo(() => ({
     MONTHLY: 'Basico Mensual',
@@ -172,8 +360,8 @@ const ClientPortal = () => {
 
   const statusLabel = useMemo(() => ({
     ACTIVE: 'Activo',
-    CANCELED: 'Cancelado',
-    PAST_DUE: 'Past Due',
+    CANCELED: 'No renovable',
+    PAST_DUE: 'Pago pendiente',
     INCOMPLETE: 'Pendiente',
   }), []);
 
@@ -260,6 +448,62 @@ const ClientPortal = () => {
   return (
     <div className="flex min-h-screen bg-slate-950 text-white font-sans selection:bg-neon-cyan selection:text-slate-950">
       
+      {/* Mobile Header */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-[100] bg-slate-900/80 backdrop-blur-xl border-b border-white/5 p-4 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 bg-neon-cyan rounded-lg flex items-center justify-center text-slate-950 shadow-lg">
+            <Radio className="w-4 h-4" />
+          </div>
+          <span className="font-black text-sm uppercase tracking-tighter">RadiOlea</span>
+        </div>
+        <button 
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className="p-2 text-white bg-white/5 rounded-xl border border-white/10"
+        >
+          {isMobileMenuOpen ? <Plus className="w-6 h-6 rotate-45" /> : <LayoutGrid className="w-6 h-6" />}
+        </button>
+      </div>
+
+      {/* Mobile Sidebar Overlay */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.aside
+            initial={{ x: '-100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '-100%' }}
+            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            className="lg:hidden fixed inset-0 z-[150] bg-slate-950 p-8 flex flex-col"
+          >
+            <div className="flex justify-between items-center mb-12">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-neon-cyan rounded-xl flex items-center justify-center text-slate-950 shadow-lg">
+                  <Radio className="w-5 h-5" />
+                </div>
+                <span className="font-black text-xl uppercase tracking-tighter italic">Controls</span>
+              </div>
+              <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 bg-white/5 rounded-xl"><Plus className="w-6 h-6 rotate-45" /></button>
+            </div>
+
+            <nav className="flex-grow space-y-4">
+              {visibleTabs.map((tab) => (
+                <button 
+                  key={tab.id}
+                  onClick={() => { setActiveTab(tab.id); setIsMobileMenuOpen(false); }}
+                  className={`w-full flex items-center gap-4 px-6 py-5 rounded-2xl transition-all ${activeTab === tab.id ? 'bg-neon-cyan text-slate-950' : 'text-slate-400 bg-white/5'}`}
+                >
+                  {tab.icon}
+                  <span className="font-black text-sm uppercase tracking-widest">{tab.label}</span>
+                </button>
+              ))}
+            </nav>
+
+            <button onClick={handleLogout} className="mt-auto w-full flex items-center justify-center gap-4 p-5 text-red-400 bg-red-500/10 rounded-2xl font-bold uppercase tracking-widest">
+              <LogOut className="w-5 h-5" /> Salir
+            </button>
+          </motion.aside>
+        )}
+      </AnimatePresence>
+
       {/* Sidebar - Desktop */}
       <aside className="w-72 bg-slate-900/50 border-r border-white/5 p-8 hidden lg:flex flex-col backdrop-blur-3xl sticky top-0 h-screen">
         <div className="flex items-center gap-3 mb-12 group cursor-pointer">
@@ -312,7 +556,7 @@ const ClientPortal = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-grow p-6 lg:p-12 overflow-y-auto bg-[radial-gradient(circle_at_top_right,rgba(0,243,255,0.03),transparent_40%)]">
+      <main className="flex-grow p-6 lg:p-12 pt-24 lg:pt-12 overflow-y-auto bg-[radial-gradient(circle_at_top_right,rgba(0,243,255,0.03),transparent_40%)]">
         
         {/* Banner de Verificación */}
         {!isVerified && (
@@ -395,17 +639,40 @@ const ClientPortal = () => {
               {/* Stats Rápidas */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
                 {[
-                  { label: "Oyentes Totales", val: "231", icon: <Activity className="text-neon-cyan" />, trend: "+12%" },
-                  { label: "Sucursales Online", val: "2/3", icon: <Store className="text-neon-green" />, trend: "Estable" },
-                  { label: "Próxima Factura", val: "15 Mar", icon: <Calendar className="text-neon-purple" />, trend: "$5,390" },
+                  { label: "Oyentes Totales", val: stats.listeners, icon: <Activity className="text-neon-cyan" />, trend: "+12%" },
+                  { label: "Sucursales Online", val: stats.online, icon: <Store className="text-neon-green" />, trend: "Estable" },
+                  { 
+                    label: "Próximas Facturas", 
+                    val: stats.upcomingInvoices.length > 0 ? (stats.upcomingInvoices.length === 1 ? stats.upcomingInvoices[0].formattedDate : `${stats.upcomingInvoices.length} Pendientes`) : 'N/A', 
+                    icon: <Calendar className="text-neon-purple" />, 
+                    trend: stats.upcomingInvoices.length > 0 ? (stats.upcomingInvoices.length === 1 ? stats.upcomingInvoices[0].formattedAmount : `$${stats.upcomingInvoices.reduce((acc, inv) => acc + inv.amount, 0).toLocaleString('es-MX')}`) : '$0',
+                    subItems: stats.upcomingInvoices.length > 1 ? stats.upcomingInvoices : []
+                  },
                 ].map((st, i) => (
-                  <div key={i} className="bg-slate-900/40 border border-white/5 p-6 rounded-[32px] backdrop-blur-xl">
-                    <div className="flex justify-between items-start mb-4">
-                      <div className="p-3 bg-slate-950 rounded-xl border border-white/5">{st.icon}</div>
-                      <span className="text-[10px] font-black text-neon-cyan bg-neon-cyan/10 px-2 py-1 rounded-lg uppercase tracking-widest">{st.trend}</span>
+                  <div key={i} className="bg-slate-900/40 border border-white/5 p-6 rounded-[32px] backdrop-blur-xl flex flex-col justify-between">
+                    <div>
+                      <div className="flex justify-between items-start mb-4">
+                        <div className="p-3 bg-slate-950 rounded-xl border border-white/5">{st.icon}</div>
+                        <span className="text-[10px] font-black text-neon-cyan bg-neon-cyan/10 px-2 py-1 rounded-lg uppercase tracking-widest">{st.trend}</span>
+                      </div>
+                      <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] mb-1">{st.label}</p>
+                      <p className="text-3xl font-black text-white">{st.val}</p>
                     </div>
-                    <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] mb-1">{st.label}</p>
-                    <p className="text-3xl font-black text-white">{st.val}</p>
+                    {st.subItems && st.subItems.length > 0 && (
+                      <div className="mt-4 pt-4 border-t border-white/5 space-y-2">
+                        {st.subItems.slice(0, 3).map((item, idx) => (
+                          <div key={idx} className="flex justify-between items-center text-[9px] font-bold uppercase tracking-widest text-slate-400">
+                            <span className="truncate max-w-[100px]">{item.branchName}</span>
+                            <span className="text-white">{item.formattedDate}</span>
+                          </div>
+                        ))}
+                        {st.subItems.length > 3 && (
+                          <p className="text-[8px] text-neon-cyan font-black uppercase tracking-widest text-center pt-1">
+                            + {st.subItems.length - 3} más en Facturación
+                          </p>
+                        )}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -482,10 +749,16 @@ const ClientPortal = () => {
                     </div>
 
                     <div className="grid grid-cols-1 gap-3">
-                      <button className="w-full flex items-center justify-center gap-3 py-4 bg-white/5 border border-white/5 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all group/link">
+                      <button 
+                        onClick={() => handleCopyLink(branch.slug)}
+                        className="w-full flex items-center justify-center gap-3 py-4 bg-white/5 border border-white/5 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all group/link"
+                      >
                         <Link2 className="w-4 h-4 text-slate-500 group-hover/link:text-neon-cyan" /> Copiar Link Receptor
                       </button>
-                      <button className="w-full flex items-center justify-center gap-3 py-4 bg-neon-cyan text-slate-950 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:shadow-[0_0_25px_rgba(0,243,255,0.4)] transition-all">
+                      <button 
+                        onClick={() => handleOpenPlayer(branch.slug)}
+                        className="w-full flex items-center justify-center gap-3 py-4 bg-neon-cyan text-slate-950 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:shadow-[0_0_25px_rgba(0,243,255,0.4)] transition-all"
+                      >
                         <Play className="w-4 h-4 fill-current" /> Abrir Sistema
                       </button>
                       <div className="bg-white/5 border border-white/5 rounded-2xl p-4 space-y-3">
@@ -526,6 +799,99 @@ const ClientPortal = () => {
             </motion.div>
           )}
 
+          {activeTab === 'content' && (
+            <motion.div 
+              key="content"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="space-y-8 max-w-4xl"
+            >
+              <div className="bg-slate-900/40 border border-white/5 rounded-[40px] p-10 backdrop-blur-xl">
+                <div className="flex items-center gap-4 mb-8">
+                  <Sparkles className="w-10 h-10 text-neon-cyan" />
+                  <h3 className="text-3xl font-black uppercase tracking-tighter">Perfil <span className="text-neon-cyan italic">Sonoro Pro</span></h3>
+                </div>
+                <p className="text-slate-400 font-medium mb-10 leading-relaxed">
+                  Completa esta información para que nuestro equipo de ingeniería y contenido genere la atmósfera perfecta y los anuncios ideales para tu marca.
+                </p>
+
+                <form onSubmit={handleContentUpdate} className="space-y-8">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4">Seleccionar Sucursal para configurar</label>
+                    <select 
+                      className="w-full bg-slate-950 border border-white/5 rounded-2xl py-5 px-8 text-white font-bold focus:border-neon-cyan/50 focus:outline-none appearance-none"
+                      value={contentForm.branchId}
+                      onChange={(e) => {
+                        const branch = branches.find(b => b.id === e.target.value);
+                        setContentForm({
+                          branchId: e.target.value,
+                          targetAudience: branch?.targetAudience || '',
+                          brandAtmosphere: branch?.brandAtmosphere || '',
+                          adRequirements: branch?.adRequirements || ''
+                        });
+                      }}
+                      required
+                    >
+                      <option value="">¿A qué sucursal aplicamos estos cambios?</option>
+                      {branches.map(b => (
+                        <option key={b.id} value={b.id}>{b.name}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4">Psicodemografía (Audiencia)</label>
+                      <textarea 
+                        rows="4"
+                        placeholder="Ej: Mujeres 25-45 años, nivel socioeconómico medio-alto, interesadas en moda y bienestar."
+                        className="w-full bg-slate-950 border border-white/5 rounded-2xl py-5 px-8 text-white font-bold focus:border-neon-cyan/50 focus:outline-none resize-none"
+                        value={contentForm.targetAudience}
+                        onChange={(e) => setContentForm({...contentForm, targetAudience: e.target.value})}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4">Atmósfera de Marca</label>
+                      <textarea 
+                        rows="4"
+                        placeholder="Ej: Elegante pero accesible, moderna, con mucha energía por las mañanas y chill por las tardes."
+                        className="w-full bg-slate-950 border border-white/5 rounded-2xl py-5 px-8 text-white font-bold focus:border-neon-cyan/50 focus:outline-none resize-none"
+                        value={contentForm.brandAtmosphere}
+                        onChange={(e) => setContentForm({...contentForm, brandAtmosphere: e.target.value})}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4">Guiones o Requerimientos de Anuncios</label>
+                    <textarea 
+                      rows="4"
+                      placeholder="Ej: Queremos un anuncio de '2x1 en cafés' cada 20 minutos. Otro de 'Bienvenida al cliente' cada hora."
+                      className="w-full bg-slate-950 border border-white/5 rounded-2xl py-5 px-8 text-white font-bold focus:border-neon-cyan/50 focus:outline-none resize-none"
+                      value={contentForm.adRequirements}
+                      onChange={(e) => setContentForm({...contentForm, adRequirements: e.target.value})}
+                    />
+                  </div>
+
+                  <div className="pt-4">
+                    {contentStatus && (
+                      <p className={`text-center text-[10px] font-black uppercase tracking-widest mb-4 ${contentStatus.success ? 'text-emerald-400' : 'text-red-400'}`}>
+                        {contentStatus.message}
+                      </p>
+                    )}
+                    <button 
+                      type="submit"
+                      disabled={isUpdatingContent || !contentForm.branchId}
+                      className="w-full py-5 bg-neon-cyan text-slate-950 rounded-2xl font-black text-xs uppercase tracking-widest hover:shadow-xl hover:shadow-neon-cyan/20 transition-all disabled:opacity-50"
+                    >
+                      {isUpdatingContent ? 'Enviando...' : 'Actualizar Perfil de Contenido'}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </motion.div>
+          )}
+
           {activeTab === 'billing' && (
             <motion.div 
               key="billing"
@@ -533,53 +899,80 @@ const ClientPortal = () => {
               animate={{ opacity: 1, y: 0 }}
               className="space-y-8"
             >
-              {/* Card de Plan Activo */}
-              <div className="bg-gradient-to-br from-royal-blue to-slate-900 border border-white/10 rounded-[48px] p-10 md:p-14 relative overflow-hidden shadow-2xl">
-                <div className="absolute top-0 right-0 w-96 h-96 bg-neon-cyan/5 blur-[100px] rounded-full -mr-48 -mt-48" />
-                <div className="relative z-10">
-                  <div className="flex items-center gap-3 mb-8">
-                    <div className="px-4 py-1.5 bg-neon-cyan text-slate-950 rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-lg">
-                      Suscripción Activa
-                    </div>
-                    <Sparkles className="text-neon-cyan w-5 h-5 animate-pulse" />
-                  </div>
-                  <h3 className="text-5xl md:text-6xl font-black mb-4 tracking-tighter uppercase leading-none">Plan Profesional <br /><span className="text-neon-cyan italic">Anual</span></h3>
-                  <p className="text-slate-400 text-lg md:text-xl font-medium max-w-2xl mb-12">Disfrutando de ingeniería de audio premium, publicidad ilimitada y soporte prioritario 24/7.</p>
-                  
-                  <div className="flex flex-wrap gap-12">
-                    <div>
-                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Próxima Renovación</p>
-                      <p className="text-2xl font-black text-white uppercase">15 de Febrero, 2027</p>
-                    </div>
-                    <div>
-                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Monto Estimado</p>
-                      <p className="text-2xl font-black text-white uppercase">$5,390.00 MXN</p>
-                    </div>
-                  </div>
+              {branches.length === 0 ? (
+                <div className="bg-slate-900/40 border border-white/5 rounded-[40px] p-10 backdrop-blur-xl text-center">
+                  <p className="text-slate-400 font-medium">No tienes sucursales con planes activos actualmente.</p>
                 </div>
-              </div>
+              ) : (
+                branches.map((branch) => (
+                  <div key={branch.id} className="bg-slate-900/40 border border-white/5 rounded-[40px] p-8 backdrop-blur-xl relative overflow-hidden group hover:border-neon-cyan/30 transition-all duration-500">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-neon-cyan/5 blur-[80px] rounded-full -mr-32 -mt-32 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+                      <div className="space-y-4 flex-grow">
+                        <div className="flex items-center gap-3">
+                          <div className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-lg ${branch.subscriptionStatus === 'ACTIVE' ? 'bg-neon-cyan text-slate-950' : 'bg-red-500/20 text-red-400'}`}>
+                            {statusLabel[branch.subscriptionStatus] || 'Sin Plan'}
+                          </div>
+                          <h3 className="text-2xl font-black uppercase tracking-tighter text-white">{branch.name}</h3>
+                        </div>
+                        <p className="text-4xl font-black text-white uppercase leading-none">
+                          {branch.plan ? planLabel[branch.plan] : 'Sin Suscripción'}
+                        </p>
+                        <div className="flex flex-wrap gap-8 pt-4">
+                          <div>
+                            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Próxima Renovación</p>
+                            <p className="text-xl font-black text-white uppercase">{formatDate(branch.currentPeriodEnd) || 'N/A'}</p>
+                          </div>
+                          <div>
+                            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Costo Estimado</p>
+                            <p className="text-xl font-black text-white uppercase">
+                              {branch.plan === 'YEARLY' ? '$5,390.00 MXN' : (branch.plan === 'MONTHLY' ? '$539.00 MXN' : 'N/A')}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="shrink-0 w-full md:w-auto flex flex-col gap-3">
+                        <button 
+                          onClick={() => setActiveTab('branches')}
+                          className="w-full md:w-auto px-8 py-4 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all text-white"
+                        >
+                          Gestionar Sucursal
+                        </button>
+                        {branch.subscriptionStatus !== 'ACTIVE' && (
+                          <button 
+                            onClick={() => navigate(`/checkout/${branch.plan === 'YEARLY' ? 'profesional' : 'basico'}?branchId=${branch.id}`)}
+                            className="w-full md:w-auto px-8 py-4 bg-neon-cyan text-slate-950 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:shadow-[0_0_20px_rgba(0,243,255,0.4)] transition-all"
+                          >
+                            Pagar otro mes
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
 
-              {/* Historial de Facturas */}
+              {/* Historial de Facturas (Simulado por sucursal) */}
               <div className="bg-slate-900/40 border border-white/5 rounded-[40px] p-8 backdrop-blur-xl">
                 <h4 className="text-xl font-black uppercase tracking-tighter mb-8 flex items-center gap-3">
-                  <Clock className="text-neon-cyan w-6 h-6" /> Historial de Facturación
+                  <Clock className="text-neon-cyan w-6 h-6" /> Historial de Facturación Consolidado
                 </h4>
                 <div className="space-y-4">
-                  {invoices.map((inv, i) => (
+                  {branches.filter(b => b.stripeSubscriptionId).map((branch, i) => (
                     <div key={i} className="flex flex-col md:flex-row justify-between items-start md:items-center p-6 bg-slate-950 border border-white/5 rounded-3xl hover:border-white/20 transition-all group">
                       <div className="flex items-center gap-6 mb-4 md:mb-0">
                         <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-slate-500 group-hover:text-neon-cyan transition-colors">
                           <Download className="w-5 h-5" />
                         </div>
                         <div>
-                          <p className="font-black text-white uppercase tracking-tighter">{inv.id}</p>
-                          <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest">{inv.date}</p>
+                          <p className="font-black text-white uppercase tracking-tighter">{branch.name}</p>
+                          <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest">Periodo actual hasta: {formatDate(branch.currentPeriodEnd)}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-8 w-full md:w-auto justify-between">
-                        <span className="text-xl font-black text-white">{inv.amount}</span>
+                        <span className="text-xl font-black text-white">{branch.plan === 'YEARLY' ? '$5,390.00' : '$539.00'}</span>
                         <span className="px-4 py-1.5 bg-green-500/10 text-green-500 rounded-full text-[10px] font-black uppercase tracking-widest">
-                          {inv.status}
+                          Pagado
                         </span>
                       </div>
                     </div>
@@ -594,34 +987,128 @@ const ClientPortal = () => {
               key="support"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="space-y-8"
+              className="space-y-12"
             >
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="bg-slate-900/40 border border-white/5 rounded-[40px] p-10 backdrop-blur-xl">
-                  <MessageSquare className="w-12 h-12 text-neon-cyan mb-8" />
-                  <h3 className="text-3xl font-black uppercase tracking-tighter mb-4">Soporte <span className="text-neon-cyan italic">Técnico</span></h3>
-                  <p className="text-slate-500 font-medium mb-8">¿Tienes problemas con el streaming o tus sucursales? Nuestro equipo técnico está listo para ayudarte.</p>
-                  <div className="space-y-4">
-                    <a href="https://wa.me/TUNUMERO" className="flex items-center gap-4 p-4 bg-white/5 rounded-2xl hover:bg-white/10 transition-all group">
-                       <PhoneCall className="w-5 h-5 text-neon-cyan" />
-                       <span className="font-bold uppercase text-xs tracking-widest">WhatsApp Directo</span>
-                    </a>
-                    <a href="mailto:soporte@radioleacontrols.com" className="flex items-center gap-4 p-4 bg-white/5 rounded-2xl hover:bg-white/10 transition-all group">
-                       <Mail className="w-5 h-5 text-neon-cyan" />
-                       <span className="font-bold uppercase text-xs tracking-widest">Email de Soporte</span>
-                    </a>
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                {/* Métodos de Contacto Directo */}
+                <div className="space-y-8">
+                  <div className="bg-slate-900/40 border border-white/5 rounded-[40px] p-10 backdrop-blur-xl">
+                    <MessageSquare className="w-12 h-12 text-neon-cyan mb-8" />
+                    <h3 className="text-3xl font-black uppercase tracking-tighter mb-4">Soporte <span className="text-neon-cyan italic">Técnico</span></h3>
+                    <p className="text-slate-500 font-medium mb-8">¿Tienes problemas con el streaming o tus sucursales? Nuestro equipo técnico está listo para ayudarte.</p>
+                    <div className="space-y-4">
+                      <a href="https://wa.me/525579192845" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 bg-white/5 rounded-2xl hover:bg-white/10 transition-all group">
+                        <PhoneCall className="w-5 h-5 text-neon-cyan" />
+                        <span className="font-bold uppercase text-xs tracking-widest">WhatsApp Directo</span>
+                      </a>
+                      <a href="mailto:soporte@radioleacontrols.com" className="flex items-center gap-4 p-4 bg-white/5 rounded-2xl hover:bg-white/10 transition-all group">
+                        <Mail className="w-5 h-5 text-neon-cyan" />
+                        <span className="font-bold uppercase text-xs tracking-widest">Email de Soporte</span>
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="bg-slate-900/40 border border-white/5 rounded-[40px] p-10 backdrop-blur-xl">
+                    <Settings className="w-12 h-12 text-neon-purple mb-8" />
+                    <h3 className="text-3xl font-black uppercase tracking-tighter mb-4">Asesoría <span className="text-neon-purple italic">Comercial</span></h3>
+                    <p className="text-slate-500 font-medium mb-8">¿Deseas escalar tu plan o necesitas una solución personalizada para nuevos hoteles o restaurantes?</p>
+                    <button className="w-full py-5 bg-neon-purple/20 border border-neon-purple/30 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-neon-purple/30 transition-all text-white">
+                      Agendar Consultoría
+                    </button>
                   </div>
                 </div>
 
+                {/* Formulario de Reporte de Incidentes */}
                 <div className="bg-slate-900/40 border border-white/5 rounded-[40px] p-10 backdrop-blur-xl">
-                  <Settings className="w-12 h-12 text-neon-purple mb-8" />
-                  <h3 className="text-3xl font-black uppercase tracking-tighter mb-4">Asesoría <span className="text-neon-purple italic">Comercial</span></h3>
-                  <p className="text-slate-500 font-medium mb-8">¿Deseas escalar tu plan o necesitas una solución personalizada para nuevos hoteles o restaurantes?</p>
-                  <button className="w-full py-5 bg-neon-purple/20 border border-neon-purple/30 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-neon-purple/30 transition-all text-white">
-                    Agendar Consultoría
-                  </button>
+                  <AlertTriangle className="w-12 h-12 text-amber-400 mb-8" />
+                  <h3 className="text-3xl font-black uppercase tracking-tighter mb-4 text-white">Reportar <span className="text-amber-400 italic">Incidente</span></h3>
+                  <p className="text-slate-500 font-medium mb-8">Describe el problema y lo revisaremos de inmediato.</p>
+                  
+                  <form onSubmit={handleReportIncident} className="space-y-6">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4">¿Qué sucursal tiene el problema?</label>
+                      <select 
+                        className="w-full bg-slate-950 border border-white/5 rounded-2xl py-4 px-6 text-white font-bold focus:border-neon-cyan/50 focus:outline-none appearance-none"
+                        value={incidentForm.branchId}
+                        onChange={(e) => setIncidentForm({...incidentForm, branchId: e.target.value})}
+                        required
+                      >
+                        <option value="">Seleccionar sucursal...</option>
+                        {branches.map(b => (
+                          <option key={b.id} value={b.id}>{b.name}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4">Asunto Breve</label>
+                      <input 
+                        type="text"
+                        placeholder="Ej: El stream no carga"
+                        className="w-full bg-slate-950 border border-white/5 rounded-2xl py-4 px-6 text-white font-bold focus:border-neon-cyan/50 focus:outline-none"
+                        value={incidentForm.title}
+                        onChange={(e) => setIncidentForm({...incidentForm, title: e.target.value})}
+                        required
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4">Descripción del problema</label>
+                      <textarea 
+                        rows="4"
+                        placeholder="Danos más detalles para ayudarte mejor..."
+                        className="w-full bg-slate-950 border border-white/5 rounded-2xl py-4 px-6 text-white font-bold focus:border-neon-cyan/50 focus:outline-none resize-none"
+                        value={incidentForm.description}
+                        onChange={(e) => setIncidentForm({...incidentForm, description: e.target.value})}
+                        required
+                      />
+                    </div>
+
+                    {reportStatus && (
+                      <p className={`text-[10px] font-black uppercase tracking-widest text-center ${reportStatus.success ? 'text-emerald-400' : 'text-red-400'}`}>
+                        {reportStatus.message}
+                      </p>
+                    )}
+
+                    <button 
+                      type="submit"
+                      disabled={isReporting}
+                      className="w-full py-5 bg-amber-500 text-slate-950 rounded-2xl font-black text-xs uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-amber-500/20 disabled:opacity-50"
+                    >
+                      {isReporting ? 'Enviando...' : 'Enviar Reporte a Ingeniería'}
+                    </button>
+                  </form>
                 </div>
               </div>
+
+              {/* Lista de Incidentes Recientes del Cliente */}
+              {incidents.length > 0 && (
+                <div className="bg-slate-900/40 border border-white/5 rounded-[40px] p-10 backdrop-blur-xl">
+                  <h4 className="text-xl font-black uppercase tracking-tighter mb-8 flex items-center gap-3">
+                    <Activity className="text-neon-cyan w-6 h-6" /> Tus Reportes Recientes
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {incidents.map((inc) => (
+                      <div key={inc.id} className="p-6 bg-slate-950 border border-white/5 rounded-3xl hover:border-white/10 transition-all">
+                        <div className="flex justify-between items-start mb-4">
+                          <div>
+                            <p className="font-black text-white uppercase tracking-tighter">{inc.title}</p>
+                            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Sucursal: {inc.branch?.name || 'General'}</p>
+                          </div>
+                          <span className={`px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest ${
+                            inc.status === 'PENDING' ? 'bg-amber-500/10 text-amber-400' : 
+                            inc.status === 'IN_PROGRESS' ? 'bg-blue-500/10 text-blue-400' : 
+                            'bg-emerald-500/10 text-emerald-400'
+                          }`}>
+                            {inc.status === 'PENDING' ? 'Pendiente' : inc.status === 'IN_PROGRESS' ? 'En revisión' : 'Resuelto'}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-400 leading-relaxed line-clamp-2">{inc.description}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </motion.div>
           )}
 
@@ -633,41 +1120,81 @@ const ClientPortal = () => {
               className="max-w-3xl"
             >
                <div className="bg-slate-900/40 border border-white/5 rounded-[40px] p-10 backdrop-blur-xl">
-                 <div className="flex items-center gap-6 mb-12">
+                 <div className="flex flex-col md:flex-row items-center gap-8 mb-12">
                    <div className="w-24 h-24 bg-gradient-to-br from-neon-cyan to-blue-600 rounded-[32px] flex items-center justify-center text-slate-950 text-4xl font-black shadow-2xl">
                      {firstName[0]}
                    </div>
-                   <div>
+                   <div className="text-center md:text-left">
                      <h3 className="text-3xl font-black uppercase tracking-tighter mb-1">{user?.name || 'Usuario'}</h3>
-                     <p className="text-neon-cyan font-bold text-sm tracking-widest uppercase">{user?.role || 'CLIENTE ELITE'}</p>
+                     <p className="text-neon-cyan font-bold text-sm tracking-widest uppercase mb-3">{user?.role || 'CLIENTE ELITE'}</p>
+                     <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10">
+                        <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">ID Cliente:</span>
+                        <span className="text-xs font-black text-white">{user?.customerCustomId || 'GENERANDO...'}</span>
+                     </div>
                    </div>
                  </div>
 
-                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-                   <div className="space-y-2">
-                     <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4">Empresa</p>
-                     <p className="bg-slate-950 border border-white/5 rounded-2xl py-5 px-8 text-white font-bold">{user?.companyName || 'No especificada'}</p>
+                 <form onSubmit={handleProfileUpdate} className="space-y-8">
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                     <div className="space-y-2">
+                       <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4">Empresa</p>
+                       <input 
+                        type="text"
+                        placeholder="Nombre de la empresa"
+                        className="w-full bg-slate-950 border border-white/5 rounded-2xl py-5 px-8 text-white font-bold focus:border-neon-cyan/50 focus:outline-none transition-all"
+                        value={profileForm.companyName}
+                        onChange={(e) => setProfileForm({...profileForm, companyName: e.target.value})}
+                       />
+                     </div>
+                     <div className="space-y-2">
+                       <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4">Teléfono</p>
+                       <input 
+                        type="text"
+                        placeholder="+52 ..."
+                        className="w-full bg-slate-950 border border-white/5 rounded-2xl py-5 px-8 text-white font-bold focus:border-neon-cyan/50 focus:outline-none transition-all"
+                        value={profileForm.phoneNumber}
+                        onChange={(e) => setProfileForm({...profileForm, phoneNumber: e.target.value})}
+                       />
+                     </div>
                    </div>
-                   <div className="space-y-2">
-                     <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4">Miembro desde</p>
-                     <p className="bg-slate-950 border border-white/5 rounded-2xl py-5 px-8 text-white font-bold">2026</p>
-                   </div>
-                 </div>
 
-                 <form className="space-y-6">
-                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                      <div className="space-y-2">
                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4">Nombre Completo</label>
-                       <input disabled type="text" value={user?.name || ''} className="w-full bg-slate-950 border border-white/5 rounded-2xl py-5 px-8 text-white font-bold opacity-50" />
+                       <input 
+                        type="text" 
+                        className="w-full bg-slate-950 border border-white/5 rounded-2xl py-5 px-8 text-white font-bold focus:border-neon-cyan/50 focus:outline-none transition-all"
+                        value={profileForm.name}
+                        onChange={(e) => setProfileForm({...profileForm, name: e.target.value})}
+                        required
+                       />
                      </div>
                      <div className="space-y-2">
                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4">Email Principal</label>
-                       <input disabled type="text" value={user?.email || ''} className="w-full bg-slate-950 border border-white/5 rounded-2xl py-5 px-8 text-white font-bold opacity-50" />
+                       <input 
+                        type="email" 
+                        className="w-full bg-slate-950 border border-white/5 rounded-2xl py-5 px-8 text-white font-bold focus:border-neon-cyan/50 focus:outline-none transition-all"
+                        value={profileForm.email}
+                        onChange={(e) => setProfileForm({...profileForm, email: e.target.value})}
+                        required
+                       />
                      </div>
                    </div>
-                   <button className="w-full py-5 bg-white/5 border border-white/10 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-white/10 transition-all text-slate-400">
-                     Solicitar Cambio de Datos
-                   </button>
+
+                   <div className="pt-4">
+                     {profileStatus && (
+                       <p className={`text-center text-[10px] font-black uppercase tracking-widest mb-4 ${profileStatus.success ? 'text-emerald-400' : 'text-red-400'}`}>
+                         {profileStatus.message}
+                       </p>
+                     )}
+                     <button 
+                      type="submit"
+                      disabled={isUpdatingProfile}
+                      className="w-full py-5 bg-neon-cyan text-slate-950 rounded-2xl font-black text-xs uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-neon-cyan/20 disabled:opacity-50"
+                     >
+                       {isUpdatingProfile ? 'Guardando...' : 'Guardar Cambios'}
+                     </button>
+                   </div>
                  </form>
                </div>
             </motion.div>

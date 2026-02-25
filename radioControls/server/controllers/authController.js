@@ -250,3 +250,48 @@ export const resetPassword = async (req, res) => {
     return res.status(500).json({ message: "Error interno del servidor" });
   }
 };
+
+/**
+ * Actualiza el perfil del usuario
+ */
+export const updateProfile = async (req, res) => {
+  const { userId } = req.user; // Viene del token JWT
+  const { name, email, companyName, phoneNumber } = req.body;
+
+  try {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) return res.status(404).json({ message: "Usuario no encontrado" });
+
+    // Generar Custom ID si no tiene uno
+    let customerCustomId = user.customerCustomId;
+    if (!customerCustomId && (name || user.name)) {
+      const baseName = name || user.name || "USR";
+      const prefix = baseName.substring(0, 3).toUpperCase();
+      const random = Math.floor(1000 + Math.random() * 9000);
+      customerCustomId = `${prefix}-${random}`;
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        name: name || undefined,
+        email: email || undefined,
+        companyName: companyName || undefined,
+        phoneNumber: phoneNumber || undefined,
+        customerCustomId: customerCustomId
+      }
+    });
+
+    const { password: _password, ...userWithoutPassword } = updatedUser;
+    return res.status(200).json({ 
+      message: "Perfil actualizado exitosamente", 
+      user: userWithoutPassword 
+    });
+  } catch (error) {
+    console.error("Update profile error:", error);
+    if (error.code === 'P2002') {
+      return res.status(409).json({ message: "El correo ya está en uso" });
+    }
+    return res.status(500).json({ message: "Error al actualizar el perfil" });
+  }
+};

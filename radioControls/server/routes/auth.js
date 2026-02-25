@@ -7,6 +7,7 @@ import {
   forgotPassword,
   resetPassword,
   adminCreateUser,
+  updateProfile,
 } from "../controllers/authController.js";
 import { requireAuth, requireAdmin } from "../middleware/auth.js";
 
@@ -18,6 +19,7 @@ router.post("/verify", (req, res) => verify(req, res));
 router.post("/resend-verification", (req, res) => resendVerification(req, res));
 router.post("/forgot-password", (req, res) => forgotPassword(req, res));
 router.post("/reset-password", (req, res) => resetPassword(req, res));
+router.patch("/update-profile", requireAuth, (req, res) => updateProfile(req, res));
 
 // Admin only
 router.post("/admin-create-user", requireAuth, requireAdmin, (req, res) => adminCreateUser(req, res));

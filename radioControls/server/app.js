@@ -8,6 +8,8 @@ import authRoutes from "./routes/auth.js";
 import branchesRoutes from "./routes/branches.js";
 import stationsRoutes from "./routes/stations.js";
 import stripeRoutes from "./routes/stripe.js";
+import incidentsRoutes from "./routes/incidents.js";
+import adminRoutes from "./routes/admin.js";
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -25,6 +27,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/branches", branchesRoutes);
 app.use("/api/stations", stationsRoutes);
 app.use("/api/stripe", stripeRoutes);
+app.use("/api/incidents", incidentsRoutes);
+app.use("/api/admin", adminRoutes);
 
 // En Vercel, el frontend es manejado por el builder estático.
 // Solo activamos esto para entornos locales de producción si es necesario.

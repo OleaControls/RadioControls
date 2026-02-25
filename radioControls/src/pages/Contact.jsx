@@ -55,7 +55,7 @@ const Contact = () => {
               { 
                 icon: <Phone className="w-7 h-7" />, 
                 label: "Línea Directa / WhatsApp", 
-                value: "+52 (55) 1234-5678",
+                value: "55 7919 2845",
                 color: "text-neon-green"
               },
               { 

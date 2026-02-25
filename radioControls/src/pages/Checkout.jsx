@@ -1,7 +1,7 @@
-import React, { useMemo, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useParams, useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ShieldCheck, CreditCard, Lock, ArrowLeft, CheckCircle2, Radio, Headphones } from 'lucide-react';
+import { ShieldCheck, CreditCard, Lock, ArrowLeft, CheckCircle2, Radio, Headphones, RefreshCw } from 'lucide-react';
 import WaveCursor from '../components/WaveCursor';
 import { useAuth } from '../components/AuthContext';
 import { loadStripe } from '@stripe/stripe-js';
@@ -32,12 +32,34 @@ const slugify = (value) =>
 
 const Checkout = () => {
   const { planId } = useParams();
+  const [searchParams] = useSearchParams();
+  const branchId = searchParams.get('branchId');
+
   const navigate = useNavigate();
   const { user, token } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [branchName, setBranchName] = useState('');
   const [branchSlug, setBranchSlug] = useState('');
+  const [isRenewal, setIsRenewal] = useState(false);
+
+  useEffect(() => {
+    const fetchBranchData = async () => {
+      if (!branchId || !token) return;
+      try {
+        const response = await apiFetch(`/api/branches/get-stream?branchId=${branchId}`, {}, token);
+        const data = await response.json();
+        if (response.ok) {
+          setBranchName(data.branchName || '');
+          setBranchSlug(data.slug || '');
+          setIsRenewal(true);
+        }
+      } catch (err) {
+        console.error("Error al cargar datos de sucursal:", err);
+      }
+    };
+    fetchBranchData();
+  }, [branchId, token]);
 
   const plan = plansData[planId];
   const stripePromise = useMemo(() => loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || ''), []);
@@ -72,6 +94,7 @@ const Checkout = () => {
           branchSlug: safeSlug,
           userId: user?.id,
           email: user?.email,
+          branchId: branchId || null,
         }),
       }, token);
 
@@ -152,11 +175,20 @@ const Checkout = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           <div className="lg:col-span-7 bg-slate-900/40 border border-white/5 rounded-[48px] p-8 md:p-12 backdrop-blur-2xl shadow-2xl">
-            <div className="flex items-center gap-4 mb-10">
-              <div className="p-3 bg-neon-cyan/10 rounded-2xl border border-neon-cyan/20">
-                <CreditCard className="w-6 h-6 text-neon-cyan" />
+            <div className="flex items-center justify-between mb-10">
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-neon-cyan/10 rounded-2xl border border-neon-cyan/20">
+                  {isRenewal ? <RefreshCw className="w-6 h-6 text-neon-cyan animate-spin-slow" /> : <CreditCard className="w-6 h-6 text-neon-cyan" />}
+                </div>
+                <h2 className="text-3xl font-black uppercase tracking-tighter">
+                  {isRenewal ? 'Renovación de Sucursal' : 'Datos de la Sucursal'}
+                </h2>
               </div>
-              <h2 className="text-3xl font-black uppercase tracking-tighter">Datos de la Sucursal</h2>
+              {isRenewal && (
+                <span className="px-4 py-1.5 rounded-full bg-neon-cyan/20 border border-neon-cyan/30 text-neon-cyan text-[10px] font-black uppercase tracking-widest">
+                  MODO RENOVACIÓN
+                </span>
+              )}
             </div>
 
             <form onSubmit={handleCheckout} className="space-y-8">
@@ -167,8 +199,9 @@ const Checkout = () => {
                   type="text"
                   value={branchName}
                   onChange={(e) => setBranchName(e.target.value)}
+                  disabled={isRenewal}
                   placeholder="Polanco - Corporativo"
-                  className="w-full bg-slate-950 border border-white/10 rounded-2xl py-5 px-8 focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan/50 transition-all text-white font-medium placeholder:text-slate-800"
+                  className={`w-full bg-slate-950 border border-white/10 rounded-2xl py-5 px-8 focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan/50 transition-all text-white font-medium placeholder:text-slate-800 ${isRenewal ? 'opacity-50 cursor-not-allowed' : ''}`}
                 />
               </div>
 
@@ -178,11 +211,12 @@ const Checkout = () => {
                   type="text"
                   value={branchSlug}
                   onChange={(e) => setBranchSlug(e.target.value)}
+                  disabled={isRenewal}
                   placeholder="polanco-corporativo"
-                  className="w-full bg-slate-950 border border-white/10 rounded-2xl py-5 px-8 focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan/50 transition-all text-white font-medium placeholder:text-slate-800"
+                  className={`w-full bg-slate-950 border border-white/10 rounded-2xl py-5 px-8 focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan/50 transition-all text-white font-medium placeholder:text-slate-800 ${isRenewal ? 'opacity-50 cursor-not-allowed' : ''}`}
                 />
                 <p className="text-[10px] text-slate-500 uppercase tracking-widest ml-4">
-                  Se usara para el link del receptor.
+                  {isRenewal ? 'El enlace de tu receptor no cambiará.' : 'Se usara para el link del receptor.'}
                 </p>
               </div>
 

@@ -27,12 +27,20 @@ enum PlanType {
   YEARLY
 }
 
+enum IncidentStatus {
+  PENDING
+  IN_PROGRESS
+  RESOLVED
+}
+
 model User {
   id            String         @id @default(cuid())
   email         String         @unique
   password      String         // Hash de la contraseña
   name          String?
   companyName   String?
+  phoneNumber   String?
+  customerCustomId String?     @unique
   role          Role           @default(CLIENT)
   
   // Verificación y Seguridad
@@ -48,6 +56,7 @@ model User {
   // Relaciones
   branches      Branch[]       // Sucursales propiedad del usuario
   subscription  Subscription?  // Datos de pago
+  incidents     Incident[]
 }
 
 model Station {
@@ -65,7 +74,7 @@ model Station {
 model Branch {
   id          String   @id @default(cuid())
   name        String
-  slug        String   @unique // Para el link personalizado: dominio.com/player/slug
+  slug        String   @unique 
   status      String   @default("Offline")
 
   plan                 PlanType?
@@ -74,6 +83,11 @@ model Branch {
   stripePriceId        String?
   currentPeriodEnd     DateTime?
   
+  // Perfil Sonoro y Psicodemografía
+  targetAudience       String?   @db.Text // Ej: "Mujeres 25-40 años, nivel socioeconómico A/B"
+  brandAtmosphere      String?   @db.Text // Ej: "Energética, moderna, premium"
+  adRequirements       String?   @db.Text // Ej: "Anuncios cada 15 min de promociones de temporada"
+  
   // Relaciones
   ownerId     String
   owner       User     @relation(fields: [ownerId], references: [id])
@@ -81,8 +95,26 @@ model Branch {
   stationId   String?
   station     Station? @relation(fields: [stationId], references: [id])
 
+  incidents   Incident[]
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model Incident {
+  id          String         @id @default(cuid())
+  title       String
+  description String
+  status      IncidentStatus @default(PENDING)
+  
+  userId      String
+  user        User           @relation(fields: [userId], references: [id])
+  
+  branchId    String?
+  branch      Branch?        @relation(fields: [branchId], references: [id])
+
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
 }
 
 model Subscription {
