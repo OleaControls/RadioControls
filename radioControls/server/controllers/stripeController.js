@@ -1,7 +1,17 @@
 import Stripe from "stripe";
 import prisma from "../lib/prisma.js";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+// Inicialización segura de Stripe
+const stripeKey = process.env.STRIPE_SECRET_KEY;
+const stripe = stripeKey ? new Stripe(stripeKey) : null;
+
+const checkStripe = (res) => {
+  if (!stripe) {
+    res.status(500).json({ message: "Configuración de Stripe faltante en el servidor" });
+    return false;
+  }
+  return true;
+};
 
 const PLAN_CONFIG = {
   basico: {
@@ -44,6 +54,7 @@ const ensureUniqueSlug = async (baseSlug) => {
 };
 
 export const createCheckoutSession = async (req, res) => {
+  if (!checkStripe(res)) return;
   const { planId, branchName, branchSlug, userId, email } = req.body || {};
 
   if (!planId || !PLAN_CONFIG[planId]) {
@@ -87,6 +98,7 @@ export const createCheckoutSession = async (req, res) => {
 };
 
 export const confirmSession = async (req, res) => {
+  if (!checkStripe(res)) return;
   const sessionId = req.query.session_id || req.query.sessionId;
   if (!sessionId) {
     return res.status(400).json({ message: "Falta session_id" });
@@ -159,6 +171,7 @@ export const confirmSession = async (req, res) => {
 };
 
 export const updateSubscription = async (req, res) => {
+  if (!checkStripe(res)) return;
   const { branchId, planId } = req.body || {};
   if (!branchId || !planId || !PLAN_CONFIG[planId]) {
     return res.status(400).json({ message: "Datos invalidos" });
@@ -209,6 +222,7 @@ export const updateSubscription = async (req, res) => {
 };
 
 export const cancelSubscription = async (req, res) => {
+  if (!checkStripe(res)) return;
   const { branchId } = req.body || {};
   if (!branchId) {
     return res.status(400).json({ message: "branchId es requerido" });
