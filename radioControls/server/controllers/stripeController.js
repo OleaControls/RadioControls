@@ -1,5 +1,6 @@
 import Stripe from "stripe";
 import prisma from "../lib/prisma.js";
+import { sendPurchaseReceiptEmail } from "../lib/email.js";
 
 // Inicialización segura de Stripe
 const stripeKey = process.env.STRIPE_SECRET_KEY;
@@ -129,24 +130,47 @@ export const confirmSession = async (req, res) => {
       return res.status(400).json({ message: "Metadata incompleta" });
     }
 
-    const subscription = session.subscription;
+    const subscriptionId = typeof session.subscription === 'string' ? session.subscription : session.subscription.id;
+    
+    // Obtener la suscripción directamente para asegurar datos frescos
+    const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+
     const existingBySub = await prisma.branch.findFirst({
       where: { stripeSubscriptionId: subscription.id },
     });
+    
     if (existingBySub) {
+      console.log("SUCURSAL YA EXISTENTE PARA ESTA SUB:", subscription.id);
       return res.status(200).json({ branch: existingBySub, subscriptionId: subscription.id });
     }
 
     const planType = PLAN_CONFIG[planId]?.planType || "MONTHLY";
     const subscriptionStatus = STATUS_MAP[subscription.status] || "INCOMPLETE";
+    
+    // Obtener el Price ID del primer item de la suscripción
     const priceId = subscription.items?.data?.[0]?.price?.id || null;
-    const currentPeriodEnd = subscription.current_period_end
+    
+    // Convertir el timestamp de Unix a Date de JS con FALLBACK de seguridad
+    let currentPeriodEnd = subscription.current_period_end
       ? new Date(subscription.current_period_end * 1000)
       : null;
 
+    // SEGURIDAD: Si Stripe no mandó fecha, la calculamos nosotros para no dejar null/1970
+    if (!currentPeriodEnd || isNaN(currentPeriodEnd.getTime())) {
+      console.log("⚠️ Alerta: Stripe no envió fecha válida. Calculando fallback...");
+      currentPeriodEnd = new Date();
+      if (planType === 'YEARLY') {
+        currentPeriodEnd.setFullYear(currentPeriodEnd.getFullYear() + 1);
+      } else {
+        currentPeriodEnd.setMonth(currentPeriodEnd.getMonth() + 1);
+      }
+    }
+
+    console.log(`PROCESANDO PAGO - PLAN: ${planType}, EXPIRA: ${currentPeriodEnd.toISOString()}`);
+
     let branch;
 
-    if (branchId) {
+    if (branchId && branchId.trim() !== "") {
       // RENEWAL: Update existing branch
       branch = await prisma.branch.update({
         where: { id: branchId },
@@ -157,6 +181,7 @@ export const confirmSession = async (req, res) => {
           stripePriceId: priceId,
           currentPeriodEnd,
         },
+        include: { owner: true }
       });
     } else {
       // NEW: Create new branch
@@ -174,7 +199,31 @@ export const confirmSession = async (req, res) => {
           stripePriceId: priceId,
           currentPeriodEnd,
         },
+        include: { owner: true }
       });
+    }
+
+    // Enviar correo de recibo/agradecimiento (AWAIT para asegurar envío)
+    if (branch && (branch.subscriptionStatus === 'ACTIVE' || subscription.status === 'active' || subscription.status === 'trialing')) {
+      const recipientEmail = metadata.userEmail || branch.owner?.email;
+      const recipientName = branch.owner?.name || "Cliente";
+      
+      console.log(`[EMAIL] Enviando recibo. Sucursal: ${branch.name}, Expira: ${branch.currentPeriodEnd}`);
+      
+      try {
+        const amountPaid = planType === 'YEARLY' ? 5390 : 539;
+        await sendPurchaseReceiptEmail(
+          recipientEmail,
+          recipientName,
+          branch.name,
+          planType,
+          amountPaid,
+          branch.currentPeriodEnd // Usar el valor verificado
+        );
+        console.log("✅ [EMAIL] Recibo enviado exitosamente");
+      } catch (emailErr) {
+        console.error("❌ [EMAIL] Error crítico en el proceso de envío:", emailErr.message);
+      }
     }
 
     return res.status(200).json({
@@ -220,9 +269,17 @@ export const updateSubscription = async (req, res) => {
     });
 
     const subscriptionStatus = STATUS_MAP[updated.status] || "INCOMPLETE";
-    const currentPeriodEnd = updated.current_period_end
+    
+    // Fallback de fecha para actualizaciones
+    let currentPeriodEnd = updated.current_period_end
       ? new Date(updated.current_period_end * 1000)
       : null;
+
+    if (!currentPeriodEnd || isNaN(currentPeriodEnd.getTime())) {
+      currentPeriodEnd = new Date();
+      if (planType === 'YEARLY') currentPeriodEnd.setFullYear(currentPeriodEnd.getFullYear() + 1);
+      else currentPeriodEnd.setMonth(currentPeriodEnd.getMonth() + 1);
+    }
 
     const updatedBranch = await prisma.branch.update({
       where: { id: branchId },
@@ -232,7 +289,24 @@ export const updateSubscription = async (req, res) => {
         stripePriceId: priceId,
         currentPeriodEnd,
       },
+      include: { owner: true } // Incluir dueño para el email
     });
+
+    // Enviar correo de confirmación de cambio de plan (AWAIT)
+    try {
+      const amountPaid = planType === 'YEARLY' ? 5390 : 539;
+      await sendPurchaseReceiptEmail(
+        updatedBranch.owner?.email,
+        updatedBranch.owner?.name || "Cliente",
+        updatedBranch.name,
+        planType,
+        amountPaid,
+        updatedBranch.currentPeriodEnd
+      );
+      console.log("✅ [EMAIL] Recibo de actualización enviado");
+    } catch (emailErr) {
+      console.error("❌ [EMAIL] Error en recibo de actualización:", emailErr.message);
+    }
 
     return res.status(200).json({ branch: updatedBranch, status: subscriptionStatus });
   } catch (error) {

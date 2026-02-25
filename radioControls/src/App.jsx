@@ -86,7 +86,7 @@ const MainLayout = () => {
           <Route path="/checkout/success" element={<RequireAuth><CheckoutSuccess /></RequireAuth>} />
           <Route path="/dashboard" element={<RequireRole roles={['ADMIN', 'CLIENT', 'STAFF']}><ClientPortal /></RequireRole>} />
           <Route path="/admin" element={<RequireRole roles={['ADMIN']}><Admin /></RequireRole>} />
-          <Route path="/checkout/:planId" element={<RequireAuth><Checkout /></RequireAuth>} />
+          <Route path="/checkout/:planId" element={<Checkout />} />
           <Route path="/player/:branchSlug" element={<BranchPlayer />} />
           <Route path="/instalacion-audio" element={<AudioInstallation />} />
           <Route path="*" element={<LandingPage />} />

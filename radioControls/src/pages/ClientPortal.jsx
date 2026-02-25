@@ -244,38 +244,43 @@ const ClientPortal = () => {
   
           let totalListeners = 0;
           let onlineCount = 0;
-          const upcomingInvoices = [];
-  
-          const mapped = data.map((branch) => {
-            // Generar un número de oyentes estable basado en el ID para el demo
-            const mockListeners = Math.floor((parseInt(branch.id.slice(-4), 36) % 200) + 20);
-            totalListeners += mockListeners;
-            if (branch.status === 'Online') onlineCount++;
-  
-                      const renewalDate = branch.currentPeriodEnd ? new Date(branch.currentPeriodEnd) : null;
-                      const isExpired = renewalDate && renewalDate < new Date();
-                      const effectiveStatus = isExpired ? 'CANCELED' : (branch.subscriptionStatus || null);
-            
-                      if (renewalDate && effectiveStatus === 'ACTIVE') {
-                        upcomingInvoices.push({
-                          branchName: branch.name,
-                          date: renewalDate,
-                          amount: branch.plan === 'YEARLY' ? 5390 : 539,
-                        });
-                      }
-              
-                      return {
-                        id: branch.id,
-                        name: branch.name,
-                        station: branch.station?.name || 'Sin estacion',
-                        slug: branch.slug,
-                        status: branch.status || 'Offline',
-                        listeners: mockListeners,
-                        plan: branch.plan || null,
-                        subscriptionStatus: effectiveStatus,
-                        stripeSubscriptionId: branch.stripeSubscriptionId || null,
-                        currentPeriodEnd: branch.currentPeriodEnd || null,
-                      };          });
+                  const upcomingInvoices = [];
+          
+                  const mapped = data.map((branch) => {
+                    // Generar un número de oyentes estable basado en el ID para el demo
+                    const mockListeners = Math.floor((parseInt(branch.id.slice(-4), 36) % 200) + 20);
+                    totalListeners += mockListeners;
+                    if (branch.status === 'Online') onlineCount++;
+          
+                    const renewalDate = branch.currentPeriodEnd ? new Date(branch.currentPeriodEnd) : null;
+                    const isExpired = renewalDate && renewalDate < new Date();
+                    
+                    // Si está expirado, forzamos estado CANCELED para mostrar botón de pago
+                    const effectiveStatus = isExpired ? 'CANCELED' : (branch.subscriptionStatus || 'INCOMPLETE');
+          
+                    // Incluir en facturas próximas si está activo O si ya venció (para que aparezca en el resumen de pagos)
+                    if (renewalDate) {
+                      upcomingInvoices.push({
+                        branchName: branch.name,
+                        date: renewalDate,
+                        amount: branch.plan === 'YEARLY' ? 5390 : 539,
+                        status: effectiveStatus
+                      });
+                    }
+          
+                    return {
+                      id: branch.id,
+                      name: branch.name,
+                      station: branch.station?.name || 'Sin estacion',
+                      slug: branch.slug,
+                      status: branch.status || 'Offline',
+                      listeners: mockListeners,
+                      plan: branch.plan || null,
+                      subscriptionStatus: effectiveStatus,
+                      stripeSubscriptionId: branch.stripeSubscriptionId || null,
+                      currentPeriodEnd: branch.currentPeriodEnd, // Pasamos el valor tal cual
+                    };
+                  });
   
           // Ordenar facturas por fecha más cercana
           upcomingInvoices.sort((a, b) => a.date - b.date);
@@ -921,7 +926,10 @@ const ClientPortal = () => {
                         <div className="flex flex-wrap gap-8 pt-4">
                           <div>
                             <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Próxima Renovación</p>
-                            <p className="text-xl font-black text-white uppercase">{formatDate(branch.currentPeriodEnd) || 'N/A'}</p>
+                            <p className={`text-xl font-black uppercase ${new Date(branch.currentPeriodEnd) < new Date() ? 'text-red-500' : 'text-white'}`}>
+                              {new Date(branch.currentPeriodEnd) < new Date() ? 'Vencido: ' : ''}
+                              {formatDate(branch.currentPeriodEnd) || 'N/A'}
+                            </p>
                           </div>
                           <div>
                             <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Costo Estimado</p>

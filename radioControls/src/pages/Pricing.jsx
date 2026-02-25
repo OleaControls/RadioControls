@@ -15,11 +15,8 @@ const Pricing = () => {
       return;
     }
 
-    if (isAuthenticated) {
-      navigate(`/checkout/${planId}`);
-    } else {
-      navigate('/register', { state: { redirectTo: `/checkout/${planId}` } });
-    }
+    // Navegar directo al checkout, el componente Checkout manejará el registro si es necesario
+    navigate(`/checkout/${planId}`);
   };
 
   const plans = [

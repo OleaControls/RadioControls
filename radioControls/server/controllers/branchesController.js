@@ -12,7 +12,19 @@ export const listBranches = async (req, res) => {
       orderBy: { createdAt: "desc" },
       include: { station: true },
     });
-    return res.status(200).json(branches);
+
+    // Asegurar que todas las sucursales tengan una fecha de vencimiento coherente
+    const processedBranches = branches.map(b => {
+      if (!b.currentPeriodEnd) {
+        const fallback = new Date(b.createdAt);
+        if (b.plan === 'YEARLY') fallback.setFullYear(fallback.getFullYear() + 1);
+        else fallback.setMonth(fallback.getMonth() + 1);
+        b.currentPeriodEnd = fallback;
+      }
+      return b;
+    });
+
+    return res.status(200).json(processedBranches);
   } catch (error) {
     console.error("Error al obtener sucursales:", error);
     return res.status(500).json({ message: "Error al obtener sucursales" });
