@@ -50,8 +50,8 @@ const Register = () => {
       </Link>
       <div className="bg-slate-900/40 backdrop-blur-xl p-8 sm:p-10 rounded-3xl border border-white/10 shadow-[0_0_50px_-12px_rgba(0,243,255,0.2)]">
         <div className="flex flex-col items-center text-center mb-10">
-          <div className="mb-6 p-4 bg-neon-cyan/10 rounded-2xl border border-neon-cyan/20">
-            <Radio className="h-10 w-10 text-neon-cyan animate-pulse" />
+          <div className="mb-6">
+            <img src="/logo.png" alt="RadiOlea Controls" className="h-16 w-auto object-contain" />
           </div>
           <h2 className="text-3xl font-black tracking-tighter text-white">
             Únete a Nosotros

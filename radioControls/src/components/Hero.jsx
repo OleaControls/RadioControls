@@ -11,10 +11,7 @@ const Hero = () => {
         transition={{ duration: 0.8 }}
         className="mb-8"
       >
-        <Radio className="w-24 h-24 text-cyan-400 mx-auto mb-4 animate-pulse" />
-        <h1 className="text-6xl md:text-8xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-600 mb-4">
-          RadiOleaControls
-        </h1>
+        <img src="/logo.png" alt="RadiOlea Controls" className="h-24 md:h-40 w-auto mx-auto mb-8 object-contain" />
         <p className="text-xl md:text-2xl text-gray-300 max-w-2xl mx-auto">
           Música ambiental para cada espacio. Controla la atmósfera de tu entorno con transmisión continua.
         </p>

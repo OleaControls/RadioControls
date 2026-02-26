@@ -61,21 +61,7 @@ const Navbar = () => {
         <div className="relative flex items-center justify-between px-6 py-3">
           
           <Link to="/" className="flex items-center gap-2 md:gap-3 group relative z-[110] shrink">
-            <motion.div 
-              whileHover={{ rotate: 180 }}
-              transition={{ duration: 0.5 }}
-              className="p-2 bg-light-accent dark:bg-dark-accent rounded-lg md:rounded-xl shadow-[0_0_20px_rgba(0,35,102,0.2)] dark:shadow-[0_0_20px_rgba(0,243,255,0.3)] shrink-0"
-            >
-                <Radio className="text-white dark:text-dark-background w-5 h-5 md:w-5 md:h-5" />
-            </motion.div>
-            <div className="flex flex-col min-w-0">
-              <span className="font-black text-base md:text-lg tracking-tighter uppercase leading-none text-light-text dark:text-dark-text">
-                RadiOlea<span className="text-light-accent dark:text-dark-accent italic">Controls</span>
-              </span>
-              <span className="hidden md:block text-[10px] font-bold text-gray-500 dark:text-gray-400 tracking-[0.2em] uppercase leading-none mt-1">
-                Audio Intelligence
-              </span>
-            </div>
+            <img src="/logo.png" alt="RadiOlea Controls" className="h-10 md:h-14 w-auto object-contain" />
           </Link>
 
           <div className="hidden lg:flex items-center space-x-1">

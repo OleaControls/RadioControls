@@ -21,10 +21,7 @@ const AuthSplitLayout = ({ children }) => {
           <div className="relative z-10 flex flex-col h-full justify-between">
             <div>
               <div className="flex items-center space-x-3 mb-8">
-                <div className="p-2 bg-white/10 rounded-lg backdrop-blur-md">
-                  <Radio className="h-8 w-8 text-neon-cyan" />
-                </div>
-                <span className="text-2xl font-black tracking-tighter">RadioControls</span>
+                <img src="/logo.png" alt="RadiOlea Controls" className="h-12 w-auto object-contain" />
               </div>
               
               <div className="mt-20">

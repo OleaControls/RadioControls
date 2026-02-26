@@ -14,12 +14,7 @@ const Footer = () => {
           {/* Brand Column */}
           <div className="space-y-4">
             <div className="flex items-center gap-2 group cursor-pointer">
-                <div className="p-2 bg-gray-900 rounded-lg group-hover:bg-cyan-500/10 transition-colors">
-                    <Radio className="text-cyan-400 w-6 h-6" />
-                </div>
-                <span className="font-bold text-xl tracking-tight text-white">
-                  RadioControls
-                </span>
+                <img src="/logo.png" alt="RadiOlea Controls" className="h-12 w-auto object-contain" />
             </div>
             <p className="text-gray-400 text-sm leading-relaxed">
               Transformando espacios comerciales a través del poder del sonido. Soluciones de audio ambiental premium para marcas líderes.

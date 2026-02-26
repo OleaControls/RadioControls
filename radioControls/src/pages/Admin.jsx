@@ -306,10 +306,7 @@ const Admin = () => {
       {/* Mobile Header */}
       <div className="lg:hidden fixed top-0 left-0 right-0 z-[100] bg-slate-900/80 backdrop-blur-xl border-b border-white/5 p-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-neon-cyan rounded-lg flex items-center justify-center text-slate-950 shadow-lg">
-            <ShieldCheck className="w-4 h-4" />
-          </div>
-          <span className="font-black text-sm uppercase tracking-tighter">Admin Control</span>
+          <img src="/logo.png" alt="Admin" className="h-8 w-auto object-contain" />
         </div>
         <button 
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -331,10 +328,7 @@ const Admin = () => {
           >
             <div className="flex justify-between items-center mb-12">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-neon-cyan rounded-xl flex items-center justify-center text-slate-950 shadow-lg">
-                  <ShieldCheck className="w-5 h-5" />
-                </div>
-                <span className="font-black text-xl uppercase tracking-tighter italic text-neon-cyan">Admin</span>
+                <img src="/logo.png" alt="Admin" className="h-10 w-auto object-contain" />
               </div>
               <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 bg-white/5 rounded-xl"><Plus className="w-6 h-6 rotate-45" /></button>
             </div>
@@ -362,13 +356,7 @@ const Admin = () => {
       <div className="flex">
         <aside className="w-72 bg-slate-900/50 border-r border-white/5 p-8 hidden lg:flex flex-col sticky top-0 h-screen">
           <div className="flex items-center gap-3 mb-10">
-            <div className="w-12 h-12 bg-neon-cyan rounded-2xl flex items-center justify-center text-slate-950 shadow-[0_0_30px_rgba(0,243,255,0.3)]">
-              <ShieldCheck className="w-6 h-6" />
-            </div>
-            <div>
-              <span className="font-black text-xl tracking-tighter uppercase leading-none">Admin</span>
-              <span className="block text-[10px] font-black text-neon-cyan/60 tracking-[0.3em] uppercase mt-1">Control</span>
-            </div>
+            <img src="/logo.png" alt="Admin" className="h-14 w-auto object-contain" />
           </div>
 
           <div className="mb-8">

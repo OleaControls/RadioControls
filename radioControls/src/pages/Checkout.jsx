@@ -383,9 +383,7 @@ const Checkout = () => {
               <div className="absolute top-0 right-0 w-32 h-32 bg-neon-cyan/5 blur-3xl rounded-full -mr-16 -mt-16" />
 
               <div className="flex items-center gap-4 mb-8">
-                <div className="p-3 bg-slate-950 rounded-2xl border border-white/5">
-                  <Radio className="w-6 h-6 text-neon-cyan" />
-                </div>
+                <img src="/logo.png" alt="RadiOlea Controls" className="h-10 w-auto object-contain" />
                 <div>
                   <p className="text-[10px] font-black uppercase text-slate-500 tracking-widest">Resumen del Pedido</p>
                   <h3 className="text-2xl font-black uppercase tracking-tighter">{plan.name}</h3>

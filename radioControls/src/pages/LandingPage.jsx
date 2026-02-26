@@ -13,9 +13,9 @@ const LandingPage = () => {
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 px-4 flex flex-col items-center text-center z-10">
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="max-w-5xl">
-          <span className="bg-neon-cyan/10 border border-neon-cyan/20 px-4 py-2 rounded-full text-neon-cyan text-xs font-black tracking-widest uppercase mb-6 inline-block shadow-[0_0_20px_rgba(0,243,255,0.1)]">
-            RadiOleaControls - Audio Intelligence
-          </span>
+          <div className="mb-8">
+            <img src="/logo.png" alt="RadiOlea Controls" className="h-20 md:h-32 w-auto mx-auto object-contain shadow-[0_0_40px_rgba(0,243,255,0.1)]" />
+          </div>
           <h1 className="text-4xl md:text-6xl font-black mb-6 leading-tight tracking-tighter uppercase">
             Transforma tu <br/> <span className="text-neon-cyan italic">Experiencia</span>
           </h1>

@@ -58,6 +58,9 @@ const BranchPlayer = () => {
       <WaveCursor />
       
       <div className="mb-12 text-center relative z-10">
+        <div className="mb-6 flex justify-center">
+          <img src="/logo.png" alt="RadiOlea Controls" className="h-16 md:h-20 w-auto object-contain" />
+        </div>
         <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-6 ${isBlocked ? 'bg-red-500/10 border border-red-500/20 text-red-500' : 'bg-neon-cyan/10 border border-neon-cyan/20 text-neon-cyan'}`}>
           {isBlocked ? <Info className="w-4 h-4" /> : <ShieldCheck className="w-4 h-4" />}
           {isBlocked ? 'Acceso Suspendido' : 'Terminal Autorizada'}
