@@ -456,7 +456,7 @@ const ClientPortal = () => {
       {/* Mobile Header */}
       <div className="lg:hidden fixed top-0 left-0 right-0 z-[100] bg-slate-900/80 backdrop-blur-xl border-b border-white/5 p-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <img src="/logo.png" alt="RadiOlea Controls" className="h-8 w-auto object-contain" />
+          <img src="/img%20radio%20olea/logosinfondoradioolea.svg" alt="RadiOlea Controls" className="h-8 w-auto object-contain" />
         </div>
         <button 
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -478,7 +478,7 @@ const ClientPortal = () => {
           >
             <div className="flex justify-between items-center mb-12">
               <div className="flex items-center gap-3">
-                <img src="/logo.png" alt="RadiOlea Controls" className="h-10 w-auto object-contain" />
+                <img src="/img%20radio%20olea/logosinfondoradioolea.svg" alt="RadiOlea Controls" className="h-10 w-auto object-contain" />
               </div>
               <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 bg-white/5 rounded-xl"><Plus className="w-6 h-6 rotate-45" /></button>
             </div>
@@ -506,7 +506,7 @@ const ClientPortal = () => {
       {/* Sidebar - Desktop */}
       <aside className="w-72 bg-slate-900/50 border-r border-white/5 p-8 hidden lg:flex flex-col backdrop-blur-3xl sticky top-0 h-screen">
         <div className="flex items-center gap-3 mb-12 group cursor-pointer">
-          <img src="/logo.png" alt="RadiOlea Controls" className="h-14 w-auto object-contain group-hover:scale-105 transition-transform duration-500" />
+          <img src="/img%20radio%20olea/logosinfondoradioolea.svg" alt="RadiOlea Controls" className="h-14 w-auto object-contain group-hover:scale-105 transition-transform duration-500" />
         </div>
 
         <nav className="flex-grow space-y-3">

@@ -61,7 +61,7 @@ const Navbar = () => {
         <div className="relative flex items-center justify-between px-6 py-3">
           
           <Link to="/" className="flex items-center gap-2 md:gap-3 group relative z-[110] shrink">
-            <img src="/logo.png" alt="RadiOlea Controls" className="h-10 md:h-14 w-auto object-contain" />
+            <img src="/img%20radio%20olea/logosinfondoradioolea.svg" alt="RadiOlea Controls" className="h-10 md:h-14 w-auto object-contain" />
           </Link>
 
           <div className="hidden lg:flex items-center space-x-1">
