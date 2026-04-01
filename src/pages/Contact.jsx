@@ -1,164 +1,184 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, Send, MessageCircle, Clock, Globe, ShieldCheck, Sparkles } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, MessageCircle, Clock, Globe, ShieldCheck, Sparkles, Activity } from 'lucide-react';
 import WaveCursor from '../components/WaveCursor';
+
+/* ─── Pulsating Background Decor ────────────────── */
+const Aurora = () => (
+  <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+    <div className="animate-pulse absolute top-[20%] left-[-5%] w-[40vw] h-[40vw] rounded-full blur-[120px] opacity-20"
+      style={{ background: 'radial-gradient(circle, #00f3ff 0%, transparent 70%)', animationDuration: '3s' }} />
+    <div className="animate-pulse absolute top-[15%] right-[-5%] w-[35vw] h-[35vw] rounded-full blur-[120px] opacity-15"
+      style={{ background: 'radial-gradient(circle, #bc13fe 0%, transparent 70%)', animationDuration: '4s' }} />
+    <div className="animate-pulse absolute top-1/2 left-0 w-[20vw] h-[20vw] rounded-full blur-[80px] opacity-10 bg-neon-cyan" 
+      style={{ animationDuration: '1.5s' }} />
+    <div className="animate-pulse absolute top-1/3 right-0 w-[15vw] h-[15vw] rounded-full blur-[80px] opacity-10 bg-neon-purple" 
+      style={{ animationDuration: '2s' }} />
+  </div>
+);
 
 const Contact = () => {
   return (
-    <div className="pt-40 pb-24 px-4 min-h-screen bg-slate-950 text-white relative overflow-hidden">
-      <WaveCursor />
-      
-      {/* Decorative Glows */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-neon-cyan/10 rounded-full blur-[120px]" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-[120px]" />
-      </div>
+    <div className="min-h-screen bg-void text-white selection:bg-neon-cyan/30 overflow-x-hidden relative">
+      <Aurora />
 
-      <div className="max-w-7xl mx-auto relative z-10">
-        {/* Header */}
-        <div className="text-center mb-24">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-neon-cyan/10 border border-neon-cyan/20 text-neon-cyan text-xs font-black uppercase tracking-[0.3em] mb-8"
-          >
-            <Sparkles className="w-4 h-4" /> Ingeniería de Contacto
-          </motion.div>
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-6xl font-black mb-8 tracking-tight uppercase leading-tight"
-          >
-            Hablemos de <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan to-blue-500 italic pr-4">tu Éxito</span>
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-lg md:text-2xl text-slate-400 max-w-2xl mx-auto font-medium leading-relaxed"
-          >
-            Nuestros ingenieros están listos para transformar tu espacio. Respuesta garantizada en tiempo récord.
-          </motion.p>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+      <div className="pt-32 pb-24 px-4 relative z-10">
+        <div className="container mx-auto max-w-6xl">
           
-          {/* Info Cards */}
-          <div className="lg:col-span-5 space-y-8">
-            {[
-              { 
-                icon: <Mail className="w-7 h-7" />, 
-                label: "Email Corporativo", 
-                value: "hola@radiocontrols.mx",
-                color: "text-neon-cyan"
-              },
-              { 
-                icon: <Phone className="w-7 h-7" />, 
-                label: "Línea Directa / WhatsApp", 
-                value: "55 7919 2845",
-                color: "text-neon-green"
-              },
-              { 
-                icon: <MapPin className="w-7 h-7" />, 
-                label: "Sede Central", 
-                value: "Polanco, CDMX, México",
-                color: "text-neon-purple"
-              }
-            ].map((item, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, x: -30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="bg-slate-900/50 border border-white/5 rounded-[32px] p-8 flex items-center gap-8 group transition-all hover:border-neon-cyan/30 hover:bg-slate-900/80 backdrop-blur-xl"
-              >
-                <div className={`p-5 rounded-2xl bg-slate-950 ${item.color} shadow-lg group-hover:scale-110 transition-transform duration-500`}>
-                  {item.icon}
-                </div>
-                <div>
-                  <p className="text-xs font-black uppercase text-slate-500 tracking-widest mb-2">{item.label}</p>
-                  <p className="text-xl font-black text-white">{item.value}</p>
-                </div>
-              </motion.div>
-            ))}
-
-            {/* Support Card */}
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              className="bg-gradient-to-br from-neon-cyan/20 to-blue-600/20 border border-neon-cyan/30 rounded-[40px] p-10 mt-12 backdrop-blur-2xl"
+          {/* Header */}
+          <div className="text-center mb-20">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 mb-6 backdrop-blur-sm"
             >
-              <h3 className="text-2xl font-black text-white mb-6 flex items-center gap-3 uppercase tracking-tighter">
-                <Clock className="w-6 h-6 text-neon-cyan" /> Soporte Elite 24/7
-              </h3>
-              <p className="text-lg text-slate-300 leading-relaxed mb-8 font-medium">
-                Nuestros clientes activos cuentan con una línea prioritaria de ingeniería para ajustes en tiempo real.
-              </p>
-              <div className="flex items-center gap-4">
-                <div className="flex -space-x-4">
-                  {[1,2,3,4].map(i => (
-                    <div key={i} className="w-10 h-10 rounded-full border-4 border-slate-950 bg-slate-800" />
-                  ))}
-                </div>
-                <p className="text-xs font-black text-neon-cyan uppercase tracking-widest">Ingenieros Activos</p>
-              </div>
+              <Activity className="w-3 h-3 text-neon-cyan" />
+              <span className="text-[10px] font-heading font-bold uppercase tracking-[0.2em] text-neon-cyan">
+                Ingeniería de Contacto
+              </span>
             </motion.div>
+            
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="font-display text-5xl md:text-7xl uppercase leading-none mb-6 tracking-tight"
+            >
+              Hablemos de <span className="text-neon-cyan italic">tu Éxito</span>
+            </motion.h1>
+            
+            <motion.p 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="text-gray-400 max-w-2xl mx-auto text-base md:text-lg font-light leading-relaxed"
+            >
+              Nuestros ingenieros están listos para transformar tu espacio comercial. Respuesta garantizada en tiempo récord.
+            </motion.p>
           </div>
 
-          {/* Form */}
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="lg:col-span-7 bg-slate-900/40 border border-white/5 rounded-[50px] p-10 md:p-16 backdrop-blur-2xl shadow-2xl relative"
-          >
-            <form className="space-y-10">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                <div className="space-y-3">
-                  <label className="text-xs font-black uppercase text-slate-500 ml-4 tracking-widest">Nombre Completo</label>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+            
+            {/* Info Cards */}
+            <div className="lg:col-span-5 space-y-6">
+              {[
+                { 
+                  icon: Mail, 
+                  label: "Email Corporativo", 
+                  value: "hola@radiocontrols.mx",
+                  accent: "text-neon-cyan"
+                },
+                { 
+                  icon: Phone, 
+                  label: "Línea Directa", 
+                  value: "55 7919 2845",
+                  accent: "text-white"
+                },
+                { 
+                  icon: MapPin, 
+                  label: "Sede Central", 
+                  value: "Polanco, CDMX, México",
+                  accent: "text-neon-purple"
+                }
+              ].map((item, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="group p-8 glass rounded-[2rem] flex items-center gap-6 transition-all hover:border-white/20"
+                >
+                  <div className={`w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center ${item.accent} group-hover:scale-110 transition-transform`}>
+                    <item.icon size={24} />
+                  </div>
+                  <div>
+                    <p className="text-[9px] font-heading font-bold uppercase text-gray-500 tracking-[0.3em] mb-1">{item.label}</p>
+                    <p className="text-lg font-display uppercase tracking-wider text-white">{item.value}</p>
+                  </div>
+                </motion.div>
+              ))}
+
+              {/* Support Card */}
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                className="relative p-10 glass rounded-[2.5rem] bg-gradient-to-br from-neon-cyan/5 to-transparent border-neon-cyan/20 overflow-hidden group"
+              >
+                <div className="absolute top-0 right-0 w-32 h-32 bg-neon-cyan/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                <h3 className="font-display text-2xl uppercase text-white mb-4 flex items-center gap-3 tracking-wider">
+                  <Clock className="w-5 h-5 text-neon-cyan" /> Soporte Elite 24/7
+                </h3>
+                <p className="text-sm text-gray-400 leading-relaxed mb-8 font-light">
+                  Nuestros clientes activos cuentan con una línea prioritaria de ingeniería para ajustes y soporte en tiempo real.
+                </p>
+                <div className="flex items-center gap-4">
+                  <div className="flex -space-x-3">
+                    {[1,2,3].map(i => (
+                      <div key={i} className="w-8 h-8 rounded-full border-2 border-void bg-gray-800" />
+                    ))}
+                  </div>
+                  <p className="text-[10px] font-heading font-bold text-neon-cyan uppercase tracking-widest">Ingenieros Activos</p>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Form */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="lg:col-span-7 glass rounded-[3rem] p-8 md:p-12 relative overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 w-64 h-64 bg-neon-cyan/5 rounded-full blur-[80px] pointer-events-none" />
+              
+              <form className="space-y-8 relative z-10">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-heading font-bold uppercase text-gray-500 ml-4 tracking-widest">Nombre</label>
+                    <input 
+                      type="text" 
+                      placeholder="Tu nombre" 
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 outline-none focus:border-neon-cyan transition-all text-sm font-light placeholder:text-gray-700" 
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-heading font-bold uppercase text-gray-500 ml-4 tracking-widest">Empresa</label>
+                    <input 
+                      type="text" 
+                      placeholder="Negocio" 
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 outline-none focus:border-neon-cyan transition-all text-sm font-light placeholder:text-gray-700" 
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-heading font-bold uppercase text-gray-500 ml-4 tracking-widest">Email Corporativo</label>
                   <input 
-                    type="text" 
-                    placeholder="Juan Pérez" 
-                    className="w-full bg-slate-950 border border-white/10 rounded-2xl py-6 px-8 focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan/50 transition-all text-white font-medium placeholder:text-slate-700" 
+                    type="email" 
+                    placeholder="ejemplo@marca.com" 
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 outline-none focus:border-neon-cyan transition-all text-sm font-light placeholder:text-gray-700" 
                   />
                 </div>
-                <div className="space-y-3">
-                  <label className="text-xs font-black uppercase text-slate-500 ml-4 tracking-widest">Empresa</label>
-                  <input 
-                    type="text" 
-                    placeholder="Marca / Negocio" 
-                    className="w-full bg-slate-950 border border-white/10 rounded-2xl py-6 px-8 focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan/50 transition-all text-white font-medium placeholder:text-slate-700" 
-                  />
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-heading font-bold uppercase text-gray-500 ml-4 tracking-widest">Mensaje</label>
+                  <textarea 
+                    placeholder="Cuéntanos sobre tu visión sonora..." 
+                    rows="4" 
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 outline-none focus:border-neon-cyan transition-all text-sm font-light placeholder:text-gray-700 resize-none"
+                  ></textarea>
                 </div>
-              </div>
 
-              <div className="space-y-3">
-                <label className="text-xs font-black uppercase text-slate-500 ml-4 tracking-widest">Correo Corporativo</label>
-                <input 
-                  type="email" 
-                  placeholder="juan@empresa.mx" 
-                  className="w-full bg-slate-950 border border-white/10 rounded-2xl py-6 px-8 focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan/50 transition-all text-white font-medium placeholder:text-slate-700" 
-                />
-              </div>
+                <button className="w-full py-5 bg-white text-void rounded-full font-heading font-black text-sm uppercase tracking-[0.2em] hover:bg-neon-cyan hover:shadow-[0_0_30px_rgba(0,243,255,0.3)] transition-all flex items-center justify-center gap-3 group active:scale-[0.98]">
+                  Enviar Solicitud
+                  <Send size={16} className="transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+                </button>
+              </form>
+            </motion.div>
 
-              <div className="space-y-3">
-                <label className="text-xs font-black uppercase text-slate-500 ml-4 tracking-widest">Proyecto / Mensaje</label>
-                <textarea 
-                  placeholder="Cuéntanos sobre tu visión sonora..." 
-                  rows="4" 
-                  className="w-full bg-slate-950 border border-white/10 rounded-2xl py-6 px-8 focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan/50 transition-all text-white font-medium placeholder:text-slate-700 resize-none"
-                ></textarea>
-              </div>
-
-              <button className="w-full py-6 bg-neon-cyan text-slate-950 rounded-2xl font-black text-xl hover:shadow-[0_0_50px_rgba(0,243,255,0.4)] transition-all flex items-center justify-center gap-4 active:scale-95 uppercase tracking-tighter group">
-                Enviar Solicitud
-                <Send className="w-6 h-6 transition-transform group-hover:translate-x-2 group-hover:-translate-y-2" />
-              </button>
-            </form>
-          </motion.div>
-
+          </div>
         </div>
       </div>
     </div>

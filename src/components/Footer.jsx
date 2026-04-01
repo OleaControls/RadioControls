@@ -1,151 +1,191 @@
 import React from 'react';
-import { Twitter, Facebook, Instagram, Linkedin, Mail, MapPin, Phone } from 'lucide-react';
+import { Twitter, Facebook, Instagram, Linkedin, Mail, MapPin, Phone, ArrowRight, Activity, Youtube, Globe } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
-const SOCIAL = [Twitter, Facebook, Instagram, Linkedin];
-
-const SERVICES = [
-  'Streaming de Audio',
-  'Instalación Profesional',
-  'Licencias Musicales',
-  'Publicidad Sonora',
-  'Panel de Control',
+const SOCIAL = [
+  { icon: Twitter, href: "#" },
+  { icon: Facebook, href: "#" },
+  { icon: Instagram, href: "#" },
+  { icon: Linkedin, href: "#" },
+  { icon: Youtube, href: "#" }
 ];
 
-const COMPANY = [
-  ['Inicio',   '/'],
-  ['Planes',   '/planes'],
-  ['Galería',  '/galeria'],
-  ['FAQ',      '/faq'],
-  ['Contacto', '/contacto'],
-];
-
-const FooterLink = ({ href, to, children }) => {
-  const cls =
-    'group flex items-center gap-0 text-gray-500 text-sm hover:text-neon-cyan transition-colors duration-200';
-  const inner = (
-    <>
-      <span className="inline-block w-0 group-hover:w-3 h-px bg-neon-cyan transition-all duration-300 mr-0 group-hover:mr-1.5" />
-      {children}
-    </>
-  );
-  if (to) return <Link to={to} className={cls}>{inner}</Link>;
-  return <a href={href || '#'} className={cls}>{inner}</a>;
+const LINKS = {
+  servicios: [
+    { name: 'Streaming Hi-Fi', path: '/servicios' },
+    { name: 'Instalación Pro', path: '/instalacion-audio' },
+    { name: 'Licencias Legales', path: '/faq' },
+    { name: 'Publicidad Sonora', path: '/servicios' },
+    { name: 'Panel de Control', path: '/dashboard' },
+  ],
+  empresa: [
+    { name: 'Nuestra Historia', path: '/' },
+    { name: 'Planes y Precios', path: '/planes' },
+    { name: 'Galería de Éxito', path: '/galeria' },
+    { name: 'Centro de Ayuda', path: '/faq' },
+    { name: 'Contacto', path: '/contacto' },
+  ]
 };
 
-const Footer = () => (
-  <footer className="relative bg-black overflow-hidden">
+const Footer = () => {
+  return (
+    <footer className="relative bg-void pt-32 pb-12 overflow-hidden border-t border-white/5">
+      {/* Background Orbs */}
+      <div className="absolute top-0 left-1/4 w-[40vw] h-[40vw] bg-neon-cyan/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 w-[30vw] h-[30vw] bg-neon-purple/5 rounded-full blur-[100px] pointer-events-none" />
 
-    {/* ── Top wave SVG ─────────────────────── */}
-    <div className="absolute top-0 left-0 w-full leading-none overflow-hidden">
-      <svg
-        viewBox="0 0 1440 90"
-        className="w-full"
-        preserveAspectRatio="none"
-        style={{ display: 'block' }}
-      >
-        <path
-          d="M0,45 C240,90 480,0 720,45 C960,90 1200,10 1440,45 L1440,0 L0,0 Z"
-          fill="#001a4d"
-        />
-      </svg>
-    </div>
-
-    {/* ── Neon top glow ───────────────────── */}
-    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-xl h-px bg-gradient-to-r from-transparent via-neon-cyan/50 to-transparent" />
-    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-80 h-48 bg-neon-cyan/5 rounded-full blur-[90px] pointer-events-none" />
-
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-10 relative z-10">
-
-      {/* ── Main grid ───────────────────── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-16">
-
-        {/* Brand */}
-        <div className="space-y-5 sm:col-span-2 lg:col-span-1">
-          <img
-            src="/img%20radio%20olea/logosinfondoradioolea.svg"
-            alt="RadiOlea Controls"
-            className="h-10 w-auto object-contain"
-          />
-          <p className="text-gray-500 text-sm leading-relaxed max-w-xs">
-            Transformando espacios comerciales a través del poder del sonido.
-            Audio ambiental premium para marcas líderes en México.
-          </p>
-          <div className="flex gap-2.5 pt-1">
-            {SOCIAL.map((Icon, i) => (
-              <motion.a
-                key={i}
-                href="#"
-                whileHover={{ y: -3, scale: 1.12 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-                className="w-9 h-9 flex items-center justify-center rounded-xl bg-white/5 border border-white/8 text-gray-500 hover:text-neon-cyan hover:border-neon-cyan/30 hover:bg-neon-cyan/5 transition-colors"
-              >
-                <Icon className="w-4 h-4" />
-              </motion.a>
-            ))}
+      <div className="container mx-auto px-4 relative z-10">
+        {/* Quick Contact Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-24 items-start">
+          <div className="lg:col-span-6">
+            <h2 className="font-display text-5xl md:text-7xl uppercase leading-none mb-6 tracking-tighter">
+              ¿Tienes dudas o <br /> <span className="text-neon-purple italic">necesitas asesoría?</span>
+            </h2>
+            <p className="text-gray-400 max-w-md text-lg font-light leading-relaxed">
+              Estamos listos para ayudarte a elevar el sonido de tu negocio. Déjanos tu mensaje y un experto se pondrá en contacto contigo.
+            </p>
+          </div>
+          <div className="lg:col-span-6">
+            <form className="space-y-4">
+              <div className="relative">
+                <input 
+                  type="email" 
+                  placeholder="Tu correo electrónico" 
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 outline-none focus:border-neon-cyan transition-colors text-sm font-heading tracking-widest placeholder:text-gray-600"
+                />
+              </div>
+              <div className="relative">
+                <textarea 
+                  rows="3"
+                  placeholder="¿En qué podemos ayudarte?" 
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 outline-none focus:border-neon-cyan transition-colors text-sm font-heading tracking-widest placeholder:text-gray-600 resize-none"
+                ></textarea>
+              </div>
+              <button className="w-full sm:w-auto bg-white text-void px-10 py-4 rounded-full font-heading font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-neon-cyan hover:shadow-[0_0_20px_rgba(0,243,255,0.4)] transition-all">
+                Enviar Mensaje <ArrowRight size={16} />
+              </button>
+            </form>
           </div>
         </div>
 
-        {/* Servicios */}
-        <div>
-          <h4 className="text-white text-[10px] font-black uppercase tracking-[0.28em] mb-5">Servicios</h4>
-          <ul className="space-y-3">
-            {SERVICES.map((s) => (
-              <li key={s}><FooterLink>{s}</FooterLink></li>
-            ))}
-          </ul>
+        {/* Main Footer Links */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 mb-20">
+          {/* Brand Info */}
+          <div className="lg:col-span-4 space-y-8">
+            <Link to="/" className="flex items-center gap-4 group">
+              <div className="relative">
+                <img 
+                  src="/img radio olea/logosinfondoradioolea.svg" 
+                  alt="RadioOlea Logo" 
+                  className="h-10 md:h-12 w-auto object-contain transition-transform duration-500 group-hover:scale-110 drop-shadow-[0_0_15px_rgba(0,243,255,0.3)]"
+                />
+                <div className="absolute inset-0 bg-neon-cyan/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+              </div>
+              <div className="flex flex-col leading-none">
+                <span className="font-display text-3xl uppercase tracking-tighter text-white group-hover:text-neon-cyan transition-colors">RadiOlea</span>
+                <span className="text-[8px] font-heading font-black uppercase tracking-[0.4em] text-gray-500">Controls</span>
+              </div>
+            </Link>
+            <p className="text-gray-500 text-sm leading-relaxed max-w-sm">
+              Líderes en ingeniería sonora y streaming comercial en México. 
+              Creamos atmósferas que conectan marcas con personas a través de la excelencia auditiva.
+            </p>
+            <div className="flex gap-4">
+              {SOCIAL.map((item, i) => (
+                <a 
+                  key={i} 
+                  href={item.href} 
+                  className="w-10 h-10 rounded-full border border-white/5 bg-white/[0.02] flex items-center justify-center text-gray-400 hover:text-neon-cyan hover:border-neon-cyan/30 transition-all hover:-translate-y-1"
+                >
+                  <item.icon size={18} />
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Links Grid */}
+          <div className="lg:col-span-5 grid grid-cols-2 gap-8">
+            <div>
+              <h4 className="font-heading font-black text-[10px] uppercase tracking-[0.4em] text-white/40 mb-8">Soluciones</h4>
+              <ul className="space-y-4">
+                {LINKS.servicios.map((link) => (
+                  <li key={link.name}>
+                    <Link to={link.path} className="text-gray-400 hover:text-neon-cyan text-sm transition-colors flex items-center gap-2 group">
+                      <span className="w-0 h-px bg-neon-cyan group-hover:w-3 transition-all" />
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-heading font-black text-[10px] uppercase tracking-[0.4em] text-white/40 mb-8">Compañía</h4>
+              <ul className="space-y-4">
+                {LINKS.empresa.map((link) => (
+                  <li key={link.name}>
+                    <Link to={link.path} className="text-gray-400 hover:text-white text-sm transition-colors flex items-center gap-2 group">
+                      <span className="w-0 h-px bg-white group-hover:w-3 transition-all" />
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* Contact Info */}
+          <div className="lg:col-span-3">
+            <h4 className="font-heading font-black text-[10px] uppercase tracking-[0.4em] text-white/40 mb-8">Headquarters</h4>
+            <div className="space-y-6">
+              <div className="flex gap-4 items-start">
+                <MapPin className="text-neon-cyan shrink-0" size={18} />
+                <p className="text-sm text-gray-400 leading-relaxed">
+                  Av. Homero 1425-105, <br />
+                  Polanco, CDMX, 11560
+                </p>
+              </div>
+              <div className="flex gap-4 items-center">
+                <Phone className="text-neon-cyan shrink-0" size={18} />
+                <a href="tel:5579192845" className="text-sm text-gray-400 hover:text-white transition-colors">
+                  55 7919 2845
+                </a>
+              </div>
+              <div className="flex gap-4 items-center">
+                <Mail className="text-neon-cyan shrink-0" size={18} />
+                <a href="mailto:hola@radiocontrols.com" className="text-sm text-gray-400 hover:text-white transition-colors">
+                  hola@radiocontrols.com
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Empresa */}
-        <div>
-          <h4 className="text-white text-[10px] font-black uppercase tracking-[0.28em] mb-5">Empresa</h4>
-          <ul className="space-y-3">
-            {COMPANY.map(([name, path]) => (
-              <li key={name}><FooterLink to={path}>{name}</FooterLink></li>
+        {/* Bottom Bar */}
+        <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="flex items-center gap-4 text-[10px] font-heading font-bold uppercase tracking-widest text-gray-600">
+            <span>© 2026 RadiOlea Controls</span>
+            <span className="w-1 h-1 rounded-full bg-white/10" />
+            <span>CDMX, México</span>
+          </div>
+          
+          <div className="flex gap-8">
+            {['Privacidad', 'Términos', 'Cookies'].map((item) => (
+              <a key={item} href="#" className="text-[10px] font-heading font-bold uppercase tracking-widest text-gray-600 hover:text-white transition-colors">
+                {item}
+              </a>
             ))}
-          </ul>
-        </div>
+          </div>
 
-        {/* Contacto */}
-        <div>
-          <h4 className="text-white text-[10px] font-black uppercase tracking-[0.28em] mb-5">Contacto</h4>
-          <ul className="space-y-4">
-            <li className="flex items-start gap-3 text-gray-500 text-sm">
-              <MapPin className="w-4 h-4 shrink-0 mt-0.5 text-gray-700" />
-              <span>Av. Homero 1425-105, Polanco, CDMX, México</span>
-            </li>
-            <li className="flex items-center gap-3 text-sm">
-              <Phone className="w-4 h-4 shrink-0 text-gray-700" />
-              <a href="tel:5579192845" className="text-gray-500 hover:text-neon-cyan transition-colors">
-                55 7919 2845
-              </a>
-            </li>
-            <li className="flex items-center gap-3 text-sm">
-              <Mail className="w-4 h-4 shrink-0 text-gray-700" />
-              <a href="mailto:hola@radiocontrols.com" className="text-gray-500 hover:text-neon-cyan transition-colors">
-                hola@radiocontrols.com
-              </a>
-            </li>
-          </ul>
+          <div className="flex items-center gap-2 px-3 py-1 rounded-full border border-white/5 bg-white/[0.02]">
+            <Globe size={10} className="text-neon-cyan" />
+            <span className="text-[9px] font-heading font-bold uppercase tracking-widest text-gray-500">Español (MX)</span>
+          </div>
         </div>
       </div>
-
-      {/* ── Bottom bar ───────────────────── */}
-      <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-        <p className="text-xs text-gray-600">
-          &copy; {new Date().getFullYear()} RadioControls S.A. de C.V. Todos los derechos reservados.
-        </p>
-        <div className="flex gap-6 text-xs text-gray-600">
-          {['Privacidad', 'Términos', 'Sitemap'].map((item) => (
-            <a key={item} href="#" className="hover:text-gray-400 transition-colors">
-              {item}
-            </a>
-          ))}
-        </div>
-      </div>
-    </div>
-  </footer>
-);
+    </footer>
+  );
+};
 
 export default Footer;
+

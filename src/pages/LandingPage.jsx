@@ -5,464 +5,309 @@ import {
   Shield, Headphones, LayoutDashboard,
   Clock, Wrench, Lock, Play, CheckCircle2,
   Star, Quote, Music, Wifi, PhoneCall,
-  TrendingUp, Users, MapPin,
+  TrendingUp, Users, MapPin, ExternalLink
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import WaveCursor from '../components/WaveCursor';
+import HeroWaves from '../components/HeroWaves';
 import UniversalPlayer from '../components/UniversalPlayer';
+import PhotoCarousel from '../components/PhotoCarousel';
 
-/* ─── Animated counter ───────────────────────────── */
-const useCounter = (target, duration = 2000, start = false) => {
-  const [count, setCount] = useState(0);
-  useEffect(() => {
-    if (!start) return;
-    let t0 = null;
-    const step = (ts) => {
-      if (!t0) t0 = ts;
-      const p = Math.min((ts - t0) / duration, 1);
-      setCount(Math.floor((1 - Math.pow(1 - p, 3)) * target));
-      if (p < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-  }, [target, duration, start]);
-  return count;
-};
-
-/* ─── Stat counter card ──────────────────────────── */
-const StatItem = ({ value, suffix, label }) => {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: '-60px' });
-  const count = useCounter(value, 2000, inView);
-  return (
-    <div ref={ref} className="flex flex-col items-center gap-2 py-2 px-4">
-      <span className="font-display text-4xl sm:text-5xl text-white tabular-nums leading-none tracking-wide">
-        {count}<span className="text-neon-cyan">{suffix}</span>
-      </span>
-      <span className="font-heading text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.28em] text-gray-500 text-center">
-        {label}
-      </span>
-    </div>
-  );
-};
-
-/* ─── Features bento data ────────────────────────── */
-const FEATURES = [
-  { icon: Headphones,      title: 'Streaming Hi-Fi',         desc: 'Audio 320 kbps DAC 24-bit. Tu marca suena diferente desde el primer segundo en cada sucursal.',  accent: 'cyan',   large: true  },
-  { icon: Shield,          title: 'Licencias Incluidas',     desc: 'SACM, SOMEXFON y más. Opera sin preocupaciones legales.',                                         accent: 'purple', large: false },
-  { icon: LayoutDashboard, title: 'Panel de Control',        desc: 'Gestiona todas tus sucursales en tiempo real.',                                                    accent: 'cyan',   large: false },
-  { icon: Clock,           title: 'Soporte 24/7',            desc: 'Equipo técnico disponible toda la semana, sin excepción.',                                         accent: 'purple', large: false },
-  { icon: Wrench,          title: 'Instalación Pro',         desc: 'Técnicos certificados en tu establecimiento. Nosotros configuramos todo.',                         accent: 'cyan',   large: true  },
-  { icon: Lock,            title: '100% Legal',              desc: 'Cumplimiento total con la ley de derechos de autor en México.',                                    accent: 'purple', large: false },
-];
-
-/* ─── Testimonials ───────────────────────────────── */
-const TESTIMONIALS = [
-  {
-    quote: 'Desde que instalamos RadiOlea Controls, nuestros clientes tardan más en irse. El ambiente sonoro es increíble y 100% legal.',
-    name: 'María González',
-    role: 'Dueña · Farmacia San Ángel, CDMX',
-    rating: 5,
-  },
-  {
-    quote: 'Manejamos 12 restaurantes y el panel de control nos permite cambiar el ambiente de cada uno en segundos. Servicio impecable.',
-    name: 'Carlos Mendoza',
-    role: 'Director Ops · Grupo Gastronómico MX',
-    rating: 5,
-  },
-  {
-    quote: 'La instalación fue en 2 horas y llevan 8 meses sin una sola falla. Eso es lo que necesitaba para mi boutique.',
-    name: 'Ana Lucía Torres',
-    role: 'Gerente · Boutique Éclat, Polanco',
-    rating: 5,
-  },
-];
-
-/* ─── How it works ───────────────────────────────── */
-const STEPS = [
-  { n: '01', icon: PhoneCall,   title: 'Nos contactas',     desc: 'Cuéntanos sobre tu negocio. Te asignamos un consultor en menos de 24 horas.' },
-  { n: '02', icon: Wrench,      title: 'Instalamos',        desc: 'Técnico certificado en tu local. Configuramos todo el equipo y el streaming.' },
-  { n: '03', icon: Music,       title: 'Tu negocio suena',  desc: 'Streaming continuo, 24/7, controlado desde tu panel. Sin interrupciones.' },
-];
-
-/* ─── Quick access ───────────────────────────────── */
-const QUICK = [
-  { title: 'Nuestros Servicios', desc: 'Ingeniería, licencias y publicidad estratégica.',  path: '/servicios', Icon: Zap      },
-  { title: 'Galería de Éxito',   desc: 'Mira cómo lucen los espacios RadiOleaControls.',   path: '/galeria',   Icon: Activity },
-  { title: 'Ayuda / FAQ',        desc: 'Resolvemos todas tus dudas legales y técnicas.',   path: '/faq',       Icon: ArrowRight},
-];
-
-/* ─── Aurora blob ────────────────────────────────── */
+/* ─── Optimized Aurora ───────────────────────────── */
 const Aurora = () => (
   <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-    <div className="animate-aurora-1 absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] rounded-full"
-      style={{ background: 'radial-gradient(circle, rgba(0,243,255,0.12) 0%, transparent 70%)' }} />
-    <div className="animate-aurora-2 absolute bottom-[-15%] right-[-10%] w-[60vw] h-[60vw] rounded-full"
-      style={{ background: 'radial-gradient(circle, rgba(188,19,254,0.10) 0%, transparent 70%)' }} />
-    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40vw] h-[40vw] rounded-full"
-      style={{ background: 'radial-gradient(circle, rgba(0,35,102,0.3) 0%, transparent 70%)' }} />
+    {/* Left Cyan Glow - Smaller and Pulsating */}
+    <div className="animate-pulse absolute top-[20%] left-[-5%] w-[40vw] h-[40vw] rounded-full blur-[120px] opacity-20"
+      style={{ background: 'radial-gradient(circle, #00f3ff 0%, transparent 70%)', animationDuration: '3s' }} />
+    
+    {/* Right Purple Glow - Smaller and Pulsating */}
+    <div className="animate-pulse absolute top-[15%] right-[-5%] w-[35vw] h-[35vw] rounded-full blur-[120px] opacity-15"
+      style={{ background: 'radial-gradient(circle, #bc13fe 0%, transparent 70%)', animationDuration: '4s' }} />
+      
+    {/* Minimal side accents with fast flicker */}
+    <div className="animate-pulse absolute top-1/2 left-0 w-[20vw] h-[20vw] rounded-full blur-[80px] opacity-10 bg-neon-cyan" 
+      style={{ animationDuration: '1.5s' }} />
+    <div className="animate-pulse absolute top-1/3 right-0 w-[15vw] h-[15vw] rounded-full blur-[80px] opacity-10 bg-neon-purple" 
+      style={{ animationDuration: '2s' }} />
   </div>
 );
 
-/* ══════════════════════════════════════════════════ */
+/* ─── Animated Counter Component ────────────────── */
+const Counter = ({ value, suffix = "" }) => {
+  const [count, setCount] = useState(0);
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true });
+
+  useEffect(() => {
+    if (inView) {
+      let start = 0;
+      const end = parseInt(value);
+      const duration = 2000;
+      let startTime = null;
+
+      const animate = (timestamp) => {
+        if (!startTime) startTime = timestamp;
+        const progress = Math.min((timestamp - startTime) / duration, 1);
+        setCount(Math.floor(progress * end));
+        if (progress < 1) requestAnimationFrame(animate);
+      };
+      requestAnimationFrame(animate);
+    }
+  }, [inView, value]);
+
+  return <span ref={ref}>{count}{suffix}</span>;
+};
+
 const LandingPage = () => {
   return (
-    <div className="bg-void min-h-screen text-white overflow-x-hidden font-body">
-      <WaveCursor />
-
-      {/* ══ HERO ════════════════════════════════════ */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center pt-32 pb-20 px-4 z-10">
+    <div className="bg-void min-h-screen text-white selection:bg-neon-cyan/30">
+      
+      {/* ══ HERO SECTION ════════════════════════════ */}
+      <section className="relative min-h-[95vh] flex flex-col items-center justify-center px-4 overflow-hidden pt-20">
         <Aurora />
-
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          className="max-w-5xl mx-auto text-center relative z-10"
-        >
-          {/* Live pill */}
+        <HeroWaves />
+        
+        <div className="container mx-auto max-w-6xl relative z-10 text-center">
+          {/* Logo Principal RadioOlea */}
           <motion.div
-            animate={{ y: [-4, 4, -4] }}
-            transition={{ repeat: Infinity, duration: 3.5, ease: 'easeInOut' }}
-            className="inline-flex items-center gap-2 bg-neon-cyan/8 border border-neon-cyan/25 px-5 py-2.5 rounded-full mb-10 cursor-default"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8 }}
+            className="mb-10"
           >
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-neon-cyan opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-neon-cyan" />
-            </span>
-            <span className="font-heading text-neon-cyan text-[10px] font-bold uppercase tracking-[0.3em]">
-              Audio Ambiental Premium
-            </span>
+            <img 
+              src="/img radio olea/logosinfondoradioolea.svg" 
+              alt="RadioOleaControls Logo" 
+              className="h-20 md:h-24 mx-auto drop-shadow-[0_0_35px_rgba(0,243,255,0.4)]"
+            />
           </motion.div>
 
-          {/* Logo */}
-          <motion.img
-            initial={{ opacity: 0, scale: 0.85 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2, duration: 0.7 }}
-            src="/img%20radio%20olea/logosinfondoradioolea.svg"
-            alt="RadiOlea Controls"
-            className="h-16 md:h-24 w-auto mx-auto object-contain mb-8"
-            style={{ filter: 'drop-shadow(0 0 40px rgba(0,243,255,0.4))' }}
-          />
-
-          {/* Headline — Bebas Neue */}
-          <h1 className="font-display leading-[0.88] mb-4 uppercase">
-            <motion.span
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.7 }}
-              className="block text-[14vw] sm:text-[10vw] md:text-[8rem] lg:text-[9rem] text-white"
-            >
-              Transforma tu
-            </motion.span>
-            <motion.span
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.45, duration: 0.7 }}
-              className="block text-[14vw] sm:text-[10vw] md:text-[8rem] lg:text-[9rem] italic"
-              style={{
-                background: 'linear-gradient(90deg, #00f3ff 0%, #bc13fe 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-              }}
-            >
-              Experiencia
-            </motion.span>
-          </h1>
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6, duration: 0.8 }}
-            className="font-body text-base md:text-lg text-gray-400 mb-10 max-w-xl mx-auto leading-relaxed"
-          >
-            Creamos el ambiente sonoro perfecto para que tus ventas crezcan exponencialmente con tecnología de streaming de alta fidelidad.
-          </motion.p>
-
-          {/* CTAs */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.75, duration: 0.6 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center mb-14"
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 mb-8 backdrop-blur-sm"
           >
-            <Link
-              to="/planes"
-              className="group relative bg-neon-cyan text-void px-8 py-4 rounded-2xl font-heading font-bold text-sm uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-3 hover:shadow-[0_0_60px_rgba(0,243,255,0.5)] hover:scale-[1.04] overflow-hidden cursor-pointer"
-              style={{ minHeight: '52px' }}
-            >
-              <span className="relative z-10">CONTRATAR AHORA</span>
-              <ArrowRight className="w-4 h-4 relative z-10 group-hover:translate-x-1 transition-transform" />
-              <div className="absolute inset-0 bg-white/20 -translate-x-full skew-x-[-12deg] group-hover:translate-x-full transition-transform duration-600" />
-            </Link>
-            <Link
-              to="/contacto"
-              className="glass px-8 py-4 rounded-2xl font-heading font-semibold text-sm uppercase tracking-widest hover:bg-white/8 transition-all duration-300 cursor-pointer"
-              style={{ minHeight: '52px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-            >
-              SOLICITAR COTIZACIÓN
-            </Link>
+            <span className="flex h-2 w-2 rounded-full bg-neon-cyan animate-pulse" />
+            <span className="text-[10px] font-heading font-bold uppercase tracking-[0.25em] text-neon-cyan text-center">
+              RadioOleaControls • Audio Intelligence
+            </span>
           </motion.div>
 
-          {/* Floating badges */}
-          <motion.div
+          <motion.h1 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="font-display text-4xl sm:text-5xl md:text-7xl leading-[1.1] md:leading-[0.9] uppercase mb-8 tracking-tight"
+          >
+            Sonido que <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple animate-gradient bg-[length:200%_auto]">
+              Vende Más.
+            </span>
+          </motion.h1>
+
+          <motion.p 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.9 }}
-            className="flex flex-wrap justify-center gap-3 mb-14"
+            transition={{ delay: 0.4 }}
+            className="max-w-xl mx-auto text-gray-400 text-sm md:text-lg font-light mb-10 md:mb-12 leading-relaxed px-4"
           >
-            {['+500 sucursales activas', '98% satisfacción', '15 ciudades en México', 'Sin contrato mínimo'].map((b, i) => (
-              <span key={i} className="glass px-4 py-2 rounded-full text-[11px] font-heading font-semibold text-gray-300 cursor-default">
-                {b}
-              </span>
-            ))}
-          </motion.div>
-        </motion.div>
+            Elevamos la experiencia sensorial de tu negocio con tecnología de streaming legal y curaduría musical inteligente.
+          </motion.p>
 
-        {/* Stats bar */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.9, duration: 0.8 }}
-          className="w-full max-w-4xl mx-auto relative z-10"
-        >
-          <div className="glass rounded-3xl overflow-hidden">
-            <div className="grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-white/5 py-6">
-              <StatItem value={500} suffix="+" label="Sucursales activas"     />
-              <StatItem value={15}  suffix="+" label="Ciudades"               />
-              <StatItem value={8}   suffix=""  label="Años de experiencia"    />
-              <StatItem value={99}  suffix="%" label="Uptime garantizado"     />
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.5 }}
+            className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-20"
+          >
+            <Link to="/planes" className="group relative overflow-hidden bg-white text-void px-10 py-4 rounded-full font-heading font-bold text-sm uppercase tracking-widest transition-all hover:scale-105 hover:shadow-[0_0_30px_rgba(255,255,255,0.3)]">
+              <span className="relative z-10">Comenzar Ahora</span>
+              <div className="absolute inset-0 bg-neon-cyan translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+            </Link>
+            <Link to="/contacto" className="px-10 py-4 rounded-full border border-white/10 hover:bg-white/5 transition-all font-heading text-sm uppercase tracking-widest backdrop-blur-sm">
+              Solicitar Demo
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ══ TRUST LOGO MARQUEE ═════════════════════ */}
+      <section className="relative z-10 py-20 overflow-hidden">
+        <div className="container mx-auto px-4 mb-12">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            className="flex items-center gap-6 opacity-20"
+          >
+            <div className="h-px flex-grow bg-gradient-to-r from-transparent to-white" />
+            <span className="text-[9px] font-heading font-black uppercase tracking-[0.6em] whitespace-nowrap text-white">
+              Propulsado por Tecnología RadiOleaControls
+            </span>
+            <div className="h-px flex-grow bg-gradient-to-l from-transparent to-white" />
+          </motion.div>
+        </div>
+
+        <div className="relative flex items-center">
+          {/* Gradient Masks for smooth fade */}
+          <div className="absolute inset-y-0 left-0 w-24 md:w-64 bg-gradient-to-r from-void to-transparent z-10 pointer-events-none" />
+          <div className="absolute inset-y-0 right-0 w-24 md:w-64 bg-gradient-to-l from-void to-transparent z-10 pointer-events-none" />
+
+          <div className="flex animate-marquee gap-16 md:gap-32 whitespace-nowrap items-center py-4">
+            {[...Array(4)].map((_, rep) => (
+              <React.Fragment key={rep}>
+                <img 
+                  src="/img radio olea/logosinfondoradioolea.svg" 
+                  className="h-8 md:h-11 opacity-20 hover:opacity-100 transition-all duration-500 grayscale hover:grayscale-0 hover:scale-110 cursor-pointer" 
+                  alt="RadioOlea Icon" 
+                />
+                <img 
+                  src="/img radio olea/Lema radioleacontrols-271025.svg" 
+                  className="h-6 md:h-9 opacity-20 hover:opacity-100 transition-all duration-500 grayscale hover:grayscale-0 hover:scale-110 cursor-pointer" 
+                  alt="RadioOlea Lema" 
+                />
+                <img 
+                  src="/img radio olea/nombre radioleacontrols.svg" 
+                  className="h-5 md:h-8 opacity-20 hover:opacity-100 transition-all duration-500 grayscale hover:grayscale-0 hover:scale-110 cursor-pointer" 
+                  alt="RadioOlea Name" 
+                />
+                <img 
+                  src="/img radio olea/Logo y sitio-radioleacontrols-2026.svg" 
+                  className="h-8 md:h-11 opacity-20 hover:opacity-100 transition-all duration-500 grayscale hover:grayscale-0 hover:scale-110 cursor-pointer" 
+                  alt="RadioOlea Full Logo" 
+                />
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══ STATS STRIP ═════════════════════════════ */}
+      <section className="py-20 border-b border-white/5">
+        <div className="container mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8">
+          {[
+            { v: "500", s: "+", l: "Sucursales" },
+            { v: "15", s: "+", l: "Ciudades" },
+            { v: "99", s: "%", l: "Uptime" },
+            { v: "24", s: "/7", l: "Soporte" }
+          ].map((st, i) => (
+            <div key={i} className="text-center group">
+              <p className="font-display text-5xl text-white group-hover:text-neon-cyan transition-colors">
+                <Counter value={st.v} suffix={st.s} />
+              </p>
+              <p className="text-[10px] text-gray-500 uppercase font-bold tracking-[0.3em] mt-1">{st.l}</p>
             </div>
-            <div className="h-px w-full bg-gradient-to-r from-transparent via-neon-cyan/30 to-transparent" />
-          </div>
-        </motion.div>
-      </section>
-
-      {/* ══ MARQUEE TRUST STRIP ═════════════════════ */}
-      <div className="relative z-10 overflow-hidden border-y border-white/5 py-4 bg-white/2">
-        <div className="flex animate-marquee gap-16 whitespace-nowrap w-max">
-          {[...Array(2)].map((_, rep) =>
-            ['Streaming 320kbps', 'DAC 24-Bit', 'Cloud Low Latency', 'Buffer Pro', 'SACM Certificado', 'SOMEXFON', 'Soporte 24/7', 'Instalación Profesional', '99% Uptime', 'Sin Contratos'].map((item, i) => (
-              <span key={`${rep}-${i}`} className="font-heading text-[11px] font-bold uppercase tracking-[0.3em] text-gray-500 flex items-center gap-4">
-                <span className="w-1 h-1 rounded-full bg-neon-cyan/60 flex-shrink-0" />
-                {item}
-              </span>
-            ))
-          )}
-        </div>
-      </div>
-
-      {/* ══ DEMO PLAYER ═════════════════════════════ */}
-      <section id="demo" className="py-24 md:py-32 px-4 relative z-10 overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] rounded-full opacity-20"
-            style={{ background: 'radial-gradient(ellipse, rgba(0,243,255,0.3) 0%, transparent 70%)' }} />
-        </div>
-
-        <div className="max-w-4xl mx-auto flex flex-col items-center relative z-10">
-          <div className="text-center mb-14 space-y-4">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.85 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}
-              className="inline-flex items-center gap-2 border border-neon-cyan/20 bg-neon-cyan/5 px-4 py-2 rounded-full"
-            >
-              <Activity size={11} className="text-neon-cyan animate-pulse" />
-              <span className="font-heading text-neon-cyan text-[10px] font-bold uppercase tracking-[0.22em]">Ingeniería Sonora Pro</span>
-            </motion.div>
-
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-              className="font-display text-5xl md:text-7xl uppercase tracking-wide"
-            >
-              Escucha tu{' '}
-              <span className="text-neon-cyan italic" style={{ WebkitTextStroke: '0px' }}>
-                Próxima Venta
-              </span>
-            </motion.h2>
-
-            <motion.p
-              initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
-              className="text-gray-400 max-w-lg mx-auto text-sm md:text-base leading-relaxed"
-            >
-              Prueba nuestro motor de ambiente inteligente. Sonido puro, legal y diseñado para convertir visitantes en clientes.
-            </motion.p>
-          </div>
-
-          <motion.div
-            initial={{ opacity: 0, scale: 0.94, y: 20 }}
-            whileInView={{ opacity: 1, scale: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
-            className="w-full"
-          >
-            <UniversalPlayer streamUrl="https://c44.radioboss.fm:8054/stream" stationName="Demo: Tu tienda habla" />
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}
-            className="mt-12 flex flex-wrap justify-center gap-8"
-          >
-            {[['Mastering','Digital Pro'],['Sync','Cloud Low Latency'],['Audio','320 kbps Hi-Fi'],['Network','Buffer Pro']].map(([l, v]) => (
-              <div key={l} className="flex flex-col items-center gap-1 text-center">
-                <span className="font-heading text-[8px] font-black uppercase tracking-[0.28em] text-gray-600">{l}</span>
-                <span className="font-body text-xs font-semibold text-gray-300">{v}</span>
-              </div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ══ HOW IT WORKS ════════════════════════════ */}
-      <section className="py-24 md:py-32 px-4 relative z-10">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
-              className="font-heading text-neon-cyan text-[10px] font-bold uppercase tracking-[0.3em] mb-3">
-              El proceso
-            </motion.p>
-            <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-              className="font-display text-5xl md:text-7xl uppercase tracking-wide">
-              Así de <span className="text-neon-cyan">fácil</span>
-            </motion.h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
-            {/* Connector line — desktop only */}
-            <div className="hidden md:block absolute top-12 left-[22%] right-[22%] h-px bg-gradient-to-r from-neon-cyan/20 via-neon-purple/20 to-neon-cyan/20" />
-
-            {STEPS.map((s, i) => {
-              const Icon = s.icon;
-              return (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.12 }}
-                  className="group relative glass rounded-3xl p-8 text-center hover:border-neon-cyan/20 transition-all duration-500 cursor-default"
-                >
-                  {/* Step number */}
-                  <div className="relative mx-auto mb-6 w-16 h-16 flex items-center justify-center">
-                    <div className="absolute inset-0 rounded-2xl border border-neon-cyan/20 bg-neon-cyan/5 group-hover:bg-neon-cyan/10 transition-colors" />
-                    <Icon className="w-7 h-7 text-neon-cyan relative z-10" />
-                    <span className="font-display absolute -top-2 -right-3 text-neon-cyan/30 text-2xl leading-none">{s.n}</span>
-                  </div>
-                  <h3 className="font-heading font-bold text-lg uppercase tracking-tight text-white mb-3">{s.title}</h3>
-                  <p className="font-body text-sm text-gray-500 leading-relaxed group-hover:text-gray-400 transition-colors">{s.desc}</p>
-                </motion.div>
-              );
-            })}
-          </div>
+          ))}
         </div>
       </section>
 
       {/* ══ BENTO FEATURES ══════════════════════════ */}
-      <section className="py-24 md:py-32 px-4 relative z-10">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-14">
-            <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
-              className="font-heading text-neon-cyan text-[10px] font-bold uppercase tracking-[0.3em] mb-3">
-              Plataforma completa
-            </motion.p>
-            <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-              className="font-display text-5xl md:text-7xl uppercase tracking-wide">
-              Todo lo que <span className="text-neon-cyan">necesitas</span>
-            </motion.h2>
+      <section className="py-24 px-4">
+        <div className="container mx-auto max-w-6xl">
+          <div className="mb-16 text-center md:text-left">
+            <h2 className="font-display text-4xl md:text-6xl uppercase leading-none mb-4">
+              Ingeniería <span className="text-neon-purple italic">Sonora</span>
+            </h2>
+            <p className="text-gray-500 max-w-md text-sm">Tecnología de punta para el ambiente más exigente de RadioOleaControls.</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {FEATURES.map((f, i) => {
-              const Icon = f.icon;
-              const isCyan = f.accent === 'cyan';
-              const hex = isCyan ? '#00f3ff' : '#bc13fe';
-              return (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 28 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.07 }}
-                  whileHover={{ borderColor: `${hex}44`, boxShadow: `0 0 45px -12px ${hex}33` }}
-                  className={`group relative glass rounded-3xl p-8 overflow-hidden transition-all duration-500 cursor-default ${f.large ? 'lg:col-span-2' : ''}`}
-                >
-                  <div className="absolute -top-12 -right-12 w-48 h-48 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
-                    style={{ background: `${hex}0f` }} />
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+            {/* Main feature */}
+            <motion.div 
+              whileHover={{ y: -5 }}
+              className="md:col-span-8 p-10 glass rounded-[2.5rem] relative overflow-hidden group"
+            >
+              <div className="absolute top-0 right-0 p-8">
+                <Headphones className="w-12 h-12 text-neon-cyan opacity-20 group-hover:opacity-100 transition-opacity" />
+              </div>
+              <h3 className="font-display text-4xl mb-4">Streaming Hi-Fi Sin Cortes</h3>
+              <p className="text-gray-400 max-w-sm text-sm">Audio 320kbps con tecnología de buffer predictivo que garantiza música infinita incluso con fallas de internet.</p>
+              <div className="mt-8 flex gap-2">
+                <span className="px-3 py-1 rounded-full bg-neon-cyan/10 text-neon-cyan text-[10px] font-bold uppercase tracking-widest">320 KBPS</span>
+                <span className="px-3 py-1 rounded-full bg-white/5 text-white/40 text-[10px] font-bold uppercase tracking-widest">DAC 24-BIT</span>
+              </div>
+            </motion.div>
 
-                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-6 border transition-all duration-500"
-                    style={{ background: `${hex}15`, borderColor: `${hex}28`, color: hex }}>
-                    <Icon className="w-5 h-5" />
-                  </div>
+            {/* Small feature */}
+            <motion.div 
+              whileHover={{ y: -5 }}
+              className="md:col-span-4 p-10 glass rounded-[2.5rem] bg-gradient-to-br from-neon-purple/20 to-transparent"
+            >
+              <Shield className="w-8 h-8 text-neon-purple mb-6" />
+              <h3 className="font-heading font-bold text-xl mb-2 italic">100% Legal</h3>
+              <p className="text-xs text-gray-500 leading-relaxed text-left">Gestión total de licencias (SACM, SOMEXFON). RadioOleaControls protege tu marca.</p>
+            </motion.div>
 
-                  <h3 className="font-heading font-bold text-xl uppercase tracking-tight mb-3 group-hover:text-white transition-colors">
-                    {f.title}
-                  </h3>
-                  <p className="font-body text-sm text-gray-500 leading-relaxed group-hover:text-gray-400 transition-colors">
-                    {f.desc}
-                  </p>
+            {/* Another row */}
+            <motion.div 
+              whileHover={{ y: -5 }}
+              className="md:col-span-4 p-10 glass rounded-[2.5rem]"
+            >
+              <LayoutDashboard className="w-8 h-8 text-white/50 mb-6" />
+              <h3 className="font-heading font-bold text-xl mb-2">Multi-Zona</h3>
+              <p className="text-xs text-gray-500 leading-relaxed text-left">Controla diferentes atmósferas en cada sucursal desde un solo panel inteligente.</p>
+            </motion.div>
 
-                  <div className="mt-7 flex items-center gap-1.5 text-[9px] font-heading font-bold uppercase tracking-[0.3em] opacity-0 -translate-x-3 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500" style={{ color: hex }}>
-                    Saber más <ChevronRight size={11} />
-                  </div>
-                </motion.div>
-              );
-            })}
+            <motion.div 
+              whileHover={{ y: -5 }}
+              className="md:col-span-8 p-10 glass rounded-[2.5rem] bg-gradient-to-r from-void to-white/[0.03] flex flex-col md:flex-row items-center gap-10"
+            >
+              <div className="flex-1 text-left">
+                <h3 className="font-display text-3xl mb-4">Instalación <br /> Express</h3>
+                <p className="text-gray-400 text-sm">Técnicos certificados RadioOlea listos para activar tu sistema en tiempo récord.</p>
+              </div>
+              <div className="w-32 h-32 rounded-3xl bg-neon-cyan/5 border border-neon-cyan/20 flex items-center justify-center rotate-12 group-hover:rotate-0 transition-transform">
+                <Wrench className="w-12 h-12 text-neon-cyan" />
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* ══ TESTIMONIALS ════════════════════════════ */}
-      <section className="py-24 md:py-32 px-4 relative z-10 overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-neon-purple/30 to-transparent" />
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-neon-cyan/20 to-transparent" />
+      {/* ══ PHOTO CAROUSEL SECTION ══════════════════ */}
+      <section className="py-24 px-4 overflow-hidden">
+        <div className="container mx-auto max-w-6xl">
+          <div className="mb-16 text-center">
+            <h2 className="font-display text-5xl md:text-7xl uppercase leading-none mb-6">
+              Atmósferas en <span className="text-neon-cyan italic">Acción</span>
+            </h2>
+            <p className="text-gray-500 max-w-xl mx-auto text-base">Descubre cómo RadioOleaControls transforma espacios comerciales reales a través del audio inteligente.</p>
+          </div>
+          
+          <PhotoCarousel />
         </div>
+      </section>
 
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-14">
-            <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
-              className="font-heading text-neon-purple text-[10px] font-bold uppercase tracking-[0.3em] mb-3">
-              Lo que dicen nuestros clientes
-            </motion.p>
-            <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-              className="font-display text-5xl md:text-7xl uppercase tracking-wide">
-              Resultados <span className="text-neon-purple">reales</span>
-            </motion.h2>
+      {/* ══ DEMO SECTION ════════════════════════════ */}
+      <section className="py-32 bg-white/[0.01]">
+        <div className="container mx-auto px-4 text-center">
+          <div className="max-w-4xl mx-auto glass p-1 md:p-2 rounded-[3rem] shadow-2xl overflow-hidden">
+            <UniversalPlayer streamUrl="https://c44.radioboss.fm:8054/stream" stationName="RadioOlea Live Demo" />
+          </div>
+          <p className="mt-8 text-[10px] font-heading font-bold uppercase tracking-[0.4em] text-gray-600">Mastering Digital en Tiempo Real</p>
+        </div>
+      </section>
+
+      {/* ══ TESTIMONIALS ════════════════════════════ */}
+      <section className="py-24 px-4 overflow-hidden">
+        <div className="container mx-auto max-w-6xl">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8 text-left">
+            <h2 className="font-display text-5xl md:text-7xl leading-none uppercase">
+              La Voz <br /> del <span className="text-neon-cyan">Éxito</span>
+            </h2>
+            <p className="text-gray-400 max-w-xs text-xs mb-4">Empresas que ya transformaron su atmósfera con RadioOleaControls.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {TESTIMONIALS.map((t, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="group glass rounded-3xl p-8 flex flex-col gap-5 hover:border-neon-purple/20 transition-all duration-500 cursor-default"
-              >
-                {/* Stars */}
-                <div className="flex gap-1">
-                  {Array.from({ length: t.rating }).map((_, j) => (
-                    <Star key={j} className="w-4 h-4 text-amber-400 fill-amber-400" />
-                  ))}
-                </div>
-
-                {/* Quote */}
-                <div className="relative flex-grow">
-                  <Quote className="w-6 h-6 text-neon-purple/30 mb-3" />
-                  <p className="font-body text-sm text-gray-300 leading-relaxed italic">
-                    "{t.quote}"
-                  </p>
-                </div>
-
-                {/* Author */}
-                <div className="flex items-center gap-3 pt-3 border-t border-white/5">
-                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-neon-purple/30 to-neon-cyan/10 border border-white/10 flex items-center justify-center flex-shrink-0">
-                    <span className="font-heading font-bold text-sm text-white">{t.name[0]}</span>
-                  </div>
-                  <div>
-                    <p className="font-heading font-bold text-sm text-white">{t.name}</p>
-                    <p className="font-body text-[10px] text-gray-500">{t.role}</p>
-                  </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              { q: "Nuestros clientes pasan 15% más tiempo en tienda.", n: "María G.", r: "Retailer" },
+              { q: "El soporte técnico es impecable, siempre están ahí.", n: "Carlos M.", r: "Restaurateur" },
+              { q: "La mejor inversión en branding auditivo que hemos hecho.", n: "Ana L.", r: "Boutique" }
+            ].map((t, i) => (
+              <motion.div key={i} className="p-8 glass rounded-3xl border-l-4 border-neon-cyan text-left">
+                <Quote className="w-8 h-8 text-white/10 mb-6" />
+                <p className="text-lg font-light mb-8 italic">"{t.q}"</p>
+                <div>
+                  <p className="font-heading font-bold uppercase text-xs tracking-widest">{t.n}</p>
+                  <p className="text-[10px] text-gray-500 uppercase tracking-widest">{t.r}</p>
                 </div>
               </motion.div>
             ))}
@@ -470,106 +315,24 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* ══ QUICK ACCESS ════════════════════════════ */}
-      <section className="py-16 md:py-24 px-4 max-w-7xl mx-auto relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {QUICK.map(({ title, desc, path, Icon }, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 28 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-            >
-              <Link to={path} className="group relative glass rounded-[32px] p-9 flex flex-col h-full transition-all duration-500 hover:border-neon-cyan/25 hover:shadow-[0_0_55px_-14px_rgba(0,243,255,0.18)] overflow-hidden cursor-pointer" style={{ minHeight: '240px' }}>
-                <div className="absolute top-0 right-0 w-40 h-40 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none transition-all duration-700"
-                  style={{ background: 'rgba(0,243,255,0.04)' }} />
-
-                <div className="mb-6 p-3.5 rounded-2xl border border-white/8 w-fit text-neon-cyan group-hover:border-neon-cyan/30 group-hover:shadow-[0_0_20px_rgba(0,243,255,0.15)] transition-all duration-500 bg-neon-cyan/5 cursor-pointer"
-                  style={{ minWidth: '44px', minHeight: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Icon className="w-6 h-6" />
-                </div>
-
-                <h3 className="font-heading font-bold text-lg md:text-xl uppercase tracking-tight mb-3 group-hover:text-white transition-colors flex-shrink-0">
-                  {title}
-                </h3>
-                <p className="font-body text-sm text-gray-500 leading-relaxed mb-7 group-hover:text-gray-400 transition-colors flex-grow">
-                  {desc}
-                </p>
-
-                <div className="flex items-center gap-2 text-neon-cyan font-heading text-[9px] font-bold uppercase tracking-[0.32em] opacity-0 -translate-x-3 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500">
-                  Explorar <ChevronRight size={11} />
-                </div>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
       {/* ══ FINAL CTA ═══════════════════════════════ */}
-      <section className="py-24 md:py-32 px-4 relative z-10 overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute inset-0 opacity-40"
-            style={{ background: 'linear-gradient(135deg, rgba(0,35,102,0.6) 0%, rgba(0,0,0,0) 50%, rgba(188,19,254,0.15) 100%)' }} />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] rounded-full blur-[100px]"
-            style={{ background: 'radial-gradient(ellipse, rgba(0,243,255,0.12) 0%, transparent 70%)' }} />
-        </div>
-
-        <div className="max-w-4xl mx-auto text-center relative z-10">
-          <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
-            className="font-heading text-neon-cyan text-[10px] font-bold uppercase tracking-[0.3em] mb-4">
-            ¿Listo para transformar tu negocio?
-          </motion.p>
-
-          <motion.h2 initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-            className="font-display text-6xl md:text-8xl lg:text-9xl uppercase tracking-wide leading-[0.88] mb-6">
-            <span className="text-white">Tu negocio</span>
-            <br />
-            <span className="text-neon-cyan animate-gradient bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-cyan bg-[length:200%_auto]"
-              style={{ WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
-              merece sonar
-            </span>
-            <br />
-            <span className="text-white">mejor.</span>
-          </motion.h2>
-
-          <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
-            className="font-body text-base text-gray-400 mb-12 max-w-lg mx-auto leading-relaxed">
-            Únete a más de 500 sucursales en México que ya transformaron su experiencia sonora con RadiOlea Controls.
-          </motion.p>
-
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-            className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/planes"
-              className="group relative bg-neon-cyan text-void px-10 py-5 rounded-2xl font-heading font-bold text-sm uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-3 hover:shadow-[0_0_70px_rgba(0,243,255,0.5)] hover:scale-[1.04] overflow-hidden cursor-pointer"
-              style={{ minHeight: '56px' }}>
-              <span className="relative z-10">Ver Planes y Precios</span>
-              <ArrowRight className="w-4 h-4 relative z-10 group-hover:translate-x-1 transition-transform" />
-              <div className="absolute inset-0 bg-white/20 -translate-x-full skew-x-[-12deg] group-hover:translate-x-full transition-transform duration-600" />
+      <section className="py-32 px-4 relative overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100vw] h-[100vw] bg-neon-cyan/5 rounded-full blur-[150px]" />
+        <div className="container mx-auto text-center relative z-10">
+          <h2 className="font-display text-5xl md:text-8xl leading-none uppercase mb-10 tracking-tight">
+            RadioOleaControls <br /> suenen <br /> <span className="text-neon-cyan italic">Mejor</span>
+          </h2>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Link to="/contacto" className="inline-flex items-center gap-4 bg-white text-void px-10 py-5 rounded-full font-heading font-black text-base uppercase tracking-widest hover:scale-105 transition-transform shadow-[0_0_40px_rgba(255,255,255,0.2)]">
+              Contactar ahora <ArrowRight />
             </Link>
-            <Link to="/contacto"
-              className="glass px-10 py-5 rounded-2xl font-heading font-semibold text-sm uppercase tracking-widest hover:bg-white/8 transition-all duration-300 flex items-center justify-center cursor-pointer"
-              style={{ minHeight: '56px' }}>
-              Contactar un asesor
-            </Link>
-          </motion.div>
-
-          {/* Trust micro-copy */}
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
-            className="mt-10 flex flex-wrap justify-center gap-6">
-            {[
-              [CheckCircle2, 'Sin contrato mínimo'],
-              [CheckCircle2, 'Instalación gratuita'],
-              [CheckCircle2, 'Soporte 24/7'],
-            ].map(([Icon, text], i) => (
-              <div key={i} className="flex items-center gap-2 text-xs text-gray-500 font-heading font-semibold">
-                <Icon className="w-3.5 h-3.5 text-neon-cyan" />
-                {text}
-              </div>
-            ))}
-          </motion.div>
+          </div>
         </div>
       </section>
+
+      <footer className="py-10 border-t border-white/5 text-center">
+        <p className="text-[10px] font-heading font-bold uppercase tracking-[0.5em] text-gray-700">© 2026 RadioOleaControls • Todos los derechos reservados</p>
+      </footer>
     </div>
   );
 };

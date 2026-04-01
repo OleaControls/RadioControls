@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Hls from 'hls.js';
-import { Play, Square, Volume2, VolumeX, Radio, Activity, Loader2, Disc, Mic2, Waves } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Play, Square, Volume2, VolumeX, Activity, Loader2, Disc, Mic2, Waves, Zap, ShieldCheck } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const UniversalPlayer = ({ streamUrl, stationName = "Estación RadiOlea" }) => {
   const audioRef = useRef(null);
@@ -22,7 +22,7 @@ const UniversalPlayer = ({ streamUrl, stationName = "Estación RadiOlea" }) => {
       } else if (audioRef.current.canPlayType('application/vnd.apple.mpegurl')) {
         audioRef.current.src = streamUrl;
       }
-    } else {
+    } else if (streamUrl) {
       audioRef.current.src = streamUrl;
     }
 
@@ -48,105 +48,126 @@ const UniversalPlayer = ({ streamUrl, stationName = "Estación RadiOlea" }) => {
   };
 
   return (
-    <div className="relative group max-w-2xl w-full">
-      {/* Outer Glow Decor */}
-      <div className="absolute -inset-1 bg-gradient-to-r from-neon-cyan to-neon-purple rounded-[40px] blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
+    <div className="relative group w-full max-w-3xl mx-auto px-4">
+      {/* Dynamic Glow Aura */}
+      <div className={`absolute -inset-4 bg-gradient-to-r ${isPlaying ? 'from-neon-cyan/20 to-neon-purple/20' : 'from-white/5 to-white/5'} rounded-[3rem] blur-2xl transition-all duration-1000 pointer-events-none`} />
       
-      <div className="relative bg-black border border-white/10 rounded-[38px] overflow-hidden shadow-2xl">
+      <div className="relative bg-[#0a0a14] border border-white/10 rounded-[2.5rem] overflow-hidden shadow-2xl backdrop-blur-3xl">
         
-        {/* Top "Status Bar" */}
-        <div className="bg-white/5 border-b border-white/5 px-8 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-3">
-            <div className={`w-2 h-2 rounded-full ${status === 'playing' ? 'bg-neon-cyan animate-ping' : 'bg-gray-600'}`} />
-            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
-              {status === 'playing' ? 'En Directo' : 'Standby'}
-            </span>
+        {/* ── Header: Pro Specs Display ────────────────── */}
+        <div className="bg-black/40 border-b border-white/5 px-6 py-3 flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <div className={`w-1.5 h-1.5 rounded-full ${status === 'playing' ? 'bg-neon-cyan animate-pulse shadow-[0_0_8px_#00f3ff]' : 'bg-gray-700'}`} />
+              <span className={`text-[9px] font-black uppercase tracking-[0.2em] ${status === 'playing' ? 'text-neon-cyan' : 'text-gray-500'}`}>
+                {status === 'playing' ? 'LIVE TRANSMISSION' : 'ENGINE STANDBY'}
+              </span>
+            </div>
+            <div className="h-3 w-px bg-white/10 hidden xs:block" />
+            <div className="hidden xs:flex gap-3 text-[8px] font-mono text-gray-600">
+              <span className="flex items-center gap-1"><Zap size={10} className="text-neon-cyan/40" /> 320 KBPS</span>
+              <span className="flex items-center gap-1"><Activity size={10} className="text-neon-purple/40" /> 48KHZ / 24-BIT</span>
+            </div>
           </div>
-          <div className="flex gap-4">
-            <div className="text-[10px] font-mono text-neon-cyan/50 tracking-tighter">BITRATE: 320KBPS</div>
-            <div className="text-[10px] font-mono text-neon-cyan/50 tracking-tighter">DAC: 24-BIT</div>
+          
+          <div className="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-white/5">
+            <ShieldCheck size={10} className="text-neon-cyan" />
+            <span className="text-[8px] font-bold uppercase tracking-widest text-white/40">Secure</span>
           </div>
         </div>
 
-        <div className="p-8 md:p-12">
-          <div className="flex flex-col md:flex-row gap-10 items-center">
+        <div className="p-6 md:p-10">
+          <div className="flex flex-col md:flex-row gap-8 items-center">
             
-            {/* Spinning Disc / Visualizer */}
-            <div className="relative shrink-0">
-              <motion.div 
-                animate={isPlaying ? { rotate: 360 } : { rotate: 0 }}
-                transition={{ repeat: Infinity, duration: 8, ease: "linear" }}
-                className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-gradient-to-tr from-royal-blue to-black border-4 border-white/10 flex items-center justify-center relative overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)]"
-              >
-                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
-                <Disc className={`w-16 h-16 ${isPlaying ? 'text-neon-cyan' : 'text-gray-700'} transition-colors duration-500`} />
+            {/* ── Left: Visual Core ────────────────── */}
+            <div className="shrink-0 flex justify-center">
+              <div className="relative group/disc">
+                <motion.div 
+                  animate={isPlaying ? { rotate: 360 } : { rotate: 0 }}
+                  transition={{ repeat: Infinity, duration: 10, ease: "linear" }}
+                  className={`w-32 h-32 md:w-44 md:h-44 rounded-full border-2 p-1 transition-colors duration-700 ${isPlaying ? 'border-neon-cyan/50 shadow-[0_0_30px_rgba(0,243,255,0.15)]' : 'border-white/5'}`}
+                >
+                  <div className="w-full h-full rounded-full bg-[#111] flex items-center justify-center relative overflow-hidden ring-4 ring-black">
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white/5 to-transparent opacity-50" />
+                    
+                    {/* Inner Grooves */}
+                    {[...Array(5)].map((_, i) => (
+                      <div key={i} className="absolute rounded-full border border-white/5" style={{ inset: `${(i + 1) * 12}px` }} />
+                    ))}
+                    
+                    <Disc className={`w-12 h-12 md:w-16 md:h-16 ${isPlaying ? 'text-neon-cyan drop-shadow-[0_0_10px_#00f3ff]' : 'text-gray-800'} transition-all duration-700`} />
+                  </div>
+                </motion.div>
                 
-                {/* Visualizer Rings */}
-                {isPlaying && (
-                  <motion.div 
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1.5, opacity: 0 }}
-                    transition={{ repeat: Infinity, duration: 1.5 }}
-                    className="absolute inset-0 border-2 border-neon-cyan rounded-full"
-                  />
-                )}
-              </motion.div>
-              
-              <div className="absolute -bottom-2 -right-2 bg-royal-blue-dark border border-white/10 p-2 rounded-xl shadow-lg">
-                <Mic2 className="w-4 h-4 text-neon-purple" />
+                {/* Floating Badge */}
+                <div className="absolute -bottom-2 -right-2 bg-neon-cyan text-void p-2 rounded-xl shadow-xl transform rotate-12">
+                  <Mic2 className="w-4 h-4" />
+                </div>
               </div>
             </div>
 
-            {/* Content & Controls */}
-            <div className="flex-grow w-full text-center md:text-left">
-              <div className="mb-6">
-                <h3 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tighter leading-none mb-2">{stationName}</h3>
-                <div className="flex items-center justify-center md:justify-start gap-2">
-                  <Waves className="w-4 h-4 text-neon-cyan" />
-                  <p className="text-gray-500 text-xs font-bold uppercase tracking-widest">Atmosphere Engine V2</p>
+            {/* ── Right: Station Info & EQ ────────────────── */}
+            <div className="flex-grow flex flex-col w-full">
+              <div className="mb-6 text-center md:text-left">
+                <div className="inline-block px-3 py-1 rounded-lg bg-neon-cyan/5 border border-neon-cyan/10 mb-3">
+                  <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-neon-cyan">Mastering Audio Engine V2</span>
+                </div>
+                <h3 className="text-2xl md:text-4xl font-display uppercase tracking-tight text-white leading-tight mb-2">
+                  {stationName}
+                </h3>
+                <p className="text-gray-500 text-[10px] font-bold uppercase tracking-[0.4em] flex items-center justify-center md:justify-start gap-2">
+                  <Waves className="w-3 h-3 text-neon-purple" />
+                  Hi-Fi Digital Broadcast
+                </p>
+              </div>
+
+              {/* ── Dynamic EQ Display ────────────────── */}
+              <div className="bg-black/60 rounded-2xl p-4 border border-white/5 mb-8 backdrop-blur-xl">
+                <div className="h-10 flex items-end justify-between gap-1">
+                  {[...Array(24)].map((_, i) => (
+                    <motion.div 
+                      key={i}
+                      animate={isPlaying ? { height: [4, Math.random() * 32 + 8, 4] } : { height: 2 }}
+                      transition={{ repeat: Infinity, duration: 0.4 + Math.random() * 0.4 }}
+                      className={`w-full rounded-full transition-colors ${isPlaying ? (i % 2 === 0 ? 'bg-neon-cyan' : 'bg-neon-purple') : 'bg-white/10'}`}
+                    />
+                  ))}
                 </div>
               </div>
 
-              {/* Dynamic Visualizer Bars */}
-              <div className="h-12 flex items-end justify-center md:justify-start gap-1 mb-8 opacity-40">
-                {[...Array(20)].map((_, i) => (
-                  <motion.div 
-                    key={i}
-                    animate={isPlaying ? { height: [10, Math.random() * 48, 10] } : { height: 4 }}
-                    transition={{ repeat: Infinity, duration: 0.5 + Math.random() * 0.5 }}
-                    className="w-1.5 bg-neon-cyan rounded-full"
-                  />
-                ))}
-              </div>
+              {/* ── Controls Layout ────────────────── */}
+              <div className="flex flex-col sm:flex-row items-center gap-8">
+                <button
+                  onClick={togglePlay}
+                  className={`group relative w-16 h-16 rounded-2xl flex items-center justify-center transition-all active:scale-95 ${
+                    isPlaying 
+                    ? 'bg-neon-cyan text-void shadow-[0_0_30px_rgba(0,243,255,0.4)]' 
+                    : 'bg-white/10 text-white hover:bg-white hover:text-void'
+                  }`}
+                >
+                  {status === 'loading' ? (
+                    <Loader2 className="w-8 h-8 animate-spin" />
+                  ) : isPlaying ? (
+                    <Square className="w-8 h-8 fill-current" />
+                  ) : (
+                    <Play className="w-8 h-8 fill-current ml-1" />
+                  )}
+                </button>
 
-              <div className="flex flex-col gap-6">
-                <div className="flex items-center gap-6 justify-center md:justify-start">
-                  <button
-                    onClick={togglePlay}
-                    className={`w-20 h-20 rounded-[24px] flex items-center justify-center transition-all transform hover:scale-105 active:scale-95 ${
-                      status === 'playing' 
-                      ? 'bg-neon-cyan text-royal-blue-dark shadow-[0_0_30px_rgba(0,243,255,0.4)]' 
-                      : 'bg-white text-royal-blue-dark hover:bg-neon-cyan'
-                    }`}
-                  >
-                    {status === 'loading' ? (
-                      <Loader2 className="w-8 h-8 animate-spin" />
-                    ) : status === 'playing' ? (
-                      <Square className="w-8 h-8 fill-current" />
-                    ) : (
-                      <Play className="w-8 h-8 fill-current ml-1" />
-                    )}
-                  </button>
-
-                  <div className="flex-grow max-w-[200px] space-y-3">
-                    <div className="flex justify-between text-[9px] font-black text-gray-500 tracking-widest uppercase">
-                      <span>Nivel de Salida</span>
-                      <span className="text-neon-cyan">{isMuted ? 'Muted' : `${Math.round(volume * 100)}%`}</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <button onClick={() => setIsMuted(!isMuted)} className="hover:text-neon-cyan transition-colors">
-                        {isMuted || volume === 0 ? <VolumeX size={18} /> : <Volume2 size={18} />}
-                      </button>
+                <div className="flex-grow w-full space-y-3">
+                  <div className="flex justify-between items-end">
+                    <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Gain Control</span>
+                    <span className="text-xs font-mono text-neon-cyan">{isMuted ? 'MUTED' : `${Math.round(volume * 100)}%`}</span>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <button onClick={() => setIsMuted(!isMuted)} className={`transition-colors ${isMuted ? 'text-red-500' : 'text-gray-400 hover:text-white'}`}>
+                      {isMuted || volume === 0 ? <VolumeX size={18} /> : <Volume2 size={18} />}
+                    </button>
+                    <div className="relative flex-grow h-2 bg-white/5 rounded-full overflow-hidden">
+                      <div 
+                        className={`absolute top-0 left-0 h-full transition-all duration-300 ${isMuted ? 'bg-red-500/50' : 'bg-gradient-to-r from-neon-cyan to-neon-purple'}`}
+                        style={{ width: `${volume * 100}%` }}
+                      />
                       <input 
                         type="range" 
                         min="0" max="1" step="0.01" 
@@ -156,7 +177,7 @@ const UniversalPlayer = ({ streamUrl, stationName = "Estación RadiOlea" }) => {
                           setVolume(val);
                           audioRef.current.volume = val;
                         }}
-                        className="w-full accent-neon-cyan h-1 bg-white/10 rounded-full appearance-none cursor-pointer"
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                       />
                     </div>
                   </div>
@@ -166,10 +187,10 @@ const UniversalPlayer = ({ streamUrl, stationName = "Estación RadiOlea" }) => {
           </div>
         </div>
 
-        {/* Bottom Deco */}
-        <div className="h-1 w-full bg-gradient-to-r from-transparent via-neon-cyan to-transparent opacity-20"></div>
+        {/* ── Bottom Accent: Status Light ────────────────── */}
+        <div className={`h-1 w-full transition-colors duration-1000 ${isPlaying ? 'bg-gradient-to-r from-transparent via-neon-cyan to-transparent shadow-[0_0_15px_#00f3ff]' : 'bg-white/5'}`} />
       </div>
-      <audio ref={audioRef} muted={isMuted} />
+      <audio ref={audioRef} />
     </div>
   );
 };
