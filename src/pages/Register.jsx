@@ -48,65 +48,69 @@ const Register = () => {
       >
         <ArrowLeft className="h-4 w-4" /> Inicio
       </Link>
-      <div className="bg-slate-900/40 backdrop-blur-xl p-8 sm:p-10 rounded-3xl border border-white/10 shadow-[0_0_50px_-12px_rgba(0,243,255,0.2)]">
+      <div className="glass rounded-[2.5rem] p-8 md:p-12 relative overflow-hidden group border-white/5 hover:border-white/10 transition-all duration-500">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-neon-purple/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
+        
         <div className="flex flex-col items-center text-center mb-10">
-          <div className="mb-6">
-            <img src="/img%20radio%20olea/logosinfondoradioolea.svg" alt="RadiOlea Controls" className="h-16 w-auto object-contain" />
+          <div className="mb-8">
+            <img src="/img%20radio%20olea/logosinfondoradioolea.svg" alt="RadiOlea Controls" className="h-16 w-auto object-contain drop-shadow-[0_0_15px_rgba(0,243,255,0.3)]" />
           </div>
-          <h2 className="text-3xl font-black tracking-tighter text-white">
-            Únete a Nosotros
+          <h2 className="font-display text-4xl uppercase tracking-tight text-white mb-3">
+            Crear <span className="text-neon-purple italic">Cuenta</span>
           </h2>
-          <p className="mt-3 text-slate-400 font-medium">
-            ¿Ya tienes cuenta?{' '}
-            <Link to="/login" className="text-neon-cyan hover:text-white transition-colors">
-              Inicia sesión
+          <p className="text-gray-500 text-sm font-light">
+            ¿Ya eres parte de la red?{' '}
+            <Link to="/login" className="text-white hover:text-neon-purple transition-colors font-bold underline decoration-neon-purple/30">
+              Inicia sesión aquí
             </Link>
           </p>
         </div>
 
-        <form className="space-y-5" onSubmit={handleSubmit}>
+        <form className="space-y-6" onSubmit={handleSubmit}>
           {/* Name Input */}
           <div className="space-y-2">
-            <label htmlFor="name" className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Nombre Completo</label>
-            <div className="relative group">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-4 transition-colors group-focus-within:text-neon-cyan">
-                <UserIcon className="h-5 w-5 text-slate-500 transition-colors" />
+            <label htmlFor="name" className="text-[10px] font-heading font-black uppercase tracking-[0.2em] text-gray-500 ml-4">Identidad de Marca</label>
+            <div className="relative group/input">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-5 text-gray-600 group-focus-within/input:text-neon-purple transition-colors">
+                <UserIcon className="h-5 w-5" />
               </div>
               <input
                 id="name"
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Juan Pérez"
-                className="w-full rounded-2xl bg-white/5 border-white/10 py-4 pl-12 pr-4 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:border-neon-cyan/50 transition-all duration-300"
+                placeholder="Nombre o Razón Social"
+                className="w-full rounded-2xl bg-white/[0.03] border border-white/5 py-4 pl-14 pr-6 text-white placeholder:text-gray-700 focus:outline-none focus:border-neon-purple/50 focus:bg-white/[0.05] transition-all duration-300 font-light"
                 required
               />
             </div>
           </div>
           
+          {/* Email Input */}
           <div className="space-y-2">
-            <label htmlFor="email" className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Correo Electrónico</label>
-            <div className="relative group">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-4 transition-colors group-focus-within:text-neon-cyan">
-                <Mail className="h-5 w-5 text-slate-500 transition-colors" />
+            <label htmlFor="email" className="text-[10px] font-heading font-black uppercase tracking-[0.2em] text-gray-500 ml-4">Correo Corporativo</label>
+            <div className="relative group/input">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-5 text-gray-600 group-focus-within/input:text-neon-purple transition-colors">
+                <Mail className="h-5 w-5" />
               </div>
               <input
                 id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="tu@email.com"
-                className="w-full rounded-2xl bg-white/5 border-white/10 py-4 pl-12 pr-4 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:border-neon-cyan/50 transition-all duration-300"
+                placeholder="admin@tuempresa.com"
+                className="w-full rounded-2xl bg-white/[0.03] border border-white/5 py-4 pl-14 pr-6 text-white placeholder:text-gray-700 focus:outline-none focus:border-neon-purple/50 focus:bg-white/[0.05] transition-all duration-300 font-light"
                 required
               />
             </div>
           </div>
 
+          {/* Password Input */}
           <div className="space-y-2">
-            <label htmlFor="password" className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Contraseña</label>
-            <div className="relative group">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-4 transition-colors group-focus-within:text-neon-cyan">
-                <Lock className="h-5 w-5 text-slate-500 transition-colors" />
+            <label htmlFor="password" className="text-[10px] font-heading font-black uppercase tracking-[0.2em] text-gray-500 ml-4">Clave de Seguridad</label>
+            <div className="relative group/input">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-5 text-gray-600 group-focus-within/input:text-neon-purple transition-colors">
+                <Lock className="h-5 w-5" />
               </div>
               <input
                 id="password"
@@ -114,15 +118,15 @@ const Register = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Mínimo 8 caracteres"
-                className="w-full rounded-2xl bg-white/5 border-white/10 py-4 pl-12 pr-4 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:border-neon-cyan/50 transition-all duration-300"
+                className="w-full rounded-2xl bg-white/[0.03] border border-white/5 py-4 pl-14 pr-6 text-white placeholder:text-gray-700 focus:outline-none focus:border-neon-purple/50 focus:bg-white/[0.05] transition-all duration-300 font-light"
                 required
               />
             </div>
           </div>
 
           {error && (
-            <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-3">
-              <p className="text-xs font-bold text-red-400 text-center">{error}</p>
+            <div className="bg-red-500/5 border border-red-500/10 rounded-2xl p-4">
+              <p className="text-[10px] font-black uppercase tracking-widest text-red-400 text-center">{error}</p>
             </div>
           )}
 
@@ -131,25 +135,15 @@ const Register = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-neon-cyan px-4 py-4 text-sm font-black text-slate-950 shadow-[0_0_20px_rgba(0,243,255,0.4)] transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed group"
+              className="relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-full bg-white text-void px-6 py-5 text-xs font-black uppercase tracking-[0.2em] transition-all duration-300 hover:bg-neon-purple hover:text-white hover:shadow-[0_0_30px_rgba(188,19,254,0.4)] active:scale-95 disabled:opacity-50"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/30 to-white/0 -translate-x-full group-hover:animate-shimmer" />
-              <span className="relative">
-                {isLoading ? 'Creando cuenta...' : 'Crear Cuenta'}
+              <span className="relative z-10">
+                {isLoading ? 'Creando Acceso...' : 'Generar Cuenta'}
               </span>
-              {!isLoading && <ArrowRight className="h-5 w-5 relative" />}
+              {!isLoading && <ArrowRight className="h-4 w-4 relative z-10" />}
             </button>
           </div>
         </form>
-
-        <div className="mt-12 text-center">
-          <p className="text-gray-500 text-sm font-bold">
-            ¿Ya tienes una cuenta?{' '}
-            <Link to="/login" className="text-light-accent dark:text-neon-cyan cursor-pointer hover:underline">
-              Inicia sesión aquí.
-            </Link>
-          </p>
-        </div>
       </div>
     </AuthSplitLayout>
   );
