@@ -5,7 +5,8 @@ import {
   Shield, Headphones, LayoutDashboard,
   Clock, Wrench, Lock, Play, CheckCircle2,
   Star, Quote, Music, Wifi, PhoneCall,
-  TrendingUp, Users, MapPin, ExternalLink
+  TrendingUp, Users, MapPin, ExternalLink,
+  Target, Eye
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import HeroWaves from '../components/HeroWaves';
@@ -92,25 +93,31 @@ const LandingPage = () => {
             </span>
           </motion.div>
 
-          <motion.h1 
+          <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="font-display text-4xl sm:text-5xl md:text-7xl leading-[1.1] md:leading-[0.9] uppercase mb-8 tracking-tight"
+            className="font-display text-4xl sm:text-5xl md:text-7xl leading-[1.1] md:leading-[1.0] uppercase mb-8 tracking-tight"
           >
-            Sonido que <br />
+            Música hecha para <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple animate-gradient bg-[length:200%_auto]">
-              Vende Más.
+              tu negocio,
+            </span>{" "}
+            <br className="hidden md:block" />
+            perfeccionada por <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-purple via-white to-neon-cyan animate-gradient bg-[length:200%_auto]">
+              ingeniería experta.
             </span>
           </motion.h1>
 
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="max-w-xl mx-auto text-gray-400 text-sm md:text-lg font-light mb-10 md:mb-12 leading-relaxed px-4"
+            className="max-w-xl mx-auto text-white text-base md:text-xl font-semibold mb-10 md:mb-12 leading-relaxed px-4 tracking-wide"
           >
-            Elevamos la experiencia sensorial de tu negocio con tecnología de streaming legal y curaduría musical inteligente.
+            Juntos, crecemos tus ventas{" "}
+            <span className="text-neon-cyan">mínimo un 15%</span>
           </motion.p>
 
           <motion.div 
@@ -199,6 +206,79 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* ══ MISIÓN & VISIÓN ═════════════════════════ */}
+      <section className="py-24 px-4">
+        <div className="container mx-auto max-w-6xl">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <span className="text-[10px] font-heading font-black uppercase tracking-[0.4em] text-neon-cyan">
+              Propósito
+            </span>
+            <h2 className="font-display text-4xl md:text-6xl uppercase leading-none mt-3">
+              Misión <span className="text-neon-purple italic">&</span> Visión
+            </h2>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Misión */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              whileHover={{ y: -5 }}
+              className="glass rounded-[2.5rem] p-10 relative overflow-hidden group"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-neon-cyan/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-[2.5rem]" />
+              <div className="relative z-10">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 rounded-2xl bg-neon-cyan/10 border border-neon-cyan/30 flex items-center justify-center">
+                    <Target className="w-5 h-5 text-neon-cyan" />
+                  </div>
+                  <span className="font-heading font-black uppercase text-xs tracking-[0.3em] text-neon-cyan">Misión</span>
+                </div>
+                <p className="font-display text-2xl md:text-3xl leading-snug text-white">
+                  Ayudamos a marcas comerciales a crecer sus ventas, a través de experiencias sonoras que{" "}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan to-white">
+                    amplifican emociones.
+                  </span>
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Visión */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.15 }}
+              whileHover={{ y: -5 }}
+              className="glass rounded-[2.5rem] p-10 relative overflow-hidden group"
+            >
+              <div className="absolute inset-0 bg-gradient-to-bl from-neon-purple/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-[2.5rem]" />
+              <div className="relative z-10">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 rounded-2xl bg-neon-purple/10 border border-neon-purple/30 flex items-center justify-center">
+                    <Eye className="w-5 h-5 text-neon-purple" />
+                  </div>
+                  <span className="font-heading font-black uppercase text-xs tracking-[0.3em] text-neon-purple">Visión</span>
+                </div>
+                <p className="font-display text-2xl md:text-3xl leading-snug text-white">
+                  Ser el estándar de sonido ambiental funcional donde la{" "}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-purple to-white">
+                    marca conecte con su cliente.
+                  </span>
+                </p>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
       {/* ══ BENTO FEATURES ══════════════════════════ */}
       <section className="py-24 px-4">
         <div className="container mx-auto max-w-6xl">
@@ -266,10 +346,18 @@ const LandingPage = () => {
       <section className="py-24 px-4 overflow-hidden">
         <div className="container mx-auto max-w-6xl">
           <div className="mb-16 text-center">
-            <h2 className="font-display text-5xl md:text-7xl uppercase leading-none mb-6">
-              Atmósferas en <span className="text-neon-cyan italic">Acción</span>
+            <h2 className="font-display text-4xl md:text-6xl uppercase leading-tight mb-6 max-w-4xl mx-auto">
+              Incluidos mensajes de audio{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan to-neon-purple animate-gradient bg-[length:200%_auto] italic">
+                publicitarios personalizados
+              </span>
             </h2>
-            <p className="text-gray-500 max-w-xl mx-auto text-base">Descubre cómo RadioOleaControls transforma espacios comerciales reales a través del audio inteligente.</p>
+            <p className="text-gray-400 max-w-2xl mx-auto text-base md:text-lg leading-relaxed">
+              Nuestros DJ's crean mensajes promocionales por fecha, temporada u hora del día.{" "}
+              <span className="text-white font-semibold">
+                Mantén a tus clientes interesados en aprovechar tus ofertas.
+              </span>
+            </p>
           </div>
           
           <PhotoCarousel />

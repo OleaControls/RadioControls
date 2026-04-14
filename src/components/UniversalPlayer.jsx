@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Hls from 'hls.js';
-import { Play, Square, Volume2, VolumeX, Activity, Loader2, Disc, Mic2, Waves, Zap, ShieldCheck } from 'lucide-react';
+import { Play, Square, Volume2, VolumeX, Activity, Loader2, Mic2, Waves, Zap, ShieldCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const UniversalPlayer = ({ streamUrl, stationName = "Estación RadiOlea" }) => {
@@ -82,21 +82,16 @@ const UniversalPlayer = ({ streamUrl, stationName = "Estación RadiOlea" }) => {
             {/* ── Left: Visual Core ────────────────── */}
             <div className="shrink-0 flex justify-center">
               <div className="relative group/disc">
-                <motion.div 
+                <motion.div
                   animate={isPlaying ? { rotate: 360 } : { rotate: 0 }}
-                  transition={{ repeat: Infinity, duration: 10, ease: "linear" }}
-                  className={`w-32 h-32 md:w-44 md:h-44 rounded-full border-2 p-1 transition-colors duration-700 ${isPlaying ? 'border-neon-cyan/50 shadow-[0_0_30px_rgba(0,243,255,0.15)]' : 'border-white/5'}`}
+                  transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
+                  className={`w-32 h-32 md:w-44 md:h-44 rounded-full transition-all duration-700 ${isPlaying ? 'drop-shadow-[0_0_25px_rgba(0,243,255,0.35)]' : ''}`}
                 >
-                  <div className="w-full h-full rounded-full bg-[#111] flex items-center justify-center relative overflow-hidden ring-4 ring-black">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white/5 to-transparent opacity-50" />
-                    
-                    {/* Inner Grooves */}
-                    {[...Array(5)].map((_, i) => (
-                      <div key={i} className="absolute rounded-full border border-white/5" style={{ inset: `${(i + 1) * 12}px` }} />
-                    ))}
-                    
-                    <Disc className={`w-12 h-12 md:w-16 md:h-16 ${isPlaying ? 'text-neon-cyan drop-shadow-[0_0_10px_#00f3ff]' : 'text-gray-800'} transition-all duration-700`} />
-                  </div>
+                  <img
+                    src="/Disco solito-radioleaconmtrols.png"
+                    alt="Disco RadioOleaControls"
+                    className="w-full h-full object-contain rounded-full"
+                  />
                 </motion.div>
                 
                 {/* Floating Badge */}
