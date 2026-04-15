@@ -26,9 +26,9 @@ const SLIDES = [
   },
   {
     id: 4,
-    title: "Corporate Spaces",
-    desc: "Identidad sonora que comunica los valores de tu marca.",
-    img: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1600",
+    title: "Zen & Yoga",
+    desc: "Frecuencias delta y alfa para una conexión profunda cuerpo-mente.",
+    img: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&q=80&w=1600",
     color: "white"
   }
 ];

@@ -43,7 +43,7 @@ const Login = () => {
         
         <div className="flex flex-col items-center text-center mb-10">
           <div className="mb-8">
-            <img src="/img%20radio%20olea/logosinfondoradioolea.svg" alt="RadiOlea Controls" className="h-16 w-auto object-contain drop-shadow-[0_0_15px_rgba(0,243,255,0.3)]" />
+            <img src="/img%20radio%20lea/logosinfondoradiolea.svg" alt="Radiolea Controls" className="h-16 w-auto object-contain drop-shadow-[0_0_15px_rgba(0,243,255,0.3)]" />
           </div>
           <h2 className="font-display text-4xl uppercase tracking-tight text-white mb-3">
             Inicia <span className="text-neon-cyan italic">Sesión</span>
@@ -54,7 +54,7 @@ const Login = () => {
             </p>
           )}
           <p className="text-gray-500 text-sm font-light">
-            ¿Nuevo en RadioOlea?{' '}
+            ¿Nuevo en Radiolea?{' '}
             <Link to="/register" className="text-white hover:text-neon-cyan transition-colors font-bold underline decoration-neon-cyan/30">
               Crea tu cuenta
             </Link>

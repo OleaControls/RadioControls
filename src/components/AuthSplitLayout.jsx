@@ -34,9 +34,9 @@ const AuthSplitLayout = ({ children }) => {
             transition={{ duration: 0.8 }}
           >
             <div className="flex items-center gap-4 mb-12">
-              <img src="/img%20radio%20olea/logosinfondoradioolea.svg" alt="RadiOlea Logo" className="h-12 w-auto drop-shadow-[0_0_15px_rgba(0,243,255,0.3)]" />
+              <img src="/img%20radio%20lea/logosinfondoradiolea.svg" alt="Radiolea Logo" className="h-12 w-auto drop-shadow-[0_0_15px_rgba(0,243,255,0.3)]" />
               <div className="h-8 w-px bg-white/10" />
-              <span className="font-display text-2xl uppercase tracking-tighter">RadiOlea</span>
+              <span className="font-display text-2xl uppercase tracking-tighter">Radiolea</span>
             </div>
 
             <h1 className="font-display text-6xl uppercase leading-[0.9] mb-8 tracking-tighter">
@@ -54,7 +54,7 @@ const AuthSplitLayout = ({ children }) => {
                   <div key={i} className="w-8 h-8 rounded-full border-2 border-void bg-gray-800" />
                 ))}
               </div>
-              <p className="text-[9px] font-heading font-black uppercase tracking-[0.3em]">Red RadioOleaControls</p>
+              <p className="text-[9px] font-heading font-black uppercase tracking-[0.3em]">Red RadioleaControls</p>
             </div>
           </motion.div>
         </div>

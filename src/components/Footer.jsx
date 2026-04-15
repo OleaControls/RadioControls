@@ -40,10 +40,10 @@ const Footer = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-24 items-start">
           <div className="lg:col-span-6">
             <h2 className="font-display text-5xl md:text-7xl uppercase leading-none mb-6 tracking-tighter">
-              ¿Tienes dudas o <br /> <span className="text-neon-purple italic">necesitas asesoría?</span>
+              Activa tu <br /> <span className="text-neon-purple italic">asesoría ahora</span>
             </h2>
             <p className="text-gray-400 max-w-md text-lg font-light leading-relaxed">
-              Estamos listos para ayudarte a elevar el sonido de tu negocio. Déjanos tu mensaje y un experto se pondrá en contacto contigo.
+              Hagamos el mejor equipo para elevar tu marca y clientes y tus ventas.
             </p>
           </div>
           <div className="lg:col-span-6">
@@ -76,14 +76,14 @@ const Footer = () => {
             <Link to="/" className="flex items-center gap-4 group">
               <div className="relative">
                 <img 
-                  src="/img radio olea/logosinfondoradioolea.svg" 
-                  alt="RadioOlea Logo" 
+                  src="/img radio lea/logosinfondoradiolea.svg" 
+                  alt="Radiolea Logo" 
                   className="h-10 md:h-12 w-auto object-contain transition-transform duration-500 group-hover:scale-110 drop-shadow-[0_0_15px_rgba(0,243,255,0.3)]"
                 />
                 <div className="absolute inset-0 bg-neon-cyan/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
               <div className="flex flex-col leading-none">
-                <span className="font-display text-3xl uppercase tracking-tighter text-white group-hover:text-neon-cyan transition-colors">RadiOlea</span>
+                <span className="font-display text-3xl uppercase tracking-tighter text-white group-hover:text-neon-cyan transition-colors">Radiolea</span>
                 <span className="text-[8px] font-heading font-black uppercase tracking-[0.4em] text-gray-500">Controls</span>
               </div>
             </Link>
@@ -164,7 +164,7 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-4 text-[10px] font-heading font-bold uppercase tracking-widest text-gray-600">
-            <span>© 2026 RadiOlea Controls</span>
+            <span>© 2026 Radiolea Controls</span>
             <span className="w-1 h-1 rounded-full bg-white/10" />
             <span>CDMX, México</span>
           </div>

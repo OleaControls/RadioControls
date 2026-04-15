@@ -46,12 +46,12 @@ const Navbar = () => {
           >
             <Link to="/" className="flex items-center gap-3 group relative">
               <img 
-                src="/img radio olea/logosinfondoradioolea.svg" 
-                alt="RadioOlea Logo" 
+                src="/img radio lea/logosinfondoradiolea.svg" 
+                alt="Radiolea Logo" 
                 className="h-7 md:h-9 w-auto object-contain drop-shadow-[0_0_15px_rgba(0,243,255,0.3)]"
               />
               <div className="flex flex-col leading-none">
-                <span className="font-display text-sm md:text-lg uppercase tracking-tight text-white">RadioOlea</span>
+                <span className="font-display text-sm md:text-lg uppercase tracking-tight text-white">Radiolea</span>
                 <span className="hidden xs:block text-[6px] md:text-[7px] font-heading font-black uppercase tracking-[0.4em] text-gray-500">Controls</span>
               </div>
             </Link>

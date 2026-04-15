@@ -198,7 +198,7 @@ const Admin = () => {
       <aside className="hidden lg:flex flex-col w-72 bg-black/40 border-r border-white/5 backdrop-blur-2xl z-50">
         <div className="p-8">
           <div className="flex items-center gap-4 mb-12">
-            <img src="/img%20radio%20olea/logosinfondoradioolea.svg" alt="Admin" className="h-10 w-auto" />
+            <img src="/img%20radio%20lea/logosinfondoradiolea.svg" alt="Admin" className="h-10 w-auto" />
             <span className="font-display text-xl uppercase tracking-tighter">Admin</span>
           </div>
           <nav className="space-y-2">

@@ -68,7 +68,7 @@ const LandingPage = () => {
         <HeroWaves />
         
         <div className="container mx-auto max-w-6xl relative z-10 text-center">
-          {/* Logo Principal RadioOlea */}
+          {/* Logo Principal Radiolea */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -76,8 +76,8 @@ const LandingPage = () => {
             className="mb-10"
           >
             <img 
-              src="/img radio olea/logosinfondoradioolea.svg" 
-              alt="RadioOleaControls Logo" 
+              src="/img radio lea/logosinfondoradiolea.svg" 
+              alt="RadioleaControls Logo" 
               className="h-20 md:h-24 mx-auto drop-shadow-[0_0_35px_rgba(0,243,255,0.4)]"
             />
           </motion.div>
@@ -89,7 +89,7 @@ const LandingPage = () => {
           >
             <span className="flex h-2 w-2 rounded-full bg-neon-cyan animate-pulse" />
             <span className="text-[10px] font-heading font-bold uppercase tracking-[0.25em] text-neon-cyan text-center">
-              RadioOleaControls • Audio Intelligence
+              RadioleaControls • Sonido Ambiental Funcional
             </span>
           </motion.div>
 
@@ -97,16 +97,11 @@ const LandingPage = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="font-display text-4xl sm:text-5xl md:text-7xl leading-[1.1] md:leading-[1.0] uppercase mb-8 tracking-tight"
+            className="font-display text-5xl sm:text-7xl md:text-9xl leading-[1.1] md:leading-[1.0] uppercase mb-8 tracking-tighter"
           >
-            Música hecha para <br />
+            Crecemos tus <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple animate-gradient bg-[length:200%_auto]">
-              tu negocio,
-            </span>{" "}
-            <br className="hidden md:block" />
-            perfeccionada por <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-purple via-white to-neon-cyan animate-gradient bg-[length:200%_auto]">
-              ingeniería experta.
+              Ventas
             </span>
           </motion.h1>
 
@@ -114,10 +109,9 @@ const LandingPage = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="max-w-xl mx-auto text-white text-base md:text-xl font-semibold mb-10 md:mb-12 leading-relaxed px-4 tracking-wide"
+            className="max-w-2xl mx-auto text-white text-base md:text-xl font-semibold mb-10 md:mb-12 leading-relaxed px-4 tracking-wide"
           >
-            Juntos, crecemos tus ventas{" "}
-            <span className="text-neon-cyan">mínimo un 15%</span>
+            Música diseñada para tu negocio, por expertos en ventas.
           </motion.p>
 
           <motion.div 
@@ -127,7 +121,7 @@ const LandingPage = () => {
             className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-20"
           >
             <Link to="/planes" className="group relative overflow-hidden bg-white text-void px-10 py-4 rounded-full font-heading font-bold text-sm uppercase tracking-widest transition-all hover:scale-105 hover:shadow-[0_0_30px_rgba(255,255,255,0.3)]">
-              <span className="relative z-10">Comenzar Ahora</span>
+              <span className="relative z-10">Ver Tu Plan Ideal</span>
               <div className="absolute inset-0 bg-neon-cyan translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
             </Link>
             <Link to="/contacto" className="px-10 py-4 rounded-full border border-white/10 hover:bg-white/5 transition-all font-heading text-sm uppercase tracking-widest backdrop-blur-sm">
@@ -147,7 +141,7 @@ const LandingPage = () => {
           >
             <div className="h-px flex-grow bg-gradient-to-r from-transparent to-white" />
             <span className="text-[9px] font-heading font-black uppercase tracking-[0.6em] whitespace-nowrap text-white">
-              Propulsado por Tecnología RadiOleaControls
+              Diseñemos e Impulsemos tus Ventas
             </span>
             <div className="h-px flex-grow bg-gradient-to-l from-transparent to-white" />
           </motion.div>
@@ -162,24 +156,24 @@ const LandingPage = () => {
             {[...Array(4)].map((_, rep) => (
               <React.Fragment key={rep}>
                 <img 
-                  src="/img radio olea/logosinfondoradioolea.svg" 
+                  src="/img radio lea/logosinfondoradiolea.svg" 
                   className="h-8 md:h-11 opacity-20 hover:opacity-100 transition-all duration-500 grayscale hover:grayscale-0 hover:scale-110 cursor-pointer" 
-                  alt="RadioOlea Icon" 
+                  alt="Radiolea Icon" 
                 />
                 <img 
-                  src="/img radio olea/Lema radioleacontrols-271025.svg" 
+                  src="/img radio lea/Lema radioleacontrols-271025.svg" 
                   className="h-6 md:h-9 opacity-20 hover:opacity-100 transition-all duration-500 grayscale hover:grayscale-0 hover:scale-110 cursor-pointer" 
-                  alt="RadioOlea Lema" 
+                  alt="Radiolea Lema" 
                 />
                 <img 
-                  src="/img radio olea/nombre radioleacontrols.svg" 
+                  src="/img radio lea/nombre radioleacontrols.svg" 
                   className="h-5 md:h-8 opacity-20 hover:opacity-100 transition-all duration-500 grayscale hover:grayscale-0 hover:scale-110 cursor-pointer" 
-                  alt="RadioOlea Name" 
+                  alt="Radiolea Name" 
                 />
                 <img 
-                  src="/img radio olea/Logo y sitio-radioleacontrols-2026.svg" 
+                  src="/img radio lea/Logo y sitio-radioleacontrols-2026.svg" 
                   className="h-8 md:h-11 opacity-20 hover:opacity-100 transition-all duration-500 grayscale hover:grayscale-0 hover:scale-110 cursor-pointer" 
-                  alt="RadioOlea Full Logo" 
+                  alt="Radiolea Full Logo" 
                 />
               </React.Fragment>
             ))}
@@ -286,7 +280,7 @@ const LandingPage = () => {
             <h2 className="font-display text-4xl md:text-6xl uppercase leading-none mb-4">
               Ingeniería <span className="text-neon-purple italic">Sonora</span>
             </h2>
-            <p className="text-gray-500 max-w-md text-sm">Tecnología de punta para el ambiente más exigente de RadioOleaControls.</p>
+            <p className="text-gray-500 max-w-md text-sm">Tecnología de punta para el ambiente más exigente de RadioleaControls.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
@@ -313,7 +307,7 @@ const LandingPage = () => {
             >
               <Shield className="w-8 h-8 text-neon-purple mb-6" />
               <h3 className="font-heading font-bold text-xl mb-2 italic">100% Legal</h3>
-              <p className="text-xs text-gray-500 leading-relaxed text-left">Gestión total de licencias (SACM, SOMEXFON). RadioOleaControls protege tu marca.</p>
+              <p className="text-xs text-gray-500 leading-relaxed text-left">Gestión total de licencias (SACM, SOMEXFON). RadioleaControls protege tu marca.</p>
             </motion.div>
 
             {/* Another row */}
@@ -331,8 +325,8 @@ const LandingPage = () => {
               className="md:col-span-8 p-10 glass rounded-[2.5rem] bg-gradient-to-r from-void to-white/[0.03] flex flex-col md:flex-row items-center gap-10"
             >
               <div className="flex-1 text-left">
-                <h3 className="font-display text-3xl mb-4">Instalación <br /> Express</h3>
-                <p className="text-gray-400 text-sm">Técnicos certificados RadioOlea listos para activar tu sistema en tiempo récord.</p>
+                <h3 className="font-display text-3xl mb-4">Instalación <br /> Garantizada</h3>
+                <p className="text-gray-400 text-sm">Técnicos experimentados Radiolea, respaldan 3 años de garantía.</p>
               </div>
               <div className="w-32 h-32 rounded-3xl bg-neon-cyan/5 border border-neon-cyan/20 flex items-center justify-center rotate-12 group-hover:rotate-0 transition-transform">
                 <Wrench className="w-12 h-12 text-neon-cyan" />
@@ -368,7 +362,7 @@ const LandingPage = () => {
       <section className="py-32 bg-white/[0.01]">
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-4xl mx-auto glass p-1 md:p-2 rounded-[3rem] shadow-2xl overflow-hidden">
-            <UniversalPlayer streamUrl="https://c44.radioboss.fm:8054/stream" stationName="RadioOlea Live Demo" />
+            <UniversalPlayer streamUrl="https://c44.radioboss.fm:8054/stream" stationName="Radiolea Live Demo" />
           </div>
           <p className="mt-8 text-[10px] font-heading font-bold uppercase tracking-[0.4em] text-gray-600">Mastering Digital en Tiempo Real</p>
         </div>
@@ -381,7 +375,7 @@ const LandingPage = () => {
             <h2 className="font-display text-5xl md:text-7xl leading-none uppercase">
               La Voz <br /> del <span className="text-neon-cyan">Éxito</span>
             </h2>
-            <p className="text-gray-400 max-w-xs text-xs mb-4">Empresas que ya transformaron su atmósfera con RadioOleaControls.</p>
+            <p className="text-gray-400 max-w-xs text-xs mb-4">Empresas que ya transformaron su atmósfera con RadioleaControls.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -407,8 +401,8 @@ const LandingPage = () => {
       <section className="py-32 px-4 relative overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100vw] h-[100vw] bg-neon-cyan/5 rounded-full blur-[150px]" />
         <div className="container mx-auto text-center relative z-10">
-          <h2 className="font-display text-5xl md:text-8xl leading-none uppercase mb-10 tracking-tight">
-            RadioOleaControls <br /> suenen <br /> <span className="text-neon-cyan italic">Mejor</span>
+          <h2 className="font-display text-4xl md:text-7xl leading-tight uppercase mb-10 tracking-tight max-w-5xl mx-auto">
+            Música Personalizada para cada <span className="text-neon-cyan italic">tipo de negocio y marca</span>
           </h2>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link to="/contacto" className="inline-flex items-center gap-4 bg-white text-void px-10 py-5 rounded-full font-heading font-black text-base uppercase tracking-widest hover:scale-105 transition-transform shadow-[0_0_40px_rgba(255,255,255,0.2)]">
@@ -419,7 +413,7 @@ const LandingPage = () => {
       </section>
 
       <footer className="py-10 border-t border-white/5 text-center">
-        <p className="text-[10px] font-heading font-bold uppercase tracking-[0.5em] text-gray-700">© 2026 RadioOleaControls • Todos los derechos reservados</p>
+        <p className="text-[10px] font-heading font-bold uppercase tracking-[0.5em] text-gray-700">© 2026 RadioleaControls • Todos los derechos reservados</p>
       </footer>
     </div>
   );

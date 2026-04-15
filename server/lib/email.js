@@ -42,12 +42,12 @@ export const sendVerificationEmail = async (email, name, code) => {
   }
 
   const mailOptions = {
-    from: `"RadiOlea Controls" <${process.env.GMAIL_USER}>`,
+    from: `"Radiolea Controls" <${process.env.GMAIL_USER}>`,
     to: email,
     subject: `Tu código de verificación: ${code}`,
     html: `
       <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-        <h2 style="color: #00f3ff; text-align: center;">¡Bienvenido a RadiOlea Controls!</h2>
+        <h2 style="color: #00f3ff; text-align: center;">¡Bienvenido a Radiolea Controls!</h2>
         <p>Hola <strong>${name}</strong>,</p>
         <p>Gracias por registrarte. Para completar tu cuenta, por favor usa el siguiente código de verificación:</p>
         <div style="background: #f4f4f4; padding: 20px; text-align: center; border-radius: 10px; margin: 20px 0;">
@@ -55,7 +55,7 @@ export const sendVerificationEmail = async (email, name, code) => {
         </div>
         <p>Este código expirará pronto. Si no creaste esta cuenta, puedes ignorar este correo.</p>
         <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
-        <p style="font-size: 12px; color: #888; text-align: center;">RadiOlea Controls - Ingeniería de Audio Premium</p>
+        <p style="font-size: 12px; color: #888; text-align: center;">Radiolea Controls - Ingeniería de Audio Premium</p>
       </div>
     `,
   };
@@ -75,9 +75,9 @@ export const sendResetPasswordEmail = async (email, token) => {
   const resetUrl = `${process.env.APP_URL || 'http://localhost:5173'}/reset-password/${token}`;
 
   const mailOptions = {
-    from: `"RadiOlea Controls" <${process.env.GMAIL_USER}>`,
+    from: `"Radiolea Controls" <${process.env.GMAIL_USER}>`,
     to: email,
-    subject: "Recupera tu contraseña - RadiOlea Controls",
+    subject: "Recupera tu contraseña - Radiolea Controls",
     html: `
       <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
         <h2 style="color: #00f3ff; text-align: center;">Recuperación de Contraseña</h2>
@@ -88,7 +88,7 @@ export const sendResetPasswordEmail = async (email, token) => {
         <p>Si no solicitaste este cambio, ignora este correo. El enlace expirará en 5 minutos.</p>
         <p style="font-size: 12px; color: #888;">Si el botón no funciona, copia y pega este enlace: <br/> ${resetUrl}</p>
         <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
-        <p style="font-size: 12px; color: #888; text-align: center;">RadiOlea Controls - Soporte Técnico</p>
+        <p style="font-size: 12px; color: #888; text-align: center;">Radiolea Controls - Soporte Técnico</p>
       </div>
     `,
   };
@@ -113,14 +113,14 @@ export const sendPurchaseReceiptEmail = async (email, name, branchName, planType
   });
 
   const mailOptions = {
-    from: `"RadiOlea Controls" <${process.env.GMAIL_USER}>`,
+    from: `"Radiolea Controls" <${process.env.GMAIL_USER}>`,
     to: email,
     subject: `¡Gracias por tu compra! - Recibo de ${branchName}`,
     html: `
       <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: auto; padding: 0; border: 1px solid #e0e0e0; border-radius: 16px; overflow: hidden; background-color: #ffffff;">
         <!-- Header con gradiente -->
         <div style="background: linear-gradient(135deg, #001a4d 0%, #002366 100%); padding: 40px 20px; text-align: center;">
-          <h1 style="color: #00f3ff; margin: 0; font-size: 28px; text-transform: uppercase; letter-spacing: 2px;">RadiOlea Controls</h1>
+          <h1 style="color: #00f3ff; margin: 0; font-size: 28px; text-transform: uppercase; letter-spacing: 2px;">Radiolea Controls</h1>
           <p style="color: #ffffff; margin: 10px 0 0 0; opacity: 0.8; font-weight: 300;">Ingeniería de Audio Premium</p>
         </div>
 
@@ -161,7 +161,7 @@ export const sendPurchaseReceiptEmail = async (email, name, branchName, planType
 
         <!-- Footer -->
         <div style="background-color: #f1f1f1; padding: 20px; text-align: center;">
-          <p style="font-size: 11px; color: #aaa; margin: 0;">&copy; 2026 RadiOlea Controls. Todos los derechos reservados.</p>
+          <p style="font-size: 11px; color: #aaa; margin: 0;">&copy; 2026 Radiolea Controls. Todos los derechos reservados.</p>
           <p style="font-size: 11px; color: #aaa; margin: 5px 0 0 0;">Este es un comprobante automático de pago.</p>
         </div>
       </div>

@@ -3,7 +3,7 @@ import Hls from 'hls.js';
 import { Play, Square, Volume2, VolumeX, Activity, Loader2, Mic2, Waves, Zap, ShieldCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const UniversalPlayer = ({ streamUrl, stationName = "Estación RadiOlea" }) => {
+const UniversalPlayer = ({ streamUrl, stationName = "Estación Radiolea" }) => {
   const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [status, setStatus] = useState('idle'); // idle, loading, playing, error
@@ -47,6 +47,17 @@ const UniversalPlayer = ({ streamUrl, stationName = "Estación RadiOlea" }) => {
     }
   };
 
+  // Add Enter key support
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Enter') {
+        togglePlay();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isPlaying, status]);
+
   return (
     <div className="relative group w-full max-w-3xl mx-auto px-4">
       {/* Dynamic Glow Aura */}
@@ -60,7 +71,7 @@ const UniversalPlayer = ({ streamUrl, stationName = "Estación RadiOlea" }) => {
             <div className="flex items-center gap-2">
               <div className={`w-1.5 h-1.5 rounded-full ${status === 'playing' ? 'bg-neon-cyan animate-pulse shadow-[0_0_8px_#00f3ff]' : 'bg-gray-700'}`} />
               <span className={`text-[9px] font-black uppercase tracking-[0.2em] ${status === 'playing' ? 'text-neon-cyan' : 'text-gray-500'}`}>
-                {status === 'playing' ? 'LIVE TRANSMISSION' : 'ENGINE STANDBY'}
+                {status === 'playing' ? 'LIVE TRANSMISSION' : 'encendido'}
               </span>
             </div>
             <div className="h-3 w-px bg-white/10 hidden xs:block" />
@@ -84,12 +95,19 @@ const UniversalPlayer = ({ streamUrl, stationName = "Estación RadiOlea" }) => {
               <div className="relative group/disc">
                 <motion.div
                   animate={isPlaying ? { rotate: 360 } : { rotate: 0 }}
-                  transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
-                  className={`w-32 h-32 md:w-44 md:h-44 rounded-full transition-all duration-700 ${isPlaying ? 'drop-shadow-[0_0_25px_rgba(0,243,255,0.35)]' : ''}`}
+                  transition={{ 
+                    rotate: {
+                      repeat: isPlaying ? Infinity : 0,
+                      duration: 5,
+                      ease: "linear"
+                    }
+                  }}
+                  className={`w-32 h-32 md:w-44 md:h-44 rounded-full ${isPlaying ? 'drop-shadow-[0_0_25px_rgba(0,243,255,0.35)]' : ''}`}
+                  style={{ willChange: 'transform' }}
                 >
                   <img
                     src="/Disco solito-radioleaconmtrols.png"
-                    alt="Disco RadioOleaControls"
+                    alt="Disco Radioleacontrols"
                     className="w-full h-full object-contain rounded-full"
                   />
                 </motion.div>
@@ -105,14 +123,13 @@ const UniversalPlayer = ({ streamUrl, stationName = "Estación RadiOlea" }) => {
             <div className="flex-grow flex flex-col w-full">
               <div className="mb-6 text-center md:text-left">
                 <div className="inline-block px-3 py-1 rounded-lg bg-neon-cyan/5 border border-neon-cyan/10 mb-3">
-                  <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-neon-cyan">Mastering Audio Engine V2</span>
+                  <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-neon-cyan">audio en vivo</span>
                 </div>
                 <h3 className="text-2xl md:text-4xl font-display uppercase tracking-tight text-white leading-tight mb-2">
                   {stationName}
                 </h3>
                 <p className="text-gray-500 text-[10px] font-bold uppercase tracking-[0.4em] flex items-center justify-center md:justify-start gap-2">
                   <Waves className="w-3 h-3 text-neon-purple" />
-                  Hi-Fi Digital Broadcast
                 </p>
               </div>
 

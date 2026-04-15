@@ -456,7 +456,7 @@ const ClientPortal = () => {
       {/* Mobile Header */}
       <div className="lg:hidden fixed top-0 left-0 right-0 z-[100] bg-slate-900/80 backdrop-blur-xl border-b border-white/5 p-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <img src="/img%20radio%20olea/logosinfondoradioolea.svg" alt="RadiOlea Controls" className="h-8 w-auto object-contain" />
+          <img src="/img%20radio%20lea/logosinfondoradiolea.svg" alt="Radiolea Controls" className="h-8 w-auto object-contain" />
         </div>
         <button 
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -477,38 +477,37 @@ const ClientPortal = () => {
             className="lg:hidden fixed inset-0 z-[150] bg-slate-950 p-8 flex flex-col"
           >
             <div className="flex justify-between items-center mb-12">
-              <div className="flex items-center gap-3">
-                <img src="/img%20radio%20olea/logosinfondoradioolea.svg" alt="RadiOlea Controls" className="h-10 w-auto object-contain" />
-              </div>
-              <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 bg-white/5 rounded-xl"><Plus className="w-6 h-6 rotate-45" /></button>
+            <div className="flex items-center gap-3">
+              <img src="/img%20radio%20lea/logosinfondoradiolea.svg" alt="Radiolea Controls" className="h-10 w-auto object-contain" />
+            </div>
+            <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 bg-white/5 rounded-xl"><Plus className="w-6 h-6 rotate-45" /></button>
             </div>
 
             <nav className="flex-grow space-y-4">
-              {visibleTabs.map((tab) => (
-                <button 
-                  key={tab.id}
-                  onClick={() => { setActiveTab(tab.id); setIsMobileMenuOpen(false); }}
-                  className={`w-full flex items-center gap-4 px-6 py-5 rounded-2xl transition-all ${activeTab === tab.id ? 'bg-neon-cyan text-slate-950' : 'text-slate-400 bg-white/5'}`}
-                >
-                  {tab.icon}
-                  <span className="font-black text-sm uppercase tracking-widest">{tab.label}</span>
-                </button>
-              ))}
+            {visibleTabs.map((tab) => (
+              <button 
+                key={tab.id}
+                onClick={() => { setActiveTab(tab.id); setIsMobileMenuOpen(false); }}
+                className={`w-full flex items-center gap-4 px-6 py-5 rounded-2xl transition-all ${activeTab === tab.id ? 'bg-neon-cyan text-slate-950' : 'text-slate-400 bg-white/5'}`}
+              >
+                {tab.icon}
+                <span className="font-black text-sm uppercase tracking-widest">{tab.label}</span>
+              </button>
+            ))}
             </nav>
 
             <button onClick={handleLogout} className="mt-auto w-full flex items-center justify-center gap-4 p-5 text-red-400 bg-red-500/10 rounded-2xl font-bold uppercase tracking-widest">
-              <LogOut className="w-5 h-5" /> Salir
+            <LogOut className="w-5 h-5" /> Salir
             </button>
-          </motion.aside>
-        )}
-      </AnimatePresence>
+            </motion.aside>
+            )}
+            </AnimatePresence>
 
-      {/* Sidebar - Desktop */}
-      <aside className="w-72 bg-slate-900/50 border-r border-white/5 p-8 hidden lg:flex flex-col backdrop-blur-3xl sticky top-0 h-screen">
-        <div className="flex items-center gap-3 mb-12 group cursor-pointer">
-          <img src="/img%20radio%20olea/logosinfondoradioolea.svg" alt="RadiOlea Controls" className="h-14 w-auto object-contain group-hover:scale-105 transition-transform duration-500" />
-        </div>
-
+            {/* Sidebar - Desktop */}
+            <aside className="w-72 bg-slate-900/50 border-r border-white/5 p-8 hidden lg:flex flex-col backdrop-blur-3xl sticky top-0 h-screen">
+            <div className="flex items-center gap-3 mb-12 group cursor-pointer">
+            <img src="/img%20radio%20lea/logosinfondoradiolea.svg" alt="Radiolea Controls" className="h-14 w-auto object-contain group-hover:scale-105 transition-transform duration-500" />
+            </div>
         <nav className="flex-grow space-y-3">
           <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] mb-4 ml-4">Menú Principal</p>
           
@@ -607,7 +606,7 @@ const ClientPortal = () => {
                 Rol: {userRole}
               </span>
             </div>
-            <p className="text-slate-500 font-medium text-lg">Panel de Control RadiOleaControls.</p>
+            <p className="text-slate-500 font-medium text-lg">Panel de Control RadioleaControls.</p>
           </motion.div>
           
           <div className="flex gap-4 w-full md:w-auto">
