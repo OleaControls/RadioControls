@@ -11,33 +11,42 @@ import { Link } from 'react-router-dom';
 const services = [
   {
     icon: Headphones,
-    title: "Ingeniería Acústica",
+    title: "Diseño del Sistema de Sonido",
+    titleSub: "",
     tag: "Studio Grade",
-    description: "Diseñamos atmósferas sonoras que influyen en el comportamiento de compra mediante frecuencias psicoacústicas optimizadas para cada sector comercial.",
+    tagSub: "Lo Fundamental",
+    description: "Si ya tienen un sistema, lo optimizamos para sacarle el máximo provecho, o bien podemos diseñar uno impactante.",
     accent: "neon-cyan",
     img: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&q=80&w=800"
   },
   {
     icon: ShieldCheck,
-    title: "Cumplimiento Legal",
+    title: "Creación de la Banda Sonora de tu Marca",
+    titleSub: "",
     tag: "Certificado",
-    description: "Gestión total de licencias (SACM, SOMEXFON). Protegemos tu marca con certificaciones vigentes y blindaje jurídico contra multas por derechos de autor.",
+    tagSub: "A la Medida",
+    description: "Música curada especial para tu marca, tus horarios, tus promociones, fidelizamos juntos a tus clientes. Obtienes también gestión total de licencias en todo México. Inserción de publicidad propia.",
+    description2: "Convierte tu música ambiental en un canal de ventas directo con locución profesional integrada y programada.",
     accent: "neon-purple",
     img: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&q=80&w=800"
   },
   {
     icon: MessageSquare,
-    title: "Voz & Spots",
+    title: "Implementación de la Estrategia",
+    titleSub: "",
     tag: "Ventas",
-    description: "Inserción inteligente de publicidad propia. Convierte tu música ambiental en un canal de ventas directo con locución profesional integrada y programada.",
+    tagSub: "Instalación y Capacitación",
+    description: "Solo con nosotros obtienes 3 años de garantía, o si prefieres y cuentas con tu propio personal de mantenimiento/sistemas, los capacitamos y supervisamos para que lo instalen con el estándar que esperas.",
     accent: "neon-green",
     img: "https://images.unsplash.com/photo-1478737270239-2f02b77fc618?auto=format&fit=crop&q=80&w=800"
   },
   {
     icon: Layers,
-    title: "Control Cloud",
+    title: "Asesoría Post-Proyecto",
+    titleSub: "",
     tag: "Escalable",
-    description: "Administra miles de sucursales en tiempo real desde un solo panel centralizado con tecnología de baja latencia y alta disponibilidad global.",
+    tagSub: "Siempre Acompañado",
+    description: "Ya funcionando, estaremos contigo. Cada mes nos reuniremos para orientar y asesorarte para que tomes las mejores decisiones y tus ventas se mantengan o las impulsemos.",
     accent: "white",
     img: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800"
   },
@@ -74,7 +83,7 @@ const Services = () => {
             >
               <Activity className="w-4 h-4 text-neon-cyan animate-pulse" />
               <span className="text-[10px] font-heading font-black uppercase tracking-[0.4em] text-neon-cyan">
-                Expertise en Audio Digital
+                La manera más fácil y sencilla de aumentar tus ventas.
               </span>
             </motion.div>
             
@@ -84,9 +93,9 @@ const Services = () => {
               transition={{ delay: 0.1 }}
               className="font-display text-5xl md:text-8xl uppercase leading-[0.9] mb-10 tracking-tighter"
             >
-              Soluciones de <br />
+              Elige el <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple animate-gradient bg-[length:200%_auto]">
-                Ingeniería Sonora
+                Camino Adecuado
               </span>
             </motion.h1>
             
@@ -96,7 +105,7 @@ const Services = () => {
               transition={{ delay: 0.2 }}
               className="text-gray-400 max-w-2xl text-lg md:text-xl font-light leading-relaxed border-l-2 border-neon-cyan pl-8"
             >
-              Elevamos la experiencia sensorial de tu marca a través de tecnología propietaria y curaduría inteligente. No solo transmitimos música, diseñamos identidades.
+              Cuatro opciones para comenzar inmediatamente.
             </motion.p>
           </div>
 
@@ -109,7 +118,7 @@ const Services = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="group relative flex flex-col h-[500px] md:h-[600px] rounded-[3rem] overflow-hidden border border-white/5 bg-black/40 shadow-2xl transition-all duration-700 hover:border-white/20"
+                className="group relative flex flex-col min-h-[500px] md:min-h-[600px] rounded-[3rem] overflow-hidden border border-white/5 bg-black/40 shadow-2xl transition-all duration-700 hover:border-white/20"
               >
                 {/* Background Image with Parallax-ish feel */}
                 <div className="absolute inset-0 z-0">
@@ -128,14 +137,19 @@ const Services = () => {
                       <service.icon size={32} />
                     </div>
                     <span className={`text-[10px] font-heading font-black uppercase tracking-[0.4em] text-${service.accent} mb-4 block`}>
-                      {service.tag}
+                      {service.tagSub}
                     </span>
                     <h3 className="font-display text-4xl md:text-5xl uppercase mb-6 tracking-tight leading-none text-white">
                       {service.title}
                     </h3>
-                    <p className="text-gray-400 text-sm md:text-base leading-relaxed mb-8 max-w-sm font-light">
+                    <p className="text-gray-400 text-sm md:text-base leading-relaxed mb-4 max-w-sm font-light">
                       {service.description}
                     </p>
+                    {service.description2 && (
+                      <p className="text-gray-400 text-sm md:text-base leading-relaxed mb-8 max-w-sm font-light">
+                        {service.description2}
+                      </p>
+                    )}
                   </div>
                   
                   <div className="flex items-center gap-4 opacity-0 group-hover:opacity-100 transition-all duration-500 delay-100">
@@ -165,11 +179,14 @@ const Services = () => {
             </div>
             
             <div className="relative z-10 max-w-3xl mx-auto">
-              <h2 className="font-display text-5xl md:text-8xl uppercase leading-none mb-10 tracking-tighter">
-                Diseñemos <br /> tu <span className="text-neon-cyan italic">Soundtrack</span>
+              <h2 className="font-display text-5xl md:text-8xl uppercase leading-none mb-6 tracking-tighter">
+                Diseñemos
               </h2>
-              <p className="text-gray-400 text-lg md:text-xl mb-12 font-light leading-relaxed">
-                Nuestros ingenieros están listos para realizar una auditoría sonora gratuita de tu espacio comercial.
+              <p className="text-white text-lg md:text-xl mb-4 font-light leading-relaxed">
+                Nuestro sonido ambiental es una herramienta estratégica de comportamiento.
+              </p>
+              <p className="text-gray-400 text-base md:text-lg mb-12 font-light leading-relaxed">
+                Los negocios que más lo aprovechan son los que dependen de tiempo de permanencia, estado emocional y decisión de compra.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-6 justify-center">
