@@ -154,7 +154,7 @@ const FAQ = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="font-display text-5xl md:text-7xl uppercase leading-none mb-6 tracking-tight"
+              className="font-display text-3xl sm:text-5xl md:text-7xl uppercase leading-none mb-6 tracking-tight"
             >
               Preguntas <span className="text-neon-cyan italic">Frecuentes</span>
             </motion.h1>
@@ -174,7 +174,7 @@ const FAQ = () => {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="glass rounded-[3rem] p-10 md:p-14 mb-10 text-center relative overflow-hidden"
+            className="glass rounded-[2rem] md:rounded-[3rem] p-6 sm:p-10 md:p-14 mb-10 text-center relative overflow-hidden"
           >
             <div className="absolute top-0 right-0 w-64 h-64 bg-neon-cyan/5 rounded-full blur-[100px] pointer-events-none" />
             <span className="text-[10px] font-heading font-bold uppercase tracking-[0.3em] text-neon-cyan mb-4 block">
@@ -297,7 +297,7 @@ const FAQ = () => {
             initial={{ opacity: 0, scale: 0.98 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="relative p-12 md:p-24 rounded-[4rem] bg-gradient-to-br from-white/[0.03] to-transparent border border-white/10 overflow-hidden text-center mt-16"
+            className="relative p-8 sm:p-12 md:p-24 rounded-[2.5rem] md:rounded-[4rem] bg-gradient-to-br from-white/[0.03] to-transparent border border-white/10 overflow-hidden text-center mt-16"
           >
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100vw] h-[100vw] bg-neon-cyan/5 rounded-full blur-[150px] animate-pulse" />

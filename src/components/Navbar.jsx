@@ -47,9 +47,9 @@ const Navbar = () => {
           >
             <Link to="/" className="flex items-center gap-3 group relative">
               <img
-                src="/RADIOLEA.png"
-                alt="Radiolea Logo"
-                className="h-7 md:h-9 w-auto object-contain drop-shadow-[0_0_15px_rgba(0,243,255,0.3)]"
+                src="/Logo-hor-radioleacontrols-2026.png"
+                alt="Radiolea Controls Logo"
+                className="h-8 md:h-10 w-auto object-contain drop-shadow-[0_0_15px_rgba(0,243,255,0.3)]"
               />
             </Link>
           </motion.div>
