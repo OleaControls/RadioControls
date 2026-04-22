@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { CheckCircle2, Zap, ArrowRight, HelpCircle, TrendingUp, Info, Headphones, Activity, Star } from 'lucide-react';
+import { CheckCircle2, Zap, ArrowRight, HelpCircle, TrendingUp, Info, Headphones, Activity, Star, Radio, ShieldCheck, Clock, Music2, Users } from 'lucide-react';
 import WaveCursor from '../components/WaveCursor';
 import { useAuth } from '../components/AuthContext';
 import { Link } from 'react-router-dom';
@@ -106,7 +106,7 @@ const Pricing = () => {
             >
               <Star className="w-3 h-3 text-neon-cyan" />
               <span className="text-[10px] font-heading font-bold uppercase tracking-[0.2em] text-neon-cyan">
-                Inversión en Experiencia
+                Sonido ambiental Funcional único en México
               </span>
             </motion.div>
             
@@ -114,9 +114,10 @@ const Pricing = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="font-display text-4xl sm:text-5xl md:text-7xl uppercase leading-tight md:leading-none mb-6 tracking-tight"
+              className="font-display text-3xl sm:text-4xl md:text-5xl uppercase leading-tight mb-6 tracking-tight"
             >
-              Planes de <span className="text-neon-cyan italic">Alto Impacto</span>
+              Vivirás el estándar más alto en música para empresas,{' '}
+              <span className="text-neon-cyan italic">respaldado por una atención al cliente inigualable.</span>
             </motion.h1>
             
             <motion.p 
@@ -125,7 +126,7 @@ const Pricing = () => {
               transition={{ delay: 0.2 }}
               className="text-gray-400 max-w-2xl mx-auto text-sm md:text-lg font-light leading-relaxed"
             >
-              Ingeniería de audio de elite con soporte técnico especializado 24/7 y resultados sonoros garantizados.
+              Obtienes servicio profesional, música curada de la mano con tu depto de mercadotecnia/ventas, alineamos tu visión comercial, cada mes nos reunimos para calibrar métricas.
             </motion.p>
           </div>
 
@@ -205,26 +206,77 @@ const Pricing = () => {
             ))}
           </div>
 
-          {/* Support Highlight */}
+          {/* Support Highlight — Redesigned */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="relative p-12 md:p-16 glass rounded-[3rem] overflow-hidden group"
+            className="relative overflow-hidden rounded-[3rem] border border-white/[0.07] group"
           >
-            <div className="absolute top-0 right-0 w-80 h-80 bg-neon-cyan/5 rounded-full blur-[100px] transition-all group-hover:bg-neon-cyan/10" />
-            
-            <div className="flex flex-col md:flex-row items-center gap-12 relative z-10">
-              <div className="w-32 h-32 rounded-[2rem] bg-void border border-white/5 flex items-center justify-center shrink-0 shadow-2xl rotate-3 group-hover:rotate-0 transition-transform duration-700">
-                <Headphones className="w-16 h-16 text-neon-cyan" />
-              </div>
-              <div className="text-center md:text-left">
-                <h2 className="font-display text-3xl md:text-5xl uppercase leading-none mb-4 tracking-tight">
+            {/* BG layers */}
+            <div className="absolute inset-0 bg-gradient-to-br from-[#00f3ff07] via-void to-[#bc13fe07]" />
+            <div className="absolute -top-20 -right-20 w-[420px] h-[420px] bg-neon-cyan/10 rounded-full blur-[140px] opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-neon-purple/5 rounded-full blur-[100px] pointer-events-none" />
+
+            <div className="relative z-10 grid md:grid-cols-[1fr_280px] items-stretch">
+              {/* ── Left: Content ── */}
+              <div className="p-10 md:p-14 flex flex-col justify-center">
+                {/* Live badge */}
+                <div className="flex items-center gap-2 mb-6 w-fit">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-neon-cyan opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-neon-cyan" />
+                  </span>
+                  <span className="text-[9px] font-heading font-bold uppercase tracking-[0.3em] text-neon-cyan">Activo 24/7 · 12 hrs al día</span>
+                </div>
+
+                <h2 className="font-display text-3xl md:text-4xl uppercase leading-none mb-5 tracking-tight">
                   Soporte <span className="text-neon-cyan italic">Preferencial</span>
                 </h2>
-                <p className="text-gray-400 text-sm md:text-base font-light leading-relaxed max-w-xl">
-                  Nuestro equipo de ingenieros de audio monitorea tu señal en tiempo real para garantizar que tu marca nunca deje de sonar.
+
+                <p className="text-gray-300 text-sm md:text-base font-light leading-relaxed max-w-2xl mb-10">
+                  Haz tuya la banda sonora perfecta con nuestro servicio de música para negocios en streaming, con licencia completa y sonido claro como el agua. Nosotros lo configuramos a la medida, tienes el control del audio, mensajes publicitarios y asistencia las 12 horas del día, los 7 días de la semana: todo ello diseñado específicamente para espacios comerciales.
                 </p>
+
+                {/* Feature badges */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {[
+                    { icon: ShieldCheck, label: 'Licencias completas incluidas' },
+                    { icon: Music2, label: 'Streaming con sonido nítido' },
+                    { icon: Users, label: 'Alineado con mercadotecnia' },
+                    { icon: Clock, label: 'Asistencia 12 hrs · 7 días' },
+                  ].map(({ icon: Icon, label }) => (
+                    <div key={label} className="flex items-center gap-3 bg-white/[0.03] border border-white/[0.06] rounded-2xl px-4 py-3 hover:border-neon-cyan/20 transition-colors">
+                      <Icon className="w-4 h-4 text-neon-cyan shrink-0" />
+                      <span className="text-[10px] font-heading font-bold uppercase tracking-widest text-gray-300">{label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* ── Right: Visual panel ── */}
+              <div className="hidden md:flex flex-col items-center justify-center gap-8 p-10 border-l border-white/[0.05]">
+                {/* Icon glow card */}
+                <div className="relative">
+                  <div className="absolute inset-0 bg-neon-cyan/20 rounded-[2rem] blur-2xl scale-110" />
+                  <div className="relative w-28 h-28 rounded-[2rem] bg-void border border-neon-cyan/30 flex items-center justify-center shadow-[0_0_50px_rgba(0,243,255,0.2)] group-hover:shadow-[0_0_60px_rgba(0,243,255,0.35)] transition-shadow duration-700">
+                    <Headphones className="w-14 h-14 text-neon-cyan" />
+                  </div>
+                </div>
+
+                {/* Stat pills */}
+                <div className="flex flex-col gap-2 w-full">
+                  {[
+                    { value: '99.9%', label: 'Uptime' },
+                    { value: '12 hrs', label: 'Soporte diario' },
+                    { value: '7 días', label: 'Disponibilidad' },
+                  ].map(({ value, label }) => (
+                    <div key={label} className="flex items-center justify-between px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+                      <span className="text-[9px] font-heading font-bold uppercase tracking-widest text-gray-500">{label}</span>
+                      <span className="text-xs font-display text-neon-cyan">{value}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </motion.div>
