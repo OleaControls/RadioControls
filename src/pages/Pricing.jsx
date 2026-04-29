@@ -42,7 +42,6 @@ const Pricing = () => {
       features: [
         'Acceso vía Link Sucursal',
         'Ingeniería de Audio Base',
-        'Licencias Musicales',
         'Soporte vía Ticket',
         'Calidad Estándar'
       ],
