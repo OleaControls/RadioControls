@@ -97,6 +97,51 @@ export const sendResetPasswordEmail = async (email, token) => {
 };
 
 /**
+ * Envía un formulario de contacto al correo de sistemas
+ */
+export const sendContactFormEmail = async ({ name, company, email, message }) => {
+  if (!transporter) {
+    console.warn("⚠️ Correo no enviado: Faltan credenciales de GMAIL en variables de entorno.");
+    console.log(`DEBUG - Formulario de contacto de: ${name} <${email}>`);
+    return false;
+  }
+
+  const mailOptions = {
+    from: `"Radiolea Controls Web" <${process.env.GMAIL_USER}>`,
+    to: 'sistemas@radioleacontrols.com',
+    replyTo: email,
+    subject: `Nuevo contacto desde la web: ${name}${company ? ` - ${company}` : ''}`,
+    html: `
+      <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+        <h2 style="color: #00f3ff; text-align: center;">Nuevo Formulario de Contacto</h2>
+        <table style="width:100%; border-collapse:collapse;">
+          <tr>
+            <td style="padding:8px; color:#888; font-size:12px; text-transform:uppercase; letter-spacing:1px; width:30%;">Nombre</td>
+            <td style="padding:8px; color:#333; font-weight:bold;">${name}</td>
+          </tr>
+          ${company ? `<tr>
+            <td style="padding:8px; color:#888; font-size:12px; text-transform:uppercase; letter-spacing:1px;">Empresa</td>
+            <td style="padding:8px; color:#333; font-weight:bold;">${company}</td>
+          </tr>` : ''}
+          <tr>
+            <td style="padding:8px; color:#888; font-size:12px; text-transform:uppercase; letter-spacing:1px;">Email</td>
+            <td style="padding:8px;"><a href="mailto:${email}" style="color:#00f3ff;">${email}</a></td>
+          </tr>
+          <tr>
+            <td style="padding:8px; color:#888; font-size:12px; text-transform:uppercase; letter-spacing:1px; vertical-align:top;">Mensaje</td>
+            <td style="padding:8px; color:#333; white-space:pre-wrap;">${message}</td>
+          </tr>
+        </table>
+        <hr style="border:none; border-top:1px solid #eee; margin:20px 0;" />
+        <p style="font-size:12px; color:#888; text-align:center;">Radiolea Controls - Formulario Web</p>
+      </div>
+    `,
+  };
+
+  return sendWithRetry(mailOptions);
+};
+
+/**
  * Envía el comprobante de compra (Recibo)
  */
 export const sendPurchaseReceiptEmail = async (email, name, branchName, planType, amount, renewalDate) => {

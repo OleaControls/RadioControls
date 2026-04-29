@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Twitter, Facebook, Instagram, Linkedin, Mail, MapPin, Phone, ArrowRight, Activity, Youtube, Globe } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -29,6 +29,25 @@ const LINKS = {
 };
 
 const Footer = () => {
+  const [footerForm, setFooterForm] = useState({ email: '', message: '' });
+  const [footerStatus, setFooterStatus] = useState(null);
+
+  const handleFooterSubmit = async (e) => {
+    e.preventDefault();
+    setFooterStatus('sending');
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: footerForm.email, email: footerForm.email, message: footerForm.message }),
+      });
+      const data = await res.json();
+      setFooterStatus(data.ok ? 'success' : 'error');
+    } catch {
+      setFooterStatus('error');
+    }
+  };
+
   return (
     <footer className="relative bg-void pt-32 pb-12 overflow-hidden border-t border-white/5">
       {/* Background Orbs */}
@@ -47,23 +66,39 @@ const Footer = () => {
             </p>
           </div>
           <div className="lg:col-span-6">
-            <form className="space-y-4">
+            <form className="space-y-4" onSubmit={handleFooterSubmit}>
               <div className="relative">
-                <input 
-                  type="email" 
-                  placeholder="Tu correo electrónico" 
+                <input
+                  type="email"
+                  placeholder="Tu correo electrónico"
+                  value={footerForm.email}
+                  onChange={(e) => setFooterForm({ ...footerForm, email: e.target.value })}
+                  required
                   className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 outline-none focus:border-neon-cyan transition-colors text-sm font-heading tracking-widest placeholder:text-gray-600"
                 />
               </div>
               <div className="relative">
-                <textarea 
+                <textarea
                   rows="3"
-                  placeholder="¿En qué podemos ayudarte?" 
+                  placeholder="¿En qué podemos ayudarte?"
+                  value={footerForm.message}
+                  onChange={(e) => setFooterForm({ ...footerForm, message: e.target.value })}
+                  required
                   className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 outline-none focus:border-neon-cyan transition-colors text-sm font-heading tracking-widest placeholder:text-gray-600 resize-none"
                 ></textarea>
               </div>
-              <button className="w-full sm:w-auto bg-white text-void px-10 py-4 rounded-full font-heading font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-neon-cyan hover:shadow-[0_0_20px_rgba(0,243,255,0.4)] transition-all">
-                Enviar Mensaje <ArrowRight size={16} />
+              {footerStatus === 'success' && (
+                <p className="text-neon-cyan text-xs font-heading font-bold uppercase tracking-widest">¡Mensaje enviado!</p>
+              )}
+              {footerStatus === 'error' && (
+                <p className="text-red-400 text-xs font-heading font-bold uppercase tracking-widest">Error al enviar. Intenta de nuevo.</p>
+              )}
+              <button
+                type="submit"
+                disabled={footerStatus === 'sending' || footerStatus === 'success'}
+                className="w-full sm:w-auto bg-white text-void px-10 py-4 rounded-full font-heading font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-neon-cyan hover:shadow-[0_0_20px_rgba(0,243,255,0.4)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {footerStatus === 'sending' ? 'Enviando...' : 'Enviar Mensaje'} <ArrowRight size={16} />
               </button>
             </form>
           </div>
@@ -153,8 +188,8 @@ const Footer = () => {
               </div>
               <div className="flex gap-4 items-center">
                 <Mail className="text-neon-cyan shrink-0" size={18} />
-                <a href="mailto:hola@radiocontrols.com" className="text-sm text-gray-400 hover:text-white transition-colors">
-                  hola@radiocontrols.com
+                <a href="mailto:sistemas@radioleacontrols.com" className="text-sm text-gray-400 hover:text-white transition-colors">
+                  sistemas@radioleacontrols.com
                 </a>
               </div>
             </div>

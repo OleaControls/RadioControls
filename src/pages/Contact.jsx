@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Phone, MapPin, Send, MessageCircle, Clock, Globe, ShieldCheck, Sparkles, Activity } from 'lucide-react';
 import WaveCursor from '../components/WaveCursor';
@@ -18,6 +18,25 @@ const Aurora = () => (
 );
 
 const Contact = () => {
+  const [form, setForm] = useState({ name: '', company: '', email: '', message: '' });
+  const [status, setStatus] = useState(null); // 'sending' | 'success' | 'error'
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus('sending');
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json();
+      setStatus(data.ok ? 'success' : 'error');
+    } catch {
+      setStatus('error');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-void text-white selection:bg-neon-cyan/30 overflow-x-hidden relative">
       <Aurora />
@@ -65,7 +84,7 @@ const Contact = () => {
                 { 
                   icon: Mail, 
                   label: "Email Corporativo", 
-                  value: "hola@radiocontrols.mx",
+                  value: "sistemas@radioleacontrols.com",
                   accent: "text-neon-cyan"
                 },
                 { 
@@ -133,46 +152,68 @@ const Contact = () => {
             >
               <div className="absolute top-0 right-0 w-64 h-64 bg-neon-cyan/5 rounded-full blur-[80px] pointer-events-none" />
               
-              <form className="space-y-8 relative z-10">
+              <form className="space-y-8 relative z-10" onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-2">
                     <label className="text-[10px] font-heading font-bold uppercase text-gray-500 ml-4 tracking-widest">Nombre</label>
-                    <input 
-                      type="text" 
-                      placeholder="Tu nombre" 
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 outline-none focus:border-neon-cyan transition-all text-sm font-light placeholder:text-gray-700" 
+                    <input
+                      type="text"
+                      placeholder="Tu nombre"
+                      value={form.name}
+                      onChange={(e) => setForm({ ...form, name: e.target.value })}
+                      required
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 outline-none focus:border-neon-cyan transition-all text-sm font-light placeholder:text-gray-700"
                     />
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] font-heading font-bold uppercase text-gray-500 ml-4 tracking-widest">Empresa</label>
-                    <input 
-                      type="text" 
-                      placeholder="Negocio" 
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 outline-none focus:border-neon-cyan transition-all text-sm font-light placeholder:text-gray-700" 
+                    <input
+                      type="text"
+                      placeholder="Negocio"
+                      value={form.company}
+                      onChange={(e) => setForm({ ...form, company: e.target.value })}
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 outline-none focus:border-neon-cyan transition-all text-sm font-light placeholder:text-gray-700"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
                   <label className="text-[10px] font-heading font-bold uppercase text-gray-500 ml-4 tracking-widest">Email Corporativo</label>
-                  <input 
-                    type="email" 
-                    placeholder="ejemplo@marca.com" 
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 outline-none focus:border-neon-cyan transition-all text-sm font-light placeholder:text-gray-700" 
+                  <input
+                    type="email"
+                    placeholder="ejemplo@marca.com"
+                    value={form.email}
+                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    required
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 outline-none focus:border-neon-cyan transition-all text-sm font-light placeholder:text-gray-700"
                   />
                 </div>
 
                 <div className="space-y-2">
                   <label className="text-[10px] font-heading font-bold uppercase text-gray-500 ml-4 tracking-widest">Mensaje</label>
-                  <textarea 
-                    placeholder="Cuéntanos sobre tu visión sonora..." 
-                    rows="4" 
+                  <textarea
+                    placeholder="Cuéntanos sobre tu visión sonora..."
+                    rows="4"
+                    value={form.message}
+                    onChange={(e) => setForm({ ...form, message: e.target.value })}
+                    required
                     className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 outline-none focus:border-neon-cyan transition-all text-sm font-light placeholder:text-gray-700 resize-none"
                   ></textarea>
                 </div>
 
-                <button className="w-full py-5 bg-white text-void rounded-full font-heading font-black text-sm uppercase tracking-[0.2em] hover:bg-neon-cyan hover:shadow-[0_0_30px_rgba(0,243,255,0.3)] transition-all flex items-center justify-center gap-3 group active:scale-[0.98]">
-                  Enviar Solicitud
+                {status === 'success' && (
+                  <p className="text-neon-cyan text-sm text-center font-heading font-bold uppercase tracking-widest">¡Mensaje enviado! Te contactaremos pronto.</p>
+                )}
+                {status === 'error' && (
+                  <p className="text-red-400 text-sm text-center font-heading font-bold uppercase tracking-widest">Error al enviar. Intenta de nuevo.</p>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={status === 'sending' || status === 'success'}
+                  className="w-full py-5 bg-white text-void rounded-full font-heading font-black text-sm uppercase tracking-[0.2em] hover:bg-neon-cyan hover:shadow-[0_0_30px_rgba(0,243,255,0.3)] transition-all flex items-center justify-center gap-3 group active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {status === 'sending' ? 'Enviando...' : 'Enviar Solicitud'}
                   <Send size={16} className="transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
                 </button>
               </form>
