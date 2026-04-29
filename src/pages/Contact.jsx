@@ -53,7 +53,7 @@ const Contact = () => {
             >
               <Activity className="w-3 h-3 text-neon-cyan" />
               <span className="text-[10px] font-heading font-bold uppercase tracking-[0.2em] text-neon-cyan">
-                Ingeniería de Contacto
+                estamos para servir
               </span>
             </motion.div>
             
@@ -61,9 +61,9 @@ const Contact = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="font-display text-5xl md:text-7xl uppercase leading-none mb-6 tracking-tight"
+              className="font-display text-3xl sm:text-5xl md:text-7xl uppercase leading-none mb-6 tracking-tight"
             >
-              Hablemos de <span className="text-neon-cyan italic">tu Éxito</span>
+              AUMENTEMOS YA <span className="text-neon-cyan italic">TUS VENTAS</span>
             </motion.h1>
             
             <motion.p 
@@ -72,7 +72,7 @@ const Contact = () => {
               transition={{ delay: 0.2 }}
               className="text-gray-400 max-w-2xl mx-auto text-base md:text-lg font-light leading-relaxed"
             >
-              Nuestros ingenieros están listos para transformar tu espacio comercial. Respuesta garantizada en tiempo récord.
+              Transformemos tu espacio en un lugar motivador de compra.
             </motion.p>
           </div>
 
@@ -83,14 +83,18 @@ const Contact = () => {
               {[
                 { 
                   icon: Mail, 
-                  label: "Email Corporativo", 
+                  label: "Conozcamos tu proyecto",
                   value: "sistemas@radioleacontrols.com",
                   accent: "text-neon-cyan"
                 },
                 { 
-                  icon: Phone, 
+                  icon: MessageCircle, 
                   label: "Línea Directa", 
                   value: "55 7919 2845",
+                  links: [
+                    { label: "WhatsApp", url: "https://wa.me/525579192845" },
+                    { label: "Telegram", url: "https://t.me/525579192845" }
+                  ],
                   accent: "text-white"
                 },
                 { 
@@ -106,14 +110,30 @@ const Contact = () => {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  className="group p-8 glass rounded-[2rem] flex items-center gap-6 transition-all hover:border-white/20"
+                  className="group p-5 sm:p-8 glass rounded-[2rem] flex items-center gap-4 sm:gap-6 transition-all hover:border-white/20"
                 >
                   <div className={`w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center ${item.accent} group-hover:scale-110 transition-transform`}>
                     <item.icon size={24} />
                   </div>
                   <div>
                     <p className="text-[9px] font-heading font-bold uppercase text-gray-500 tracking-[0.3em] mb-1">{item.label}</p>
-                    <p className="text-lg font-display uppercase tracking-wider text-white">{item.value}</p>
+                    {item.links ? (
+                      <div className="flex gap-4">
+                        {item.links.map((link, lIdx) => (
+                          <a 
+                            key={lIdx} 
+                            href={link.url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-sm font-display uppercase tracking-wider text-white hover:text-neon-cyan transition-colors border-b border-white/10 pb-1"
+                          >
+                            {link.label}
+                          </a>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-lg font-display uppercase tracking-wider text-white">{item.value}</p>
+                    )}
                   </div>
                 </motion.div>
               ))}
@@ -127,10 +147,10 @@ const Contact = () => {
               >
                 <div className="absolute top-0 right-0 w-32 h-32 bg-neon-cyan/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
                 <h3 className="font-display text-2xl uppercase text-white mb-4 flex items-center gap-3 tracking-wider">
-                  <Clock className="w-5 h-5 text-neon-cyan" /> Soporte Elite 24/7
+                  <Clock className="w-5 h-5 text-neon-cyan" /> Elevemos tu Marca
                 </h3>
                 <p className="text-sm text-gray-400 leading-relaxed mb-8 font-light">
-                  Nuestros clientes activos cuentan con una línea prioritaria de ingeniería para ajustes y soporte en tiempo real.
+                  Auténtica experiencia musical que se siente - Si prefieres hablar con alguien, solo mándanos tus datos solicitando una reunión en línea para conocer tu proyecto, retos y darte las opciones de éxito.
                 </p>
                 <div className="flex items-center gap-4">
                   <div className="flex -space-x-3">
@@ -138,7 +158,9 @@ const Contact = () => {
                       <div key={i} className="w-8 h-8 rounded-full border-2 border-void bg-gray-800" />
                     ))}
                   </div>
-                  <p className="text-[10px] font-heading font-bold text-neon-cyan uppercase tracking-widest">Ingenieros Activos</p>
+                  <p className="text-[10px] font-heading font-bold text-neon-cyan uppercase tracking-widest leading-tight">
+                    El éxito es siempre trabajo en equipo - hagamos un gran equipo.
+                  </p>
                 </div>
               </motion.div>
             </div>
@@ -148,7 +170,7 @@ const Contact = () => {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="lg:col-span-7 glass rounded-[3rem] p-8 md:p-12 relative overflow-hidden"
+              className="lg:col-span-7 glass rounded-[2rem] md:rounded-[3rem] p-6 md:p-12 relative overflow-hidden"
             >
               <div className="absolute top-0 right-0 w-64 h-64 bg-neon-cyan/5 rounded-full blur-[80px] pointer-events-none" />
               

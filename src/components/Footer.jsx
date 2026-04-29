@@ -58,7 +58,7 @@ const Footer = () => {
         {/* Quick Contact Section */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-24 items-start">
           <div className="lg:col-span-6">
-            <h2 className="font-display text-5xl md:text-7xl uppercase leading-none mb-6 tracking-tighter">
+            <h2 className="font-display text-3xl md:text-7xl uppercase leading-none mb-6 tracking-tighter">
               Activa tu <br /> <span className="text-neon-purple italic">asesoría ahora</span>
             </h2>
             <p className="text-gray-400 max-w-md text-lg font-light leading-relaxed">
@@ -108,18 +108,14 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 mb-20">
           {/* Brand Info */}
           <div className="lg:col-span-4 space-y-8">
-            <Link to="/" className="flex items-center gap-4 group">
+            <Link to="/" className="inline-flex group">
               <div className="relative">
-                <img 
-                  src="/img radio lea/logosinfondoradiolea.svg" 
-                  alt="Radiolea Logo" 
-                  className="h-10 md:h-12 w-auto object-contain transition-transform duration-500 group-hover:scale-110 drop-shadow-[0_0_15px_rgba(0,243,255,0.3)]"
+                <img
+                  src="/Logo-hor-radioleacontrols-2026.png"
+                  alt="Radiolea Controls Logo"
+                  className="h-12 md:h-14 w-auto object-contain transition-transform duration-500 group-hover:scale-105 drop-shadow-[0_0_15px_rgba(0,243,255,0.3)]"
                 />
-                <div className="absolute inset-0 bg-neon-cyan/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
-              </div>
-              <div className="flex flex-col leading-none">
-                <span className="font-display text-3xl uppercase tracking-tighter text-white group-hover:text-neon-cyan transition-colors">Radiolea</span>
-                <span className="text-[8px] font-heading font-black uppercase tracking-[0.4em] text-gray-500">Controls</span>
+                <div className="absolute inset-0 bg-neon-cyan/10 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
             </Link>
             <p className="text-gray-500 text-sm leading-relaxed max-w-sm">

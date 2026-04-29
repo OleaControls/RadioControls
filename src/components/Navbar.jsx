@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { 
-  Menu, X, ChevronRight, LogOut, User, 
-  Activity, Home, Zap, PhoneCall, LayoutDashboard 
+import {
+  Menu, X, ChevronRight, LogOut, User,
+  Activity, Home, Zap, PhoneCall, LayoutDashboard, HelpCircle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from './AuthContext';
@@ -18,10 +18,11 @@ const Navbar = () => {
   const dashboardPath = user?.role === 'ADMIN' ? '/admin' : '/dashboard';
 
   const links = [
-    { name: 'Inicio', path: '/', icon: Home },
-    { name: 'Servicios', path: '/servicios', icon: Activity },
-    { name: 'Planes', path: '/planes', icon: Zap },
-    { name: 'Contacto', path: '/contacto', icon: PhoneCall },
+    { name: 'Inicio', short: 'Inicio', path: '/', icon: Home },
+    { name: 'Servicios', short: 'Servicios', path: '/servicios', icon: Activity },
+    { name: 'Planes', short: 'Planes', path: '/planes', icon: Zap },
+    { name: 'Preguntas Freq.', short: 'FAQ', path: '/faq', icon: HelpCircle },
+    { name: 'Contacto', short: 'Contacto', path: '/contacto', icon: PhoneCall },
   ];
 
   useEffect(() => {
@@ -46,9 +47,9 @@ const Navbar = () => {
           >
             <Link to="/" className="flex items-center gap-3 group relative">
               <img
-                src="/RADIOLEA.png"
-                alt="Radiolea Logo"
-                className="h-7 md:h-9 w-auto object-contain drop-shadow-[0_0_15px_rgba(0,243,255,0.3)]"
+                src="/Logo-hor-radioleacontrols-2026.png"
+                alt="Radiolea Controls Logo"
+                className="h-8 md:h-10 w-auto object-contain drop-shadow-[0_0_15px_rgba(0,243,255,0.3)]"
               />
             </Link>
           </motion.div>
@@ -112,7 +113,7 @@ const Navbar = () => {
               >
                 <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
                 <span className={`text-[8px] font-heading font-bold uppercase tracking-widest mt-1.5 ${isActive ? 'opacity-100' : 'opacity-50'}`}>
-                  {link.name}
+                  {link.short || link.name}
                 </span>
                 {isActive && (
                   <motion.div 

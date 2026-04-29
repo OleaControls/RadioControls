@@ -91,7 +91,7 @@ const Services = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="font-display text-5xl md:text-8xl uppercase leading-[0.9] mb-10 tracking-tighter"
+              className="font-display text-3xl sm:text-5xl md:text-8xl uppercase leading-[0.9] mb-8 tracking-tighter"
             >
               Elige el <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple animate-gradient bg-[length:200%_auto]">
@@ -103,7 +103,7 @@ const Services = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
-              className="text-gray-400 max-w-2xl text-lg md:text-xl font-light leading-relaxed border-l-2 border-neon-cyan pl-8"
+              className="text-gray-400 max-w-2xl text-base md:text-xl font-light leading-relaxed border-l-2 border-neon-cyan pl-4 md:pl-8"
             >
               Cuatro opciones para comenzar inmediatamente.
             </motion.p>
@@ -118,7 +118,7 @@ const Services = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="group relative flex flex-col min-h-[500px] md:min-h-[600px] rounded-[3rem] overflow-hidden border border-white/5 bg-black/40 shadow-2xl transition-all duration-700 hover:border-white/20"
+                className="group relative flex flex-col min-h-[380px] md:min-h-[600px] rounded-[2rem] md:rounded-[3rem] overflow-hidden border border-white/5 bg-black/40 shadow-2xl transition-all duration-700 hover:border-white/20"
               >
                 {/* Background Image with Parallax-ish feel */}
                 <div className="absolute inset-0 z-0">
@@ -131,7 +131,7 @@ const Services = () => {
                 </div>
 
                 {/* Content Overlay */}
-                <div className="relative z-10 p-10 md:p-16 h-full flex flex-col justify-end">
+                <div className="relative z-10 p-6 md:p-16 h-full flex flex-col justify-end">
                   <div className="mb-8 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
                     <div className={`w-16 h-16 rounded-2xl flex items-center justify-center bg-black/60 border border-white/10 text-${service.accent} mb-6 shadow-2xl`}>
                       <service.icon size={32} />
@@ -139,7 +139,7 @@ const Services = () => {
                     <span className={`text-[10px] font-heading font-black uppercase tracking-[0.4em] text-${service.accent} mb-4 block`}>
                       {service.tagSub}
                     </span>
-                    <h3 className="font-display text-4xl md:text-5xl uppercase mb-6 tracking-tight leading-none text-white">
+                    <h3 className="font-display text-2xl sm:text-3xl md:text-5xl uppercase mb-4 md:mb-6 tracking-tight leading-none text-white">
                       {service.title}
                     </h3>
                     <p className="text-gray-400 text-sm md:text-base leading-relaxed mb-4 max-w-sm font-light">
@@ -172,14 +172,14 @@ const Services = () => {
             initial={{ opacity: 0, scale: 0.98 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="relative p-12 md:p-32 rounded-[4rem] bg-gradient-to-br from-white/[0.03] to-transparent border border-white/10 overflow-hidden text-center"
+            className="relative p-8 sm:p-12 md:p-24 lg:p-32 rounded-[2.5rem] md:rounded-[4rem] bg-gradient-to-br from-white/[0.03] to-transparent border border-white/10 overflow-hidden text-center"
           >
             <div className="absolute inset-0 z-0 overflow-hidden">
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100vw] h-[100vw] bg-neon-cyan/5 rounded-full blur-[150px] animate-pulse" />
             </div>
             
             <div className="relative z-10 max-w-3xl mx-auto">
-              <h2 className="font-display text-5xl md:text-8xl uppercase leading-none mb-6 tracking-tighter">
+              <h2 className="font-display text-3xl sm:text-5xl md:text-8xl uppercase leading-none mb-6 tracking-tighter">
                 Diseñemos
               </h2>
               <p className="text-white text-lg md:text-xl mb-4 font-light leading-relaxed">
@@ -190,10 +190,10 @@ const Services = () => {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-6 justify-center">
-                <Link to="/contacto" className="px-12 py-5 bg-neon-cyan text-void rounded-full font-heading font-black text-xs uppercase tracking-widest hover:scale-105 transition-transform shadow-[0_0_40px_rgba(0,243,255,0.3)]">
+                <Link to="/contacto" className="px-8 md:px-12 py-5 bg-neon-cyan text-void rounded-full font-heading font-black text-xs uppercase tracking-widest hover:scale-105 transition-transform shadow-[0_0_40px_rgba(0,243,255,0.3)]">
                   Contactar con Experto
                 </Link>
-                <Link to="/planes" className="px-12 py-5 border border-white/10 rounded-full font-heading font-bold text-xs uppercase tracking-widest hover:bg-white/5 transition-all backdrop-blur-sm">
+                <Link to="/planes" className="px-8 md:px-12 py-5 border border-white/10 rounded-full font-heading font-bold text-xs uppercase tracking-widest hover:bg-white/5 transition-all backdrop-blur-sm">
                   Explorar Planes
                 </Link>
               </div>

@@ -97,7 +97,7 @@ const LandingPage = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="font-display text-5xl sm:text-7xl md:text-9xl leading-[1.1] md:leading-[1.0] uppercase mb-8 tracking-tighter"
+            className="font-display text-4xl sm:text-6xl md:text-9xl leading-[1.1] md:leading-[1.0] uppercase mb-8 tracking-tighter"
           >
             Crecemos tus <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple animate-gradient bg-[length:200%_auto]">
@@ -191,7 +191,7 @@ const LandingPage = () => {
             { v: "24", s: "/7", l: "Soporte" }
           ].map((st, i) => (
             <div key={i} className="text-center group">
-              <p className="font-display text-5xl text-white group-hover:text-neon-cyan transition-colors">
+              <p className="font-display text-3xl md:text-5xl text-white group-hover:text-neon-cyan transition-colors">
                 <Counter value={st.v} suffix={st.s} />
               </p>
               <p className="text-[10px] text-gray-500 uppercase font-bold tracking-[0.3em] mt-1">{st.l}</p>
@@ -225,7 +225,7 @@ const LandingPage = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
               whileHover={{ y: -5 }}
-              className="glass rounded-[2.5rem] p-10 relative overflow-hidden group"
+              className="glass rounded-[2.5rem] p-6 md:p-10 relative overflow-hidden group"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-neon-cyan/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-[2.5rem]" />
               <div className="relative z-10">
@@ -251,7 +251,7 @@ const LandingPage = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.15 }}
               whileHover={{ y: -5 }}
-              className="glass rounded-[2.5rem] p-10 relative overflow-hidden group"
+              className="glass rounded-[2.5rem] p-6 md:p-10 relative overflow-hidden group"
             >
               <div className="absolute inset-0 bg-gradient-to-bl from-neon-purple/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-[2.5rem]" />
               <div className="relative z-10">
@@ -287,7 +287,7 @@ const LandingPage = () => {
             {/* Main feature */}
             <motion.div 
               whileHover={{ y: -5 }}
-              className="md:col-span-8 p-10 glass rounded-[2.5rem] relative overflow-hidden group"
+              className="md:col-span-8 p-6 md:p-10 glass rounded-[2.5rem] relative overflow-hidden group"
             >
               <div className="absolute top-0 right-0 p-8">
                 <Headphones className="w-12 h-12 text-neon-cyan opacity-20 group-hover:opacity-100 transition-opacity" />
@@ -303,7 +303,7 @@ const LandingPage = () => {
             {/* Small feature */}
             <motion.div 
               whileHover={{ y: -5 }}
-              className="md:col-span-4 p-10 glass rounded-[2.5rem] bg-gradient-to-br from-neon-purple/20 to-transparent"
+              className="md:col-span-4 p-6 md:p-10 glass rounded-[2.5rem] bg-gradient-to-br from-neon-purple/20 to-transparent"
             >
               <Shield className="w-8 h-8 text-neon-purple mb-6" />
               <h3 className="font-heading font-bold text-xl mb-2 italic">100% Legal</h3>
@@ -313,7 +313,7 @@ const LandingPage = () => {
             {/* Another row */}
             <motion.div 
               whileHover={{ y: -5 }}
-              className="md:col-span-4 p-10 glass rounded-[2.5rem]"
+              className="md:col-span-4 p-6 md:p-10 glass rounded-[2.5rem]"
             >
               <LayoutDashboard className="w-8 h-8 text-white/50 mb-6" />
               <h3 className="font-heading font-bold text-xl mb-2">Multi-Zona</h3>
@@ -322,7 +322,7 @@ const LandingPage = () => {
 
             <motion.div 
               whileHover={{ y: -5 }}
-              className="md:col-span-8 p-10 glass rounded-[2.5rem] bg-gradient-to-r from-void to-white/[0.03] flex flex-col md:flex-row items-center gap-10"
+              className="md:col-span-8 p-6 md:p-10 glass rounded-[2.5rem] bg-gradient-to-r from-void to-white/[0.03] flex flex-col md:flex-row items-center gap-10"
             >
               <div className="flex-1 text-left">
                 <h3 className="font-display text-3xl mb-4">Instalación <br /> Garantizada</h3>
@@ -372,7 +372,7 @@ const LandingPage = () => {
       <section className="py-24 px-4 overflow-hidden">
         <div className="container mx-auto max-w-6xl">
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8 text-left">
-            <h2 className="font-display text-5xl md:text-7xl leading-none uppercase">
+            <h2 className="font-display text-3xl md:text-7xl leading-none uppercase">
               La Voz <br /> del <span className="text-neon-cyan">Éxito</span>
             </h2>
             <p className="text-gray-400 max-w-xs text-xs mb-4">Empresas que ya transformaron su atmósfera con RadioleaControls.</p>
@@ -401,7 +401,7 @@ const LandingPage = () => {
       <section className="py-32 px-4 relative overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100vw] h-[100vw] bg-neon-cyan/5 rounded-full blur-[150px]" />
         <div className="container mx-auto text-center relative z-10">
-          <h2 className="font-display text-4xl md:text-7xl leading-tight uppercase mb-10 tracking-tight max-w-5xl mx-auto">
+          <h2 className="font-display text-3xl md:text-7xl leading-tight uppercase mb-10 tracking-tight max-w-5xl mx-auto">
             Música Personalizada para cada <span className="text-neon-cyan italic">tipo de negocio y marca</span>
           </h2>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
