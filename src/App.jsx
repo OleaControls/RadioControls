@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import LandingPage from './pages/LandingPage';
@@ -22,6 +22,14 @@ import CheckoutSuccess from './pages/CheckoutSuccess';
 import { AppProviders } from './components/AppProviders';
 import Footer from './components/Footer';
 import { useAuth } from './components/AuthContext';
+
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [pathname]);
+  return null;
+};
 
 const RequireAuth = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
@@ -67,6 +75,7 @@ const MainLayout = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
+      <ScrollToTop />
       {(!isPlayer && !isAuthPage && !isDashboard) && <Navbar />}
       
       <main className="flex-grow">
