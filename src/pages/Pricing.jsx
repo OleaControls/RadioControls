@@ -240,7 +240,7 @@ const Pricing = () => {
                 {/* Feature badges */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {[
-                    { icon: ShieldCheck, label: 'Licencias completas incluidas' },
+                    { icon: ShieldCheck, label: 'Damos soluciones rapidas y eficientes' },
                     { icon: Music2, label: 'Streaming con sonido nítido' },
                     { icon: Users, label: 'Alineado con mercadotecnia' },
                     { icon: Clock, label: 'Asistencia 12 hrs · 7 días' },
