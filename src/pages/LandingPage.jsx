@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom';
 import HeroWaves from '../components/HeroWaves';
 import UniversalPlayer from '../components/UniversalPlayer';
 import PhotoCarousel from '../components/PhotoCarousel';
+import Benefits from '../components/Benefits';
 
 /* ─── Optimized Aurora ───────────────────────────── */
 const Aurora = () => (
@@ -335,6 +336,9 @@ const LandingPage = () => {
           </div>
         </div>
       </section>
+
+      {/* ══ BENEFITS SECTION ════════════════════════ */}
+      <Benefits />
 
       {/* ══ PHOTO CAROUSEL SECTION ══════════════════ */}
       <section className="py-24 px-4 overflow-hidden">
