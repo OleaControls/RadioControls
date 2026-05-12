@@ -5,9 +5,8 @@ import {
   CheckCircle2, ArrowRight, Star, ShieldCheck, Clock,
   Music2, Users, Headphones, TrendingUp, Info, HelpCircle,
   Store, Hotel, Dumbbell, UtensilsCrossed, ShoppingBag,
-  Zap, Wifi, Megaphone, LayoutDashboard, Volume2, Calendar
+  Heart, TreePine, Sparkles, Phone,
 } from 'lucide-react';
-import { useAuth } from '../components/AuthContext';
 
 /* ─── Aurora ─────────────────────────────────────── */
 const Aurora = () => (
@@ -26,148 +25,42 @@ const Aurora = () => (
 /* ─── Categories data ─────────────────────────────── */
 const categories = [
   {
-    id: 'plazas',
-    label: 'Plazas Comerciales',
-    shortLabel: 'Plazas',
+    id: 'tiendas',
+    label: 'Tiendas Departamentales',
+    shortLabel: 'Tiendas',
     icon: Store,
     color: 'cyan',
-    accent: '#00f3ff',
-    description: 'Ambientes sonoros para locales en centros comerciales con alto tráfico de compradores.',
-    monthly: {
-      id: 'plazas-mensual',
-      price: '899',
-      features: [
-        'Streaming Hi-Fi 320kbps',
-        'Playlists por horario comercial',
-        'Publicidad de temporada',
-        'Monitoreo remoto básico',
-        'Soporte vía ticket',
-        'Acceso vía Link Sucursal',
-      ],
-    },
-    annual: {
-      id: 'plazas-anual',
-      price: '8,990',
-      savings: '1,798',
-      features: [
-        'Todo lo del plan Mensual',
-        '2 Meses Gratis Incluidos',
-        'Publicidad personalizada mensual',
-        'Panel multi-zona completo',
-        'Monitoreo en tiempo real',
-        'Soporte prioritario 12 hrs / 7 días',
-        'Instalación técnica preferente',
-        'Reunión mensual de métricas',
-      ],
-    },
-  },
-  {
-    id: 'hoteles',
-    label: 'Hoteles',
-    shortLabel: 'Hoteles',
-    icon: Hotel,
-    color: 'purple',
-    accent: '#bc13fe',
-    description: 'Experiencia sonora para lobby, restaurante, spa y áreas comunes del hotel.',
-    monthly: {
-      id: 'hoteles-mensual',
-      price: '799',
-      features: [
-        'Streaming Hi-Fi 320kbps',
-        'Zonas diferenciadas (lobby, spa, bar)',
-        'Playlists por hora del día',
-        'Spots de servicios internos',
-        'Monitoreo remoto básico',
-        'Soporte vía ticket',
-      ],
-    },
-    annual: {
-      id: 'hoteles-anual',
-      price: '7,990',
-      savings: '1,598',
-      features: [
-        'Todo lo del plan Mensual',
-        '2 Meses Gratis Incluidos',
-        'Hasta 5 zonas de audio',
-        'Publicidad de paquetes y eventos',
-        'Monitoreo en tiempo real',
-        'Soporte prioritario 12 hrs / 7 días',
-        'Instalación técnica preferente',
-        'Reunión mensual de métricas',
-      ],
-    },
-  },
-  {
-    id: 'gimnasios',
-    label: 'Gimnasios',
-    shortLabel: 'Gimnasios',
-    icon: Dumbbell,
-    color: 'green',
-    accent: '#39ff14',
-    description: 'Energía y ritmo para salas de cardio, pesas, clases grupales y recepción.',
-    monthly: {
-      id: 'gimnasios-mensual',
-      price: '649',
-      features: [
-        'Streaming Hi-Fi 320kbps',
-        'Playlists BPM por zona',
-        'Diferenciación sala / recepción',
-        'Spots de membresías y promos',
-        'Monitoreo remoto básico',
-        'Soporte vía ticket',
-      ],
-    },
-    annual: {
-      id: 'gimnasios-anual',
-      price: '6,490',
-      savings: '1,298',
-      features: [
-        'Todo lo del plan Mensual',
-        '2 Meses Gratis Incluidos',
-        'Zonas múltiples ilimitadas',
-        'Campañas de inscripción automáticas',
-        'Monitoreo en tiempo real',
-        'Soporte prioritario 12 hrs / 7 días',
-        'Instalación técnica preferente',
-        'Reunión mensual de métricas',
-      ],
-    },
-  },
-  {
-    id: 'restaurantes',
-    label: 'Restaurantes',
-    shortLabel: 'Restaurantes',
-    icon: UtensilsCrossed,
-    color: 'cyan',
-    accent: '#00f3ff',
-    description: 'Ambiente sonoro que alarga la estancia, aumenta el ticket promedio y refuerza tu marca.',
-    monthly: {
-      id: 'restaurantes-mensual',
-      price: '539',
-      features: [
-        'Streaming Hi-Fi 320kbps',
-        'Playlists por servicio (desayuno/comida/cena)',
-        'Spots del menú del día',
-        'Control de volumen remoto',
-        'Monitoreo remoto básico',
-        'Soporte vía ticket',
-      ],
-    },
-    annual: {
-      id: 'restaurantes-anual',
-      price: '5,390',
-      savings: '1,078',
-      features: [
-        'Todo lo del plan Mensual',
-        '2 Meses Gratis Incluidos',
-        'Publicidad de eventos especiales',
-        'Zonas terraza / interior',
-        'Monitoreo en tiempo real',
-        'Soporte prioritario 12 hrs / 7 días',
-        'Instalación técnica preferente',
-        'Reunión mensual de métricas',
-      ],
-    },
+    description: 'Ambiente sonoro para tiendas departamentales con alto flujo de clientes y variedad de secciones.',
+    plans: [
+      {
+        id: 'tiendas-pequena',
+        label: 'Hasta 200 m²',
+        annual: '30,395',
+        monthly: '2,532.92',
+        features: [
+          'Streaming Hi-Fi 320kbps',
+          'Playlists por horario comercial',
+          'Spots de temporada y promociones',
+          'Control de volumen remoto',
+          'Monitoreo en tiempo real',
+          'Soporte 12 hrs / 7 días',
+        ],
+      },
+      {
+        id: 'tiendas-grande',
+        label: 'Más de 200 m²',
+        annual: '49,043',
+        monthly: '4,086.92',
+        features: [
+          'Streaming Hi-Fi 320kbps',
+          'Playlists por horario comercial',
+          'Panel multi-zona completo',
+          'Spots personalizados mensuales',
+          'Monitoreo en tiempo real',
+          'Soporte prioritario 12 hrs / 7 días',
+        ],
+      },
+    ],
   },
   {
     id: 'boutiques',
@@ -175,35 +68,275 @@ const categories = [
     shortLabel: 'Boutiques',
     icon: ShoppingBag,
     color: 'purple',
-    accent: '#bc13fe',
     description: 'Música cuidada al detalle para tiendas de moda, accesorios y lifestyle que construyen identidad de marca.',
-    monthly: {
-      id: 'boutiques-mensual',
-      price: '459',
-      features: [
-        'Streaming Hi-Fi 320kbps',
-        'Playlists alineadas a tu marca',
-        'Spots de colección y temporada',
-        'Control de volumen remoto',
-        'Monitoreo remoto básico',
-        'Soporte vía ticket',
-      ],
-    },
-    annual: {
-      id: 'boutiques-anual',
-      price: '4,590',
-      savings: '918',
-      features: [
-        'Todo lo del plan Mensual',
-        '2 Meses Gratis Incluidos',
-        'Identidad sonora de marca',
-        'Campañas de temporada auto-programadas',
-        'Monitoreo en tiempo real',
-        'Soporte prioritario 12 hrs / 7 días',
-        'Instalación técnica preferente',
-        'Reunión mensual de métricas',
-      ],
-    },
+    plans: [
+      {
+        id: 'boutiques-plan',
+        label: 'Hasta 40 m²',
+        annual: '23,360.97',
+        monthly: '1,946.75',
+        features: [
+          'Streaming Hi-Fi 320kbps',
+          'Playlists alineadas a tu marca',
+          'Spots de colección y temporada',
+          'Identidad sonora de marca',
+          'Control de volumen remoto',
+          'Soporte 12 hrs / 7 días',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'restaurantes',
+    label: 'Restaurantes',
+    shortLabel: 'Restaurantes',
+    icon: UtensilsCrossed,
+    color: 'cyan',
+    description: 'Ambiente sonoro que alarga la estancia, aumenta el ticket promedio y refuerza tu marca.',
+    plans: [
+      {
+        id: 'restaurantes-pequeno',
+        label: '1 a 20 mesas',
+        annual: '31,137.19',
+        monthly: '2,594.77',
+        features: [
+          'Streaming Hi-Fi 320kbps',
+          'Playlists por servicio (desayuno / comida / cena)',
+          'Spots del menú del día',
+          'Control de volumen remoto',
+          'Monitoreo remoto básico',
+          'Soporte 12 hrs / 7 días',
+        ],
+      },
+      {
+        id: 'restaurantes-grande',
+        label: '41 mesas o más',
+        annual: '50,531.11',
+        monthly: '4,210.93',
+        features: [
+          'Streaming Hi-Fi 320kbps',
+          'Playlists por servicio (desayuno / comida / cena)',
+          'Zonas terraza / interior',
+          'Spots de eventos especiales',
+          'Monitoreo en tiempo real',
+          'Soporte prioritario 12 hrs / 7 días',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'fondas',
+    label: 'Fondas',
+    shortLabel: 'Fondas',
+    icon: UtensilsCrossed,
+    color: 'green',
+    description: 'Ambiente sonoro acogedor y animado para fondas y comedores populares.',
+    plans: [
+      {
+        id: 'fondas-plan',
+        label: 'Plan Fondas',
+        annual: '20,852.19',
+        monthly: '1,737.68',
+        features: [
+          'Streaming Hi-Fi 320kbps',
+          'Playlists por hora del día',
+          'Spots del menú y especiales',
+          'Control de volumen remoto',
+          'Monitoreo remoto básico',
+          'Soporte 12 hrs / 7 días',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'gimnasios',
+    label: 'Gimnasios',
+    shortLabel: 'Gimnasios',
+    icon: Dumbbell,
+    color: 'green',
+    description: 'Energía y ritmo para salas de cardio, pesas, clases grupales y recepción.',
+    plans: [
+      {
+        id: 'gimnasios-pequeno',
+        label: '1 a 70 alumnos',
+        annual: '24,672.55',
+        monthly: '2,056.05',
+        features: [
+          'Streaming Hi-Fi 320kbps',
+          'Playlists BPM por zona',
+          'Diferenciación sala / recepción',
+          'Spots de membresías y promos',
+          'Monitoreo remoto básico',
+          'Soporte 12 hrs / 7 días',
+        ],
+      },
+      {
+        id: 'gimnasios-grande',
+        label: 'Más de 70 alumnos',
+        annual: '37,654.04',
+        monthly: '3,137.84',
+        features: [
+          'Streaming Hi-Fi 320kbps',
+          'Playlists BPM por zona',
+          'Zonas múltiples ilimitadas',
+          'Campañas de inscripción automáticas',
+          'Monitoreo en tiempo real',
+          'Soporte prioritario 12 hrs / 7 días',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'hospitales',
+    label: 'Hospitales',
+    shortLabel: 'Hospitales',
+    icon: Heart,
+    color: 'cyan',
+    description: 'Ambiente sonoro reconfortante para hospitales y clínicas que mejora la experiencia del paciente.',
+    plans: [
+      {
+        id: 'hospitales-pequeno',
+        label: 'Hasta 50 habitaciones',
+        annual: '34,093.52',
+        monthly: '2,841.13',
+        features: [
+          'Streaming Hi-Fi 320kbps',
+          'Playlists relajantes por área',
+          'Diferenciación lobby / pasillos',
+          'Spots informativos internos',
+          'Monitoreo remoto básico',
+          'Soporte 12 hrs / 7 días',
+        ],
+      },
+      {
+        id: 'hospitales-grande',
+        label: 'Más de 50 habitaciones',
+        annual: '56,376.63',
+        monthly: '4,698.05',
+        features: [
+          'Streaming Hi-Fi 320kbps',
+          'Playlists relajantes por área',
+          'Panel multi-zona completo',
+          'Spots informativos personalizados',
+          'Monitoreo en tiempo real',
+          'Soporte prioritario 12 hrs / 7 días',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'hoteles',
+    label: 'Hoteles',
+    shortLabel: 'Hoteles',
+    icon: Hotel,
+    color: 'purple',
+    description: 'Experiencia sonora para lobby, restaurante, spa y áreas comunes del hotel.',
+    plans: [
+      {
+        id: 'hoteles-1',
+        label: '1 Estrella',
+        annual: '20,852.19',
+        monthly: '1,737.68',
+        features: [
+          'Streaming Hi-Fi 320kbps',
+          'Playlists por área del hotel',
+          'Spots de servicios internos',
+          'Control de volumen remoto',
+          'Monitoreo remoto básico',
+          'Soporte 12 hrs / 7 días',
+        ],
+      },
+      {
+        id: 'hoteles-2',
+        label: '2 Estrellas',
+        annual: '25,250.64',
+        monthly: '2,104.22',
+        features: [
+          'Streaming Hi-Fi 320kbps',
+          'Zonas diferenciadas (lobby / bar)',
+          'Playlists por hora del día',
+          'Spots de paquetes y promociones',
+          'Monitoreo en tiempo real',
+          'Soporte 12 hrs / 7 días',
+        ],
+      },
+      {
+        id: 'hoteles-5',
+        label: '5 Estrellas',
+        annual: '143,848.19',
+        monthly: '11,987.35',
+        features: [
+          'Streaming Hi-Fi 320kbps',
+          'Hasta 10 zonas de audio',
+          'Identidad sonora de lujo',
+          'Spots de servicios premium',
+          'Monitoreo en tiempo real',
+          'Soporte VIP 12 hrs / 7 días',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'salones',
+    label: 'Salones de Fiestas',
+    shortLabel: 'Salones',
+    icon: Sparkles,
+    color: 'purple',
+    description: 'Ambiente festivo y entretenido para salones de fiestas infantiles y eventos especiales.',
+    plans: [
+      {
+        id: 'salones-plan',
+        label: 'Salón Infantil',
+        annual: '27,855.14',
+        monthly: '2,321.26',
+        features: [
+          'Streaming Hi-Fi 320kbps',
+          'Playlists temáticas infantiles',
+          'Spots de paquetes y eventos',
+          'Control de volumen remoto',
+          'Monitoreo remoto básico',
+          'Soporte 12 hrs / 7 días',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'jardines',
+    label: 'Jardines de Eventos',
+    shortLabel: 'Jardines',
+    icon: TreePine,
+    color: 'green',
+    description: 'Sonido de calidad para jardines y espacios al aire libre para eventos y celebraciones.',
+    plans: [
+      {
+        id: 'jardines-pequeno',
+        label: 'Hasta 200 personas',
+        annual: '36,873.31',
+        monthly: '3,072.78',
+        features: [
+          'Streaming Hi-Fi 320kbps',
+          'Playlists por tipo de evento',
+          'Spots de paquetes disponibles',
+          'Control de volumen remoto',
+          'Monitoreo remoto básico',
+          'Soporte 12 hrs / 7 días',
+        ],
+      },
+      {
+        id: 'jardines-grande',
+        label: 'Más de 200 personas',
+        annual: '60,047.80',
+        monthly: '5,003.98',
+        features: [
+          'Streaming Hi-Fi 320kbps',
+          'Playlists por tipo de evento',
+          'Zonas múltiples de audio exterior',
+          'Spots personalizados mensuales',
+          'Monitoreo en tiempo real',
+          'Soporte prioritario 12 hrs / 7 días',
+        ],
+      },
+    ],
   },
 ];
 
@@ -217,7 +350,6 @@ const colorMap = {
     shadow:      'shadow-[0_0_40px_rgba(0,243,255,0.15)]',
     shadowHover: 'hover:shadow-[0_0_50px_rgba(0,243,255,0.25)]',
     btn:         'bg-neon-cyan text-void hover:shadow-[0_0_30px_rgba(0,243,255,0.4)]',
-    btnOutline:  'border-neon-cyan/30 hover:bg-neon-cyan hover:text-void',
     glow:        'bg-neon-cyan',
     badge:       'bg-neon-cyan/10 border-neon-cyan/20 text-neon-cyan',
   },
@@ -229,7 +361,6 @@ const colorMap = {
     shadow:      'shadow-[0_0_40px_rgba(188,19,254,0.15)]',
     shadowHover: 'hover:shadow-[0_0_50px_rgba(188,19,254,0.25)]',
     btn:         'bg-neon-purple text-void hover:shadow-[0_0_30px_rgba(188,19,254,0.4)]',
-    btnOutline:  'border-neon-purple/30 hover:bg-neon-purple hover:text-void',
     glow:        'bg-neon-purple',
     badge:       'bg-neon-purple/10 border-neon-purple/20 text-neon-purple',
   },
@@ -241,14 +372,13 @@ const colorMap = {
     shadow:      'shadow-[0_0_40px_rgba(57,255,20,0.15)]',
     shadowHover: 'hover:shadow-[0_0_50px_rgba(57,255,20,0.25)]',
     btn:         'bg-neon-green text-void hover:shadow-[0_0_30px_rgba(57,255,20,0.4)]',
-    btnOutline:  'border-neon-green/30 hover:bg-neon-green hover:text-void',
     glow:        'bg-neon-green',
     badge:       'bg-neon-green/10 border-neon-green/20 text-neon-green',
   },
 };
 
 /* ─── Plan Card ───────────────────────────────────── */
-const PlanCard = ({ plan, type, color, onSelect, isAnnual }) => {
+const PlanCard = ({ plan, color, onContact }) => {
   const c = colorMap[color];
   return (
     <motion.div
@@ -263,35 +393,23 @@ const PlanCard = ({ plan, type, color, onSelect, isAnnual }) => {
       {/* Glow bg */}
       <div className={`absolute -inset-20 opacity-0 group-hover:opacity-10 transition-opacity duration-700 pointer-events-none blur-[100px] ${c.glow}`} />
 
-      {/* Badge */}
-      {isAnnual && (
-        <div className={`absolute top-6 right-6 px-3 py-1 rounded-full border text-[9px] font-heading font-bold uppercase tracking-widest ${c.badge}`}>
-          Más Elegido
-        </div>
-      )}
-
-      {/* Type label */}
+      {/* Plan label */}
       <div className="mb-6">
         <span className={`text-[9px] font-heading font-black uppercase tracking-[0.4em] ${c.text}`}>
-          {isAnnual ? 'Plan Anual' : 'Plan Mensual'}
+          {plan.label}
         </span>
+
+        {/* Annual price */}
         <div className="flex items-baseline gap-1 mt-3">
           <span className="text-lg font-light text-gray-500">$</span>
-          <span className="text-5xl font-display text-white tracking-tighter">{plan.price}</span>
-          <span className="text-gray-500 font-heading text-[10px] uppercase tracking-widest ml-1">
-            {isAnnual ? '/ año' : '/ mes'}
-          </span>
+          <span className="text-5xl font-display text-white tracking-tighter">{plan.annual}</span>
+          <span className="text-gray-500 font-heading text-[10px] uppercase tracking-widest ml-1">/ año</span>
         </div>
-        {isAnnual && (
-          <p className={`text-[10px] font-heading font-bold mt-2 uppercase tracking-widest ${c.text}`}>
-            Ahorras ${plan.savings} · 2 meses gratis
-          </p>
-        )}
-        {!isAnnual && (
-          <p className="text-gray-600 text-[10px] font-heading mt-2 uppercase tracking-widest">
-            Sin anualidad · Cancela cuando quieras
-          </p>
-        )}
+
+        {/* Monthly equivalent */}
+        <p className={`text-[10px] font-heading font-bold mt-2 uppercase tracking-widest ${c.text}`}>
+          ó ${plan.monthly} / mes
+        </p>
       </div>
 
       {/* Features */}
@@ -305,15 +423,11 @@ const PlanCard = ({ plan, type, color, onSelect, isAnnual }) => {
       </ul>
 
       <button
-        onClick={() => onSelect(plan.id)}
-        className={`w-full py-4 rounded-full font-heading font-black text-xs uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 border ${
-          isAnnual
-            ? `${c.btn} border-transparent hover:scale-[1.02]`
-            : `bg-white/5 text-white ${c.btnOutline}`
-        }`}
+        onClick={onContact}
+        className={`w-full py-4 rounded-full font-heading font-black text-xs uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 border border-transparent hover:scale-[1.02] ${c.btn}`}
       >
-        {isAnnual ? 'Contratar Anual' : 'Empezar Mensual'}
-        <ArrowRight className="w-4 h-4" />
+        <Phone className="w-4 h-4" />
+        Contactar
       </button>
     </motion.div>
   );
@@ -322,15 +436,20 @@ const PlanCard = ({ plan, type, color, onSelect, isAnnual }) => {
 /* ─── Main Component ──────────────────────────────── */
 const Pricing = () => {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
   const [activeIdx, setActiveIdx] = useState(0);
 
   const cat = categories[activeIdx];
   const c   = colorMap[cat.color];
 
-  const handleSelect = (planId) => {
-    navigate(`/checkout/${planId}`);
+  const handleContact = () => {
+    navigate('/contacto');
   };
+
+  const gridCols = cat.plans.length === 1
+    ? 'grid-cols-1 max-w-sm'
+    : cat.plans.length === 2
+    ? 'grid-cols-1 md:grid-cols-2 max-w-3xl'
+    : 'grid-cols-1 md:grid-cols-3 max-w-5xl';
 
   return (
     <div className="min-h-screen bg-void text-white selection:bg-neon-cyan/30 overflow-x-hidden relative">
@@ -368,7 +487,7 @@ const Pricing = () => {
               transition={{ delay: 0.2 }}
               className="text-gray-400 max-w-2xl mx-auto text-sm md:text-base font-light leading-relaxed"
             >
-              Elige tu categoría, selecciona mensual o anual y empieza a transformar la experiencia de tu cliente.
+              Elige tu categoría, conoce el precio de tu plan y contáctanos para comenzar.
             </motion.p>
           </div>
 
@@ -424,26 +543,20 @@ const Pricing = () => {
           <AnimatePresence mode="wait">
             <motion.div
               key={cat.id}
-              className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-20 max-w-3xl mx-auto"
+              className={`grid ${gridCols} gap-6 md:gap-8 mb-20 mx-auto`}
             >
-              <PlanCard
-                plan={cat.monthly}
-                type="monthly"
-                color={cat.color}
-                onSelect={handleSelect}
-                isAnnual={false}
-              />
-              <PlanCard
-                plan={cat.annual}
-                type="annual"
-                color={cat.color}
-                onSelect={handleSelect}
-                isAnnual={true}
-              />
+              {cat.plans.map((plan) => (
+                <PlanCard
+                  key={plan.id}
+                  plan={plan}
+                  color={cat.color}
+                  onContact={handleContact}
+                />
+              ))}
             </motion.div>
           </AnimatePresence>
 
-          {/* ── Contact CTA for Corporativo ─────────────── */}
+          {/* ── Contact CTA ─────────────────────────────── */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -457,17 +570,18 @@ const Pricing = () => {
                 Cadenas y Corporativos
               </span>
               <h3 className="font-display text-2xl md:text-4xl uppercase mt-2 mb-4 leading-none">
-                Más de 10 sucursales?{' '}
+                ¿Más de 10 sucursales?{' '}
                 <span className="text-neon-purple italic">Hablemos.</span>
               </h3>
               <p className="text-gray-400 text-sm max-w-lg mx-auto mb-8 leading-relaxed">
-                Planes personalizados, panel multi-cuentas, API de integración, gerente de cuenta dedicado y SLA garantizado.
+                Planes personalizados, panel multi-cuentas, gerente de cuenta dedicado y SLA garantizado.
               </p>
               <button
                 onClick={() => navigate('/contacto')}
                 className="inline-flex items-center gap-3 px-10 py-4 rounded-full font-heading font-black text-xs uppercase tracking-widest bg-white/5 border border-neon-purple/30 text-white hover:bg-neon-purple hover:text-void hover:shadow-[0_0_30px_rgba(188,19,254,0.4)] transition-all"
               >
-                Contactar Ventas <ArrowRight className="w-4 h-4" />
+                <Phone className="w-4 h-4" />
+                Contactar Ventas
               </button>
             </div>
           </motion.div>
