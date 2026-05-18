@@ -53,12 +53,6 @@ const Login = () => {
               {location.state.message}
             </p>
           )}
-          <p className="text-gray-500 text-sm font-light">
-            ¿Nuevo en Radiolea?{' '}
-            <Link to="/register" className="text-white hover:text-neon-cyan transition-colors font-bold underline decoration-neon-cyan/30">
-              Crea tu cuenta
-            </Link>
-          </p>
         </div>
 
         <form className="space-y-6" onSubmit={handleSubmit}>
