@@ -232,7 +232,7 @@ const Benefits = () => {
               </div>
 
               <div className="space-y-0">
-                <CompRow label="Equipos"           them="Hechizos / improvisados"  us="Hardware industrial" />
+                <CompRow label="Equipos"           them="Hechizos / improvisados"  us="Hardware Empresarial" />
                 <CompRow label="Dispositivos"      them="PCs viejas / Android TV"  us="Hardware dedicado"   />
                 <CompRow label="Streaming"         them="Spotify normal"            us="Plataforma propia"   />
                 <CompRow label="Estabilidad"       them="Muy baja"                  us="99% uptime"          />

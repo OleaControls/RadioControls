@@ -1,199 +1,318 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Zap, ShieldCheck, MessageSquare, ArrowRight, 
-  Activity, Headphones, Layers, Globe, 
-  Cpu, Gauge, Database
+import {
+  ShieldCheck, MessageSquare, ArrowRight,
+  Activity, Headphones, Layers, ArrowUpRight, ChevronRight
 } from 'lucide-react';
-import WaveCursor from '../components/WaveCursor';
 import { Link } from 'react-router-dom';
 
-const services = [
-  {
-    icon: Headphones,
-    title: "Diseño del Sistema de Sonido",
-    titleSub: "",
-    tag: "Studio Grade",
-    tagSub: "Lo Fundamental",
-    description: "Si ya tienen un sistema, lo optimizamos para sacarle el máximo provecho, o bien podemos diseñar uno impactante.",
-    accent: "neon-cyan",
-    img: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&q=80&w=800"
-  },
-  {
-    icon: ShieldCheck,
-    title: "Creación de la Banda Sonora de tu Marca",
-    titleSub: "",
-    tag: "Certificado",
-    tagSub: "A la Medida",
-    description: "Música curada especial para tu marca, tus horarios, tus promociones, fidelizamos juntos a tus clientes. Obtienes también gestión total de licencias en todo México. Inserción de publicidad propia.",
-    description2: "Convierte tu música ambiental en un canal de ventas directo con locución profesional integrada y programada.",
-    accent: "neon-purple",
-    img: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&q=80&w=800"
-  },
-  {
-    icon: MessageSquare,
-    title: "Implementación de la Estrategia",
-    titleSub: "",
-    tag: "Ventas",
-    tagSub: "Instalación y Capacitación",
-    description: "Solo con nosotros obtienes 3 años de garantía, o si prefieres y cuentas con tu propio personal de mantenimiento/sistemas, los capacitamos y supervisamos para que lo instalen con el estándar que esperas.",
-    accent: "neon-green",
-    img: "https://images.unsplash.com/photo-1478737270239-2f02b77fc618?auto=format&fit=crop&q=80&w=800"
-  },
-  {
-    icon: Layers,
-    title: "Asesoría Post-Proyecto",
-    titleSub: "",
-    tag: "Escalable",
-    tagSub: "Siempre Acompañado",
-    description: "Ya funcionando, estaremos contigo. Cada mes nos reuniremos para orientar y asesorarte para que tomes las mejores decisiones y tus ventas se mantengan o las impulsemos.",
-    accent: "white",
-    img: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800"
-  },
-];
-
-/* ─── Pulsating Background Decor ────────────────── */
+/* ─── Aurora ─────────────────────────────────────── */
 const Aurora = () => (
   <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
     <div className="animate-pulse absolute top-[20%] left-[-5%] w-[40vw] h-[40vw] rounded-full blur-[120px] opacity-20"
       style={{ background: 'radial-gradient(circle, #00f3ff 0%, transparent 70%)', animationDuration: '3s' }} />
     <div className="animate-pulse absolute top-[15%] right-[-5%] w-[35vw] h-[35vw] rounded-full blur-[120px] opacity-15"
       style={{ background: 'radial-gradient(circle, #bc13fe 0%, transparent 70%)', animationDuration: '4s' }} />
-    <div className="animate-pulse absolute top-1/2 left-0 w-[20vw] h-[20vw] rounded-full blur-[80px] opacity-10 bg-neon-cyan" 
+    <div className="animate-pulse absolute top-1/2 left-0 w-[20vw] h-[20vw] rounded-full blur-[80px] opacity-10 bg-neon-cyan"
       style={{ animationDuration: '1.5s' }} />
-    <div className="animate-pulse absolute top-1/3 right-0 w-[15vw] h-[15vw] rounded-full blur-[80px] opacity-10 bg-neon-purple" 
+    <div className="animate-pulse absolute top-1/3 right-0 w-[15vw] h-[15vw] rounded-full blur-[80px] opacity-10 bg-neon-purple"
       style={{ animationDuration: '2s' }} />
   </div>
 );
 
+const services = [
+  {
+    icon: Headphones,
+    num: '01',
+    title: 'Diseño del Sistema de Sonido',
+    tag: 'Lo Fundamental',
+    description: 'Si ya tienen un sistema, lo optimizamos para sacarle el máximo provecho, o bien podemos diseñar uno impactante desde cero.',
+    accent: 'cyan',
+    hex: '#00f3ff',
+    glow: 'rgba(0,243,255,0.12)',
+  },
+  {
+    icon: ShieldCheck,
+    num: '02',
+    title: 'Creación de la Banda Sonora de tu Marca',
+    tag: 'A la Medida',
+    description: 'Música curada especial para tu marca, tus horarios, tus promociones. Gestión total de licencias en todo México e inserción de publicidad propia.',
+    description2: 'Convierte tu música ambiental en un canal de ventas directo con locución profesional integrada y programada.',
+    accent: 'purple',
+    hex: '#bc13fe',
+    glow: 'rgba(188,19,254,0.12)',
+  },
+  {
+    icon: MessageSquare,
+    num: '03',
+    title: 'Implementación de la Estrategia',
+    tag: 'Instalación y Capacitación',
+    description: 'Solo con nosotros obtienes 3 años de garantía. O si cuentas con tu propio personal, los capacitamos y supervisamos para instalar con el estándar que esperas.',
+    accent: 'green',
+    hex: '#39ff14',
+    glow: 'rgba(57,255,20,0.12)',
+  },
+  {
+    icon: Layers,
+    num: '04',
+    title: 'Asesoría Post-Proyecto',
+    tag: 'Siempre Acompañado',
+    description: 'Ya funcionando, estaremos contigo. Cada mes nos reuniremos para orientar y asesorarte para que tomes las mejores decisiones e impulsemos tus ventas.',
+    accent: 'white',
+    hex: '#ffffff',
+    glow: 'rgba(255,255,255,0.06)',
+  },
+];
+
+/* ── Decorative abstract shape per card ──────────── */
+const AbstractShape = ({ hex, num }) => (
+  <div className="absolute inset-0 overflow-hidden pointer-events-none select-none">
+    {/* Big ghost number */}
+    <span
+      className="absolute -right-6 -bottom-8 font-display text-[10rem] md:text-[14rem] font-black leading-none opacity-[0.06]"
+      style={{ color: hex }}
+    >
+      {num}
+    </span>
+    {/* Geometric ring */}
+    <div
+      className="absolute -top-16 -right-16 w-64 h-64 rounded-full border opacity-[0.07]"
+      style={{ borderColor: hex }}
+    />
+    <div
+      className="absolute -top-8 -right-8 w-40 h-40 rounded-full border opacity-[0.05]"
+      style={{ borderColor: hex }}
+    />
+    {/* Corner glow */}
+    <div
+      className="absolute top-0 right-0 w-48 h-48 rounded-full blur-[80px] opacity-20"
+      style={{ background: `radial-gradient(circle, ${hex} 0%, transparent 70%)` }}
+    />
+  </div>
+);
+
+/* ── Service card ─────────────────────────────────── */
+const ServiceCard = ({ service, index }) => {
+  const Icon = service.icon;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 32 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{ duration: 0.7, delay: index * 0.08, ease: [0.16, 1, 0.3, 1] }}
+      className="group relative rounded-[1.75rem] border border-white/[0.07] bg-white/[0.02] overflow-hidden transition-all duration-500 hover:border-white/15 hover:bg-white/[0.04]"
+      style={{ boxShadow: `0 0 0 0 ${service.hex}` }}
+    >
+      <AbstractShape hex={service.hex} num={service.num} />
+
+      <div className="relative z-10 p-8 md:p-10 flex flex-col h-full">
+        {/* Top row: step + tag */}
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-3">
+            <span
+              className="font-heading font-black text-[10px] uppercase tracking-[0.5em]"
+              style={{ color: service.hex }}
+            >
+              {service.num}
+            </span>
+            <span
+              className="w-8 h-px opacity-40"
+              style={{ background: service.hex }}
+            />
+          </div>
+          <span className="font-heading text-[8px] uppercase tracking-[0.35em] text-white/25 border border-white/10 px-3 py-1 rounded-full">
+            {service.tag}
+          </span>
+        </div>
+
+        {/* Icon */}
+        <div
+          className="w-14 h-14 rounded-2xl flex items-center justify-center mb-7 border border-white/10 bg-black/40 backdrop-blur-sm transition-transform duration-500 group-hover:scale-105"
+          style={{ boxShadow: `0 0 24px ${service.glow}` }}
+        >
+          <Icon size={24} style={{ color: service.hex }} />
+        </div>
+
+        {/* Title */}
+        <h3 className="font-display text-2xl sm:text-3xl md:text-4xl uppercase leading-[0.95] tracking-tight text-white mb-5">
+          {service.title}
+        </h3>
+
+        {/* Divider */}
+        <div className="h-px w-10 mb-5 opacity-60" style={{ background: service.hex }} />
+
+        {/* Description */}
+        <p className="text-gray-500 text-sm leading-relaxed font-light mb-3 flex-1">
+          {service.description}
+        </p>
+        {service.description2 && (
+          <p className="text-gray-600 text-sm leading-relaxed font-light mb-6">
+            {service.description2}
+          </p>
+        )}
+
+        {/* CTA link */}
+        <Link
+          to="/contacto"
+          className="inline-flex items-center gap-2 mt-6 self-start group/btn"
+        >
+          <span
+            className="font-heading font-black text-[9px] uppercase tracking-widest transition-colors duration-300"
+            style={{ color: service.hex }}
+          >
+            Solicitar Información
+          </span>
+          <ArrowUpRight
+            size={12}
+            style={{ color: service.hex }}
+            className="transition-transform duration-300 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5"
+          />
+        </Link>
+      </div>
+    </motion.div>
+  );
+};
+
+/* ── Main page ────────────────────────────────────── */
 const Services = () => {
   return (
     <div className="min-h-screen bg-void text-white selection:bg-neon-cyan/30 overflow-x-hidden relative">
       <Aurora />
 
-      <div className="pt-40 pb-24 px-4 relative z-10">
-        <div className="container mx-auto max-w-7xl">
-          
-          {/* ─── Hero Header ────────────────── */}
-          <div className="max-w-4xl mb-24 md:mb-32">
+      <div className="relative z-10 px-5 md:px-10 lg:px-16 pt-36 pb-28">
+        <div className="max-w-7xl mx-auto">
+
+          {/* ── HERO ── */}
+          <div className="mb-20 md:mb-28">
+
+            {/* Badge */}
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
               className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 mb-8 backdrop-blur-md"
             >
-              <Activity className="w-4 h-4 text-neon-cyan animate-pulse" />
-              <span className="text-[10px] font-heading font-black uppercase tracking-[0.4em] text-neon-cyan">
-                La manera más fácil y sencilla de aumentar tus ventas.
+              <Activity className="w-3 h-3 text-neon-cyan animate-pulse" />
+              <span className="text-[9px] font-heading font-black uppercase tracking-[0.5em] text-neon-cyan">
+                La manera más fácil de aumentar tus ventas
               </span>
             </motion.div>
-            
-            <motion.h1 
-              initial={{ opacity: 0, y: 30 }}
+
+            {/* Headline */}
+            <motion.h1
+              initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="font-display text-3xl sm:text-5xl md:text-8xl uppercase leading-[0.9] mb-8 tracking-tighter"
+              transition={{ duration: 0.8, delay: 0.07, ease: [0.16, 1, 0.3, 1] }}
+              className="font-display text-5xl sm:text-7xl md:text-[8.5rem] uppercase leading-[0.88] tracking-tighter mb-8"
             >
-              Elige el <br />
+              Elige el<br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple animate-gradient bg-[length:200%_auto]">
-                Camino Adecuado
+                Camino
               </span>
+              <br />
+              <span className="text-white/15">Adecuado</span>
             </motion.h1>
-            
-            <motion.p 
+
+            {/* Sub row */}
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className="text-gray-400 max-w-2xl text-base md:text-xl font-light leading-relaxed border-l-2 border-neon-cyan pl-4 md:pl-8"
+              transition={{ delay: 0.25 }}
+              className="flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-12"
             >
-              Cuatro opciones para comenzar inmediatamente.
-            </motion.p>
+              <p className="text-gray-500 max-w-xs text-sm font-light leading-relaxed border-l-2 border-neon-cyan pl-4">
+                Cuatro pasos para transformar el sonido de tu negocio en una herramienta de ventas.
+              </p>
+
+              {/* Step index pills */}
+              <div className="flex gap-2 flex-wrap">
+                {services.map((s) => (
+                  <div
+                    key={s.num}
+                    className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.08]"
+                  >
+                    <span
+                      className="font-heading font-black text-[9px]"
+                      style={{ color: s.hex }}
+                    >
+                      {s.num}
+                    </span>
+                    <ChevronRight size={9} className="text-white/20" />
+                    <span className="font-heading text-[8px] text-white/30 uppercase tracking-wider hidden sm:block">
+                      {s.tag}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
           </div>
 
-          {/* ─── Main Services Grid ────────────────── */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-40">
-            {services.map((service, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="group relative flex flex-col min-h-[380px] md:min-h-[600px] rounded-[2rem] md:rounded-[3rem] overflow-hidden border border-white/5 bg-black/40 shadow-2xl transition-all duration-700 hover:border-white/20"
-              >
-                {/* Background Image with Parallax-ish feel */}
-                <div className="absolute inset-0 z-0">
-                  <img 
-                    src={service.img} 
-                    className="w-full h-full object-cover opacity-20 group-hover:opacity-40 group-hover:scale-110 transition-all duration-1000 ease-out" 
-                    alt={service.title} 
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
-                </div>
-
-                {/* Content Overlay */}
-                <div className="relative z-10 p-6 md:p-16 h-full flex flex-col justify-end">
-                  <div className="mb-8 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center bg-black/60 border border-white/10 text-${service.accent} mb-6 shadow-2xl`}>
-                      <service.icon size={32} />
-                    </div>
-                    <span className={`text-[10px] font-heading font-black uppercase tracking-[0.4em] text-${service.accent} mb-4 block`}>
-                      {service.tagSub}
-                    </span>
-                    <h3 className="font-display text-2xl sm:text-3xl md:text-5xl uppercase mb-4 md:mb-6 tracking-tight leading-none text-white">
-                      {service.title}
-                    </h3>
-                    <p className="text-gray-400 text-sm md:text-base leading-relaxed mb-4 max-w-sm font-light">
-                      {service.description}
-                    </p>
-                    {service.description2 && (
-                      <p className="text-gray-400 text-sm md:text-base leading-relaxed mb-8 max-w-sm font-light">
-                        {service.description2}
-                      </p>
-                    )}
-                  </div>
-                  
-                  <div className="flex items-center gap-4 opacity-0 group-hover:opacity-100 transition-all duration-500 delay-100">
-                    <Link 
-                      to="/contacto" 
-                      className={`px-8 py-3 rounded-full bg-white text-void font-heading font-black text-[10px] uppercase tracking-widest flex items-center gap-2 hover:scale-105 transition-transform`}
-                    >
-                      Solicitar Información <ArrowRight size={14} />
-                    </Link>
-                  </div>
-                </div>
-              </motion.div>
+          {/* ── SERVICES GRID ── */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-24">
+            {services.map((service, i) => (
+              <ServiceCard key={i} service={service} index={i} />
             ))}
           </div>
 
+          {/* ── DIVIDER ── */}
+          <div className="w-full h-px bg-white/[0.06] mb-24" />
 
-
-          {/* ─── CTA Section ────────────────── */}
+          {/* ── CTA ── */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.98 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, y: 32 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="relative p-8 sm:p-12 md:p-24 lg:p-32 rounded-[2.5rem] md:rounded-[4rem] bg-gradient-to-br from-white/[0.03] to-transparent border border-white/10 overflow-hidden text-center"
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="relative rounded-[2rem] border border-white/[0.08] overflow-hidden"
+            style={{
+              background: 'linear-gradient(135deg, rgba(0,243,255,0.03) 0%, rgba(0,0,0,0) 50%, rgba(188,19,254,0.03) 100%)',
+            }}
           >
-            <div className="absolute inset-0 z-0 overflow-hidden">
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100vw] h-[100vw] bg-neon-cyan/5 rounded-full blur-[150px] animate-pulse" />
+            {/* Ghost word */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
+              <span className="font-display text-[18vw] uppercase font-black leading-none opacity-[0.025] text-white whitespace-nowrap">
+                RADIOLEA
+              </span>
             </div>
-            
-            <div className="relative z-10 max-w-3xl mx-auto">
-              <h2 className="font-display text-3xl sm:text-5xl md:text-8xl uppercase leading-none mb-6 tracking-tighter">
-                Diseñemos
+
+            {/* Ambient glow center */}
+            <div
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[200px] rounded-full blur-[100px] opacity-15 pointer-events-none"
+              style={{ background: 'radial-gradient(ellipse, #00f3ff 0%, transparent 60%)' }}
+            />
+
+            <div className="relative z-10 px-8 py-16 sm:px-14 sm:py-20 md:px-20 md:py-28 text-center">
+              <span className="inline-block font-heading text-[9px] font-black uppercase tracking-[0.6em] text-neon-cyan mb-5">
+                ¿Listo para empezar?
+              </span>
+
+              <h2 className="font-display text-4xl sm:text-6xl md:text-7xl uppercase leading-[0.9] tracking-tighter mb-6">
+                Diseñemos<br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan to-neon-purple">
+                  Tu Sonido
+                </span>
               </h2>
-              <p className="text-white text-lg md:text-xl mb-4 font-light leading-relaxed">
+
+              <p className="text-gray-500 text-sm md:text-base mb-2 font-light leading-relaxed max-w-lg mx-auto">
                 Nuestro sonido ambiental es una herramienta estratégica de comportamiento.
               </p>
-              <p className="text-gray-400 text-base md:text-lg mb-12 font-light leading-relaxed">
+              <p className="text-gray-600 text-sm mb-10 font-light leading-relaxed max-w-md mx-auto">
                 Los negocios que más lo aprovechan son los que dependen de tiempo de permanencia, estado emocional y decisión de compra.
               </p>
-              
-              <div className="flex flex-col sm:flex-row gap-6 justify-center">
-                <Link to="/contacto" className="px-8 md:px-12 py-5 bg-neon-cyan text-void rounded-full font-heading font-black text-xs uppercase tracking-widest hover:scale-105 transition-transform shadow-[0_0_40px_rgba(0,243,255,0.3)]">
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link
+                  to="/contacto"
+                  className="group/cta inline-flex items-center justify-center gap-2 px-10 py-4 bg-neon-cyan text-void rounded-full font-heading font-black text-[10px] uppercase tracking-widest hover:scale-105 transition-transform shadow-[0_0_50px_rgba(0,243,255,0.2)]"
+                >
                   Contactar con Experto
+                  <ArrowRight size={13} className="transition-transform duration-300 group-hover/cta:translate-x-1" />
                 </Link>
-                <Link to="/planes" className="px-8 md:px-12 py-5 border border-white/10 rounded-full font-heading font-bold text-xs uppercase tracking-widest hover:bg-white/5 transition-all backdrop-blur-sm">
+                <Link
+                  to="/planes"
+                  className="px-10 py-4 border border-white/10 rounded-full font-heading font-black text-[10px] uppercase tracking-widest hover:bg-white/5 hover:border-white/25 transition-all text-white/50 hover:text-white"
+                >
                   Explorar Planes
                 </Link>
               </div>

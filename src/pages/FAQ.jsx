@@ -184,8 +184,7 @@ const FAQ = () => {
               Música para comercios <span className="text-neon-cyan italic">responsables</span>
             </h2>
             <p className="text-gray-400 text-sm md:text-base font-light leading-relaxed max-w-xl mx-auto mb-12">
-              No pongas en riesgo tu negocio por incumplir las leyes.{' '}
-              <span className="text-white font-semibold">Con Radiolea tu música siempre será legal.</span>
+              Tu ambiente musical, siempre respaldado y en cumplimiento con <span className="text-white font-semibold">Radiolea.</span>
             </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {platforms.map((p) => (
