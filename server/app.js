@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
+import rateLimit from "express-rate-limit";
 import path from "path";
 import { fileURLToPath } from "url";
 import authRoutes from "./routes/auth.js";
@@ -34,6 +35,15 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors({ origin: corsOrigins, credentials: true }));
 app.use(morgan("dev"));
+
+const globalApiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 200,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: "Demasiadas solicitudes. Intenta de nuevo en 15 minutos." },
+});
+app.use("/api/", globalApiLimiter);
 
 app.get("/health", (req, res) => {
   res.json({ ok: true, service: "radiocontrols-api" });

@@ -1,9 +1,18 @@
 import express from 'express';
+import rateLimit from 'express-rate-limit';
 import { sendContactFormEmail } from '../lib/email.js';
 
 const router = express.Router();
 
-router.post('/', async (req, res) => {
+const contactLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: 'Demasiados mensajes enviados. Intenta de nuevo en una hora.' },
+});
+
+router.post('/', contactLimiter, async (req, res) => {
   const { name, company, email, message } = req.body;
 
   if (!name || !email || !message) {
