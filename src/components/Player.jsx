@@ -2,19 +2,22 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Play, Pause, Volume2, VolumeX, Radio, Link as LinkIcon, ShoppingBag } from 'lucide-react';
 
 const Player = () => {
+  const RADIOLEA_STREAM = 'https://c44.radioboss.fm:8054/stream';
+
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.8);
-  const [streamUrl, setStreamUrl] = useState('');
+  const [streamUrl, setStreamUrl] = useState(RADIOLEA_STREAM);
   const [error, setError] = useState('');
   const audioRef = useRef(new Audio());
 
   // Lista de marcas con URLs de prueba que funcionan (Radios Públicas de México/Global)
   const brands = [
-    { name: 'Coppel', url: 'https://str.radiogrupo.com.mx/XU-X64k', color: 'bg-yellow-500' }, // Ejemplo funcional (Radio FM)
-    { name: 'Puma', url: 'https://icecast-qmusic.be/qmusic_be_aac.m4a', color: 'bg-black' }, // Q-Music (Pop Upbeat)
-    { name: 'Sanborns', url: 'https://stream.zeno.fm/un385d385d0uv', color: 'bg-blue-600' }, // Smooth Jazz (Vibe Sanborns)
-    { name: 'Sears', url: 'https://stream.zeno.fm/f3wvbbqmdg8uv', color: 'bg-red-600' }, // Lo-Fi / Chill
-    { name: 'Tous', url: 'https://stream.zeno.fm/0r0xa854rp8uv', color: 'bg-pink-400' }, // Ambient / Fashion
+    { name: 'Radiolea Live', url: RADIOLEA_STREAM, color: 'bg-cyan-500', subtitle: 'Demo en Vivo', isDemo: true },
+    { name: 'Coppel', url: 'https://str.radiogrupo.com.mx/XU-X64k', color: 'bg-yellow-500', subtitle: 'Estación Ambiental' },
+    { name: 'Puma', url: 'https://icecast-qmusic.be/qmusic_be_aac.m4a', color: 'bg-black', subtitle: 'Estación Ambiental' },
+    { name: 'Sanborns', url: 'https://stream.zeno.fm/un385d385d0uv', color: 'bg-blue-600', subtitle: 'Estación Ambiental' },
+    { name: 'Sears', url: 'https://stream.zeno.fm/f3wvbbqmdg8uv', color: 'bg-red-600', subtitle: 'Estación Ambiental' },
+    { name: 'Tous', url: 'https://stream.zeno.fm/0r0xa854rp8uv', color: 'bg-pink-400', subtitle: 'Estación Ambiental' },
   ];
 
   useEffect(() => {
@@ -62,13 +65,13 @@ const Player = () => {
   };
 
   const handleBrandClick = (url) => {
-    // Al hacer click, llenamos el input para que el usuario vea el link "copiado"
-    // y pueda darle play.
-    setStreamUrl(url);
     setError('');
-    // Opcional: Auto-play
-    // audioRef.current.src = url;
-    // audioRef.current.play().catch(() => setError('Estación no disponible por el momento.'));
+    if (isPlaying) {
+      audioRef.current.pause();
+    }
+    setStreamUrl(url);
+    audioRef.current.src = url;
+    audioRef.current.play().catch(() => setError('Estación no disponible por el momento.'));
   };
 
   return (
@@ -94,18 +97,27 @@ const Player = () => {
             </h3>
             <div className="space-y-3">
                 {brands.map((brand, idx) => (
-                    <button 
+                    <button
                         key={idx}
                         onClick={() => handleBrandClick(brand.url)}
-                        className={`w-full p-3 rounded-xl flex items-center gap-3 transition-all border border-gray-700 group hover:border-cyan-500/50 hover:bg-gray-700/50 ${streamUrl === brand.url ? 'bg-gray-700 border-cyan-500' : 'bg-gray-900/50'}`}
+                        className={`w-full p-3 rounded-xl flex items-center gap-3 transition-all border group hover:bg-gray-700/50 ${
+                          brand.isDemo
+                            ? `border-cyan-500/70 hover:border-cyan-400 ${streamUrl === brand.url ? 'bg-cyan-900/30 border-cyan-400' : 'bg-cyan-950/20'}`
+                            : `border-gray-700 hover:border-cyan-500/50 ${streamUrl === brand.url ? 'bg-gray-700 border-cyan-500' : 'bg-gray-900/50'}`
+                        }`}
                     >
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs ${brand.color}`}>
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs ${brand.color} ${brand.isDemo && isPlaying && streamUrl === brand.url ? 'animate-pulse' : ''}`}>
                             {brand.name[0]}
                         </div>
-                        <div className="text-left overflow-hidden">
-                            <p className="font-medium text-white text-sm truncate">{brand.name}</p>
-                            <p className="text-xs text-gray-500 truncate">Estación Ambiental</p>
+                        <div className="text-left overflow-hidden flex-1">
+                            <p className={`font-medium text-sm truncate ${brand.isDemo ? 'text-cyan-300' : 'text-white'}`}>{brand.name}</p>
+                            <p className="text-xs text-gray-500 truncate">{brand.subtitle}</p>
                         </div>
+                        {brand.isDemo && (
+                            <span className="text-[10px] font-semibold bg-cyan-500/20 text-cyan-400 px-2 py-0.5 rounded-full border border-cyan-500/30 shrink-0">
+                                LIVE
+                            </span>
+                        )}
                     </button>
                 ))}
             </div>
