@@ -184,8 +184,8 @@ const Footer = () => {
               </div>
               <div className="flex gap-4 items-center">
                 <Mail className="text-neon-cyan shrink-0" size={18} />
-                <a href="mailto:sistemas@radioleacontrols.com" className="text-sm text-gray-400 hover:text-white transition-colors">
-                  sistemas@radioleacontrols.com
+                <a href="mailto:hola@radioleacontrols.com" className="text-sm text-gray-400 hover:text-white transition-colors">
+                  hola@radioleacontrols.com
                 </a>
               </div>
             </div>

@@ -108,7 +108,7 @@ export const sendContactFormEmail = async ({ name, company, email, message }) =>
 
   const mailOptions = {
     from: `"Radiolea Controls Web" <${process.env.GMAIL_USER}>`,
-    to: 'sistemas@radioleacontrols.com',
+    to: 'hola@radioleacontrols.com',
     replyTo: email,
     subject: `Nuevo contacto desde la web: ${name}${company ? ` - ${company}` : ''}`,
     html: `

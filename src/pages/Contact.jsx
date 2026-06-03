@@ -84,7 +84,7 @@ const Contact = () => {
                 { 
                   icon: Mail, 
                   label: "Conozcamos tu proyecto",
-                  value: "sistemas@radioleacontrols.com",
+                  value: "hola@radioleacontrols.com",
                   accent: "text-neon-cyan"
                 },
                 { 
