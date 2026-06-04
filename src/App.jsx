@@ -11,6 +11,7 @@ import Checkout from './pages/Checkout';
 import ClientPortal from './pages/ClientPortal';
 import Admin from './pages/Admin';
 import AudioInstallation from './pages/AudioInstallation';
+import Equipos from './pages/Equipos';
 import BranchPlayer from './pages/BranchPlayer';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -98,6 +99,7 @@ const MainLayout = () => {
           <Route path="/checkout/:planId" element={<Checkout />} />
           <Route path="/player/:branchSlug" element={<BranchPlayer />} />
           <Route path="/instalacion-audio" element={<AudioInstallation />} />
+          <Route path="/equipos" element={<Equipos />} />
           <Route path="*" element={<LandingPage />} />
         </Routes>
       </main>

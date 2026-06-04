@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   Menu, X, ChevronRight, LogOut, User,
-  Activity, Home, Zap, PhoneCall, LayoutDashboard, HelpCircle
+  Activity, Home, Zap, PhoneCall, LayoutDashboard, HelpCircle, Speaker
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from './AuthContext';
@@ -23,6 +23,7 @@ const Navbar = () => {
     { name: 'Planes', short: 'Planes', path: '/planes', icon: Zap },
     { name: 'Preguntas Freq.', short: 'FAQ', path: '/faq', icon: HelpCircle },
     { name: 'Contacto', short: 'Contacto', path: '/contacto', icon: PhoneCall },
+    { name: 'Equipos', short: 'Equipos', path: '/equipos', icon: Speaker, soon: true },
   ];
 
   useEffect(() => {
@@ -57,14 +58,19 @@ const Navbar = () => {
           {/* Desktop Nav Items (Hidden on Mobile) */}
           <div className="hidden md:flex items-center gap-1 bg-white/[0.03] p-1 rounded-full border border-white/5">
             {links.map((link) => (
-              <Link 
+              <Link
                 key={link.name}
                 to={link.path}
-                className={`px-5 py-2 rounded-full text-[9px] font-heading font-bold uppercase tracking-[0.25em] transition-all relative ${
+                className={`px-5 py-2 rounded-full text-[9px] font-heading font-bold uppercase tracking-[0.25em] transition-all relative flex items-center gap-1.5 ${
                   location.pathname === link.path ? 'text-neon-cyan bg-white/5' : 'text-gray-400 hover:text-white'
                 }`}
               >
                 <span className="relative z-10">{link.name}</span>
+                {link.soon && (
+                  <span className="relative z-10 text-[7px] font-heading font-black uppercase tracking-widest bg-neon-cyan/10 border border-neon-cyan/30 text-neon-cyan px-1.5 py-0.5 rounded-full">
+                    Pronto
+                  </span>
+                )}
                 {location.pathname === link.path && (
                   <motion.div layoutId="nav-pill" className="absolute inset-0 bg-white/5 rounded-full" />
                 )}
