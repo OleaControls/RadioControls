@@ -164,6 +164,16 @@ const IconCrown = ({ color }) => (
   </svg>
 );
 
+const IconGift = ({ color }) => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 shrink-0">
+    <rect x="3" y="9" width="18" height="12" rx="2" stroke={color} strokeWidth="1.4" fill={color} fillOpacity="0.08" />
+    <rect x="2" y="6" width="20" height="4" rx="1.2" stroke={color} strokeWidth="1.4" fill={color} fillOpacity="0.12" />
+    <path d="M12 6v15" stroke={color} strokeWidth="1.4" />
+    <path d="M12 6C12 6 10.5 3 8.5 3a2 2 0 0 0 0 4H12Z" stroke={color} strokeWidth="1.4" strokeLinejoin="round" />
+    <path d="M12 6C12 6 13.5 3 15.5 3a2 2 0 0 1 0 4H12Z" stroke={color} strokeWidth="1.4" strokeLinejoin="round" />
+  </svg>
+);
+
 /* ── Package Data ── */
 
 const packages = [
@@ -381,6 +391,23 @@ const PackageCard = ({ pkg, index }) => {
           </p>
         </div>
 
+        {/* Promo: 2 meses gratis */}
+        <div className="mt-4 flex items-center gap-2.5 rounded-xl px-3 py-2.5"
+          style={{
+            background: `${color}0d`,
+            border: `1px solid ${color}2e`,
+          }}>
+          <IconGift color={color} />
+          <div className="leading-tight">
+            <p className="text-[11px] font-heading font-black uppercase tracking-[0.12em]" style={{ color }}>
+              2 meses gratis
+            </p>
+            <p className="text-[9px] font-heading uppercase tracking-[0.18em] text-gray-500">
+              De servicio al pagar el año
+            </p>
+          </div>
+        </div>
+
       </div>
     </motion.div>
   );
@@ -425,6 +452,24 @@ const Equipos = () => (
             Paquetes de audio profesional con equipos de las mejores marcas del mercado.
             Instalación incluida y soporte técnico especializado.
           </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="inline-flex items-center gap-2.5 mt-6 px-5 py-3 rounded-full"
+            style={{
+              background: '#ffd7000d',
+              border: '1px solid #ffd70040',
+              boxShadow: '0 0 30px #ffd70014',
+            }}
+          >
+            <IconGift color="#ffd700" />
+            <span className="text-[11px] sm:text-xs font-heading font-bold uppercase tracking-[0.2em]"
+              style={{ color: '#ffd700' }}>
+              2 meses gratis de servicio al pagar el año
+            </span>
+          </motion.div>
         </div>
 
         {/* Grid */}
