@@ -5,7 +5,7 @@ import {
   CheckCircle2, ArrowRight, Star, ShieldCheck, Clock,
   Music2, Users, Headphones, TrendingUp, Info, HelpCircle,
   Store, Hotel, Dumbbell, UtensilsCrossed, ShoppingBag,
-  Heart, TreePine, Sparkles, Phone,
+  Heart, TreePine, Sparkles, Phone, Gift,
 } from 'lucide-react';
 
 /* ─── Aurora ─────────────────────────────────────── */
@@ -394,6 +394,19 @@ const PlanCard = ({ plan, color, onContact }) => {
         <p className={`text-[10px] font-heading font-bold mt-2 uppercase tracking-widest ${c.text}`}>
           ó ${plan.monthly} / mes
         </p>
+
+        {/* Promo: 2 meses gratis al pagar el año */}
+        <div className={`flex items-center gap-3 mt-5 rounded-2xl px-4 py-3 border ${c.bg} ${c.border}`}>
+          <Gift className={`w-4 h-4 shrink-0 ${c.text}`} />
+          <div className="leading-tight">
+            <p className={`text-[11px] font-heading font-black uppercase tracking-[0.15em] ${c.text}`}>
+              2 meses gratis
+            </p>
+            <p className="text-[9px] font-heading font-bold uppercase tracking-[0.2em] text-gray-500 mt-0.5">
+              De servicio al pagar el año
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Features */}
@@ -473,6 +486,18 @@ const Pricing = () => {
             >
               Elige tu categoría, conoce el precio de tu plan y contáctanos para comenzar.
             </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="inline-flex items-center gap-2.5 mt-6 px-5 py-3 rounded-full bg-neon-green/10 border border-neon-green/25"
+            >
+              <Gift className="w-4 h-4 text-neon-green shrink-0" />
+              <span className="text-[11px] sm:text-xs font-heading font-bold uppercase tracking-[0.2em] text-neon-green">
+                2 meses gratis de servicio al pagar el año
+              </span>
+            </motion.div>
           </div>
 
           {/* ── Category Tabs ───────────────────────────── */}
