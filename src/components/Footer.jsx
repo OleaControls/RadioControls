@@ -4,11 +4,11 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
 const SOCIAL = [
-  { icon: Twitter, href: "#" },
-  { icon: Facebook, href: "#" },
-  { icon: Instagram, href: "#" },
-  { icon: Linkedin, href: "#" },
-  { icon: Youtube, href: "#" }
+  { icon: Twitter, href: "#", label: "Twitter" },
+  { icon: Facebook, href: "#", label: "Facebook" },
+  { icon: Instagram, href: "#", label: "Instagram" },
+  { icon: Linkedin, href: "https://www.linkedin.com/company/radiolea-controls/posts/?feedView=all", label: "LinkedIn" },
+  { icon: Youtube, href: "#", label: "YouTube" }
 ];
 
 const LINKS = {
@@ -123,15 +123,21 @@ const Footer = () => {
               Creamos atmósferas que conectan marcas con personas a través de la excelencia auditiva.
             </p>
             <div className="flex gap-4">
-              {SOCIAL.map((item, i) => (
-                <a 
-                  key={i} 
-                  href={item.href} 
-                  className="w-10 h-10 rounded-full border border-white/5 bg-white/[0.02] flex items-center justify-center text-gray-400 hover:text-neon-cyan hover:border-neon-cyan/30 transition-all hover:-translate-y-1"
-                >
-                  <item.icon size={18} />
-                </a>
-              ))}
+              {SOCIAL.map((item, i) => {
+                const isExternal = item.href.startsWith('http');
+                return (
+                  <a
+                    key={i}
+                    href={item.href}
+                    aria-label={item.label}
+                    title={item.label}
+                    {...(isExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                    className="w-10 h-10 rounded-full border border-white/5 bg-white/[0.02] flex items-center justify-center text-gray-400 hover:text-neon-cyan hover:border-neon-cyan/30 transition-all hover:-translate-y-1"
+                  >
+                    <item.icon size={18} />
+                  </a>
+                );
+              })}
             </div>
           </div>
 
